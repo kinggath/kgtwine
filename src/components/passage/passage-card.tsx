@@ -8,9 +8,6 @@ import {SelectableCard} from '../container/card/selectable-card';
 import {Passage, TagColors} from '../../store/stories';
 import {TagStripe} from '../tag/tag-stripe';
 import {passageIsEmpty} from '../../util/passage-is-empty';
-import {usePrefsContext} from '../../store/prefs';
-import {useRelativePassageEditorsContext} from '../../store/relative-passage-editors';
-import {PassageEditInline} from './passage-edit-inline';
 import './passage-card.css';
 
 export interface PassageCardProps {
@@ -22,7 +19,6 @@ export interface PassageCardProps {
 	onSelect: (passage: Passage, exclusive: boolean) => void;
 	passage: Passage;
 	tagColors: TagColors;
-	storyId?: string;
 }
 
 // Needs to fill a large-sized passage card.
@@ -37,16 +33,10 @@ export const PassageCard: React.FC<PassageCardProps> = React.memo(props => {
 		onEdit,
 		onSelect,
 		passage,
-		storyId,
 		tagColors
 	} = props;
 	const {t} = useTranslation();
-	const {prefs} = usePrefsContext();
-	const {state} = useRelativePassageEditorsContext();
-	const isEditingRelative =
-		prefs.passageRelativePosition &&
-		storyId &&
-		state.editors.some(e => e.passageId === passage.id);
+
 	const className = React.useMemo(
 		() =>
 			classNames('passage-card', {
@@ -132,9 +122,6 @@ export const PassageCard: React.FC<PassageCardProps> = React.memo(props => {
 						<h2>{passage.name}</h2>
 						<CardContent>{excerpt}</CardContent>
 					</SelectableCard>
-					{isEditingRelative && storyId && (
-						<PassageEditInline passageId={passage.id} storyId={storyId} />
-					)}
 				</div>
 			</div>
 		</DraggableCore>

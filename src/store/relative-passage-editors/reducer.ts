@@ -16,31 +16,23 @@ export const reducer: React.Reducer<
 
 			return {
 				...state,
-				editors: [...state.editors, {passageId: action.passageId, storyId: action.storyId}],
-				activeEditorId: action.passageId
+				editors: [...state.editors, {passageId: action.passageId, storyId: action.storyId, passageCardPosition: action.passageCardPosition}]
 			};
 		}
 
 		case 'remove': {
 			const remaining = state.editors.filter(e => e.passageId !== action.passageId);
-			let activeEditorId = state.activeEditorId;
-
-			// If the removed editor was active, clear active
-			if (state.activeEditorId === action.passageId) {
-				activeEditorId = remaining.length > 0 ? remaining[remaining.length - 1].passageId : null;
-			}
 
 			return {
 				...state,
-				editors: remaining,
-				activeEditorId
+				editors: remaining
 			};
 		}
 
 		case 'setActive': {
 			return {
 				...state,
-				activeEditorId: action.passageId
+				activePassageId: action.passageId
 			};
 		}
 
@@ -48,7 +40,7 @@ export const reducer: React.Reducer<
 			return {
 				...state,
 				editors: [],
-				activeEditorId: null
+				activePassageId: null
 			};
 		}
 

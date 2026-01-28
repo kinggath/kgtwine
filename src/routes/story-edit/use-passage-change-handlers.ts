@@ -63,7 +63,14 @@ export function usePassageChangeHandlers(story: Story) {
 	const handleEditPassage = React.useCallback(
 		(passage: Passage) => {
 			if (prefs.passageRelativePosition) {
-				relativeEditorsDispatch(addRelativeEditor(passage.id, story.id));
+				relativeEditorsDispatch(
+					addRelativeEditor(passage.id, story.id, {
+						top: passage.top,
+						left: passage.left,
+						width: passage.width,
+						height: passage.height
+					})
+				);
 			} else {
 				dialogsDispatch(addPassageEditors(story.id, [passage.id]));
 			}

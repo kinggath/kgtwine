@@ -1,15 +1,21 @@
 export interface RelativeEditor {
 	passageId: string;
 	storyId: string;
+	passageCardPosition: {
+		top: number;
+		left: number;
+		width: number;
+		height: number;
+	};
 }
 
 export interface RelativePassageEditorsState {
 	editors: RelativeEditor[];
-	activeEditorId: string | null;
+	activePassageId: string | null;
 }
 
 export type RelativePassageEditorsAction =
-	| {type: 'add'; passageId: string; storyId: string}
+	| {type: 'add'; passageId: string; storyId: string; passageCardPosition: {top: number; left: number; width: number; height: number}}
 	| {type: 'remove'; passageId: string}
 	| {type: 'setActive'; passageId: string | null}
 	| {type: 'closeAll'};

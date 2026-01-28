@@ -2,9 +2,10 @@ import {RelativePassageEditorsAction} from './relative-passage-editors.types';
 
 export function addRelativeEditor(
 	passageId: string,
-	storyId: string
+	storyId: string,
+	passageCardPosition: {top: number; left: number; width: number; height: number}
 ): RelativePassageEditorsAction {
-	return {type: 'add', passageId, storyId};
+	return {type: 'add', passageId, storyId, passageCardPosition};
 }
 
 export function removeRelativeEditor(
@@ -13,7 +14,7 @@ export function removeRelativeEditor(
 	return {type: 'remove', passageId};
 }
 
-export function setActiveEditor(
+export function setActiveRelativeEditor(
 	passageId: string | null
 ): RelativePassageEditorsAction {
 	return {type: 'setActive', passageId};

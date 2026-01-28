@@ -6,7 +6,7 @@ import {PassageEditContents} from '../../dialogs/passage-edit';
 import {IconButton} from '../control/icon-button';
 import {
 	removeRelativeEditor,
-	setActiveEditor,
+	setActiveRelativeEditor,
 	useRelativePassageEditorsContext
 } from '../../store/relative-passage-editors';
 import {TagGrid} from '../tag';
@@ -24,17 +24,19 @@ import './passage-edit-inline.css';
 export interface PassageEditInlineProps {
 	passageId: string;
 	storyId: string;
+	initialLeft: number;
+	initialTop: number;
 }
 
 export const PassageEditInline: React.FC<PassageEditInlineProps> = props => {
-	const {passageId, storyId} = props;
+	const {passageId, storyId, initialLeft, initialTop} = props;
 	const {dispatch, state} = useRelativePassageEditorsContext();
 	const {stories} = useStoriesContext();
 	const {dispatch: storiesDispatch} = useUndoableStoriesContext();
 	const containerRef = React.useRef<HTMLDivElement>(null);
 	const {t} = useTranslation();
-	const isActive = state.activeEditorId === passageId;
-	const [position, setPosition] = React.useState({top: 0, left: 0});
+	const isActive = state.activePassageId === passageId;
+	const [position, setPosition] = React.useState({top: initialTop, left: initialLeft});
 	const [isDragging, setIsDragging] = React.useState(false);
 	const dragOffsetRef = React.useRef({x: 0, y: 0});
 
@@ -56,18 +58,33 @@ export const PassageEditInline: React.FC<PassageEditInlineProps> = props => {
 	}
 
 	const handleClose = React.useCallback(() => {
-		setPosition({top: 0, left: 0});
+		// If this is the active editor, set the next one as active
+		if (isActive && state.editors.length > 1) {
+			const currentIndex = state.editors.findIndex(e => e.passageId === passageId);
+			const nextIndex = currentIndex > 0 ? currentIndex - 1 : currentIndex + 1;
+			if (nextIndex >= 0 && nextIndex < state.editors.length) {
+				const nextEditor = state.editors[nextIndex];
+				if (nextEditor.passageId !== passageId) {
+					dispatch(setActiveRelativeEditor(nextEditor.passageId));
+				}
+			}
+		}
+		setPosition({top: initialTop, left: initialLeft});
 		dispatch(removeRelativeEditor(passageId));
-	}, [dispatch, passageId]);
+	}, [dispatch, passageId, initialLeft, initialTop, state.editors, isActive]);
 
-	const handleMouseDown = React.useCallback(() => {
-		dispatch(setActiveEditor(passageId));
+	// Set this editor as active when it mounts
+	React.useEffect(() => {
+		dispatch(setActiveRelativeEditor(passageId));
 	}, [dispatch, passageId]);
 
     const [maximized, setMaximized] = React.useState(false);
 
-	const handleHeaderMouseDown = React.useCallback(
+	const handleMouseDown = React.useCallback(
 		(event: React.MouseEvent) => {
+			// Set this editor as active
+			dispatch(setActiveRelativeEditor(passageId));
+
 			// Only drag if not maximized and clicking on header area
 			if (maximized) return;
 			
@@ -95,8 +112,26 @@ export const PassageEditInline: React.FC<PassageEditInlineProps> = props => {
 				};
 			}
 		},
-		[maximized, passage, story, storiesDispatch]
+		[maximized, passage, story, storiesDispatch, dispatch, passageId]
 	);
+
+	// Global keydown listener for ESC key - only active editor responds
+	React.useEffect(() => {
+		if (!isActive) return;
+
+		const handleKeyDown = (event: KeyboardEvent) => {
+			if (event.key === 'Escape') {
+				event.preventDefault();
+				event.stopPropagation();
+				handleClose();
+			}
+		};
+
+		document.addEventListener('keydown', handleKeyDown);
+		return () => {
+			document.removeEventListener('keydown', handleKeyDown);
+		};
+	}, [isActive, handleClose]);
 
 	React.useEffect(() => {
 		if (!isDragging) return;
@@ -110,7 +145,7 @@ export const PassageEditInline: React.FC<PassageEditInlineProps> = props => {
 
 			// Calculate new position based on mouse position minus the drag offset
 			setPosition({
-				left: event.clientX - parentRect.left - dragOffsetRef.current.x - (parentRect.width + 8),
+				left: event.clientX - parentRect.left - dragOffsetRef.current.x,
 				top: event.clientY - parentRect.top - dragOffsetRef.current.y
 			});
 		};
@@ -134,23 +169,23 @@ export const PassageEditInline: React.FC<PassageEditInlineProps> = props => {
         (newMaximized: boolean) => {
             setMaximized(newMaximized);
             if (newMaximized) {
-                setPosition({top: 0, left: 0});
+                setPosition({top: initialTop, left: initialLeft});
             }
         },
-        []
+        [initialLeft, initialTop]
     );
 
 	const component = (
 		<div
-			className={classNames('passage-edit-inline', {maximized, dragging: isDragging}, { active: isActive })}
+			className={classNames('passage-edit-inline', {maximized, dragging: isDragging, active: isActive})}
 			ref={containerRef}
-			onMouseDown={handleMouseDown}
 			style={maximized ? undefined : {
 				top: `${position.top}px`,
-				left: `calc(100% + 8px + ${position.left}px)`
+				left: `${position.left}px`
 			}}
+			onMouseDown={handleMouseDown}
 		>
-			<h2 className="passage-edit-inline-header" onMouseDown={handleHeaderMouseDown}>
+			<h2 className="passage-edit-inline-header">
                 <div className="dialog-card-header">
                     <TagGrid
                         tags={passage.tags}

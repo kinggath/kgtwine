@@ -7,7 +7,7 @@ import {reducer} from './reducer';
 
 const initialState: RelativePassageEditorsState = {
 	editors: [],
-	activeEditorId: null
+	activePassageId: null
 };
 
 export const RelativePassageEditorsContext =

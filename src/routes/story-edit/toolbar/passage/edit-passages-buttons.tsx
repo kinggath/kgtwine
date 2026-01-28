@@ -27,7 +27,14 @@ export const EditPassagesButton: React.FC<EditPassagesButtonProps> = props => {
 	function handleClick() {
 		if (prefs.passageRelativePosition) {
 			passages.forEach(passage => {
-				relativeDispatch(addRelativeEditor(passage.id, story.id));
+				relativeDispatch(
+					addRelativeEditor(passage.id, story.id, {
+						top: passage.top,
+						left: passage.left,
+						width: passage.width,
+						height: passage.height
+					})
+				);
 			});
 			storiesDispatch(deselectAllPassages(story));
 		} else {

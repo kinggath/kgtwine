@@ -6,6 +6,8 @@ import {useCloseAllPassages} from '../../../routes/story-edit/use-close-all-pass
 import {PassageConnections} from '../passage-connections';
 import {PassageCardGroup} from '../passage-card-group';
 import {PassageMapContextMenu, PassageMapContextMenuHandle} from './passage-map-context-menu';
+import {PassageEditInline} from '../passage-edit-inline';
+import {useRelativePassageEditorsContext} from '../../../store/relative-passage-editors';
 import './passage-map.css';
 import classnames from 'classnames';
 
@@ -87,7 +89,6 @@ export const PassageMap = React.forwardRef<
 		onSelect,
 		passages,
 		startPassageId,
-		storyId,
 		tagColors,
 		visibleZoom,
 		zoom
@@ -95,6 +96,7 @@ export const PassageMap = React.forwardRef<
 	const [compactCards, setCompactCards] = React.useState(
 		visibleZoom <= compactCardZoom
 	);
+	const {state: relativeEditorsState} = useRelativePassageEditorsContext();
 	const container = React.useRef<HTMLDivElement>(null);
 	const passageBounds = React.useMemo(() => {
 		// Need to inject a fake rect at the very top-left corner to anchor the
@@ -296,9 +298,17 @@ export const PassageMap = React.forwardRef<
 					onEdit={onEdit}
 					onSelect={handleSelect}
 					passages={passages}
-					storyId={storyId}
 					tagColors={tagColors}
 				/>
+				{relativeEditorsState.editors.map(editor => (
+					<PassageEditInline
+						key={editor.passageId}
+						passageId={editor.passageId}
+						storyId={editor.storyId}
+						initialLeft={editor.passageCardPosition.left + editor.passageCardPosition.width + 8}
+						initialTop={editor.passageCardPosition.top}
+					/>
+				))}
 			</div>
 			<PassageMapContextMenu ref={contextMenuRef} />
 		</div>
