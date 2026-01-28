@@ -269,13 +269,15 @@ export const PassageEditInline: React.FC<PassageEditInlineProps> = props => {
                         onClick={() => onChangeMaximized(!maximized)}
                         tooltipPosition="bottom"
                     />
-					<IconButton
-						icon={collapsed ? <IconChevronUp /> : <IconChevronDown />}
-						iconOnly
-						label={collapsed ? t('common.expand') : t('common.collapse')}
-						onClick={() => onChangeCollapsed(!collapsed)}
-						tooltipPosition="bottom"
-					/>
+					{!maximized && (
+						<IconButton
+							icon={collapsed ? <IconChevronUp /> : <IconChevronDown />}
+							iconOnly
+							label={collapsed ? t('common.expand') : t('common.collapse')}
+							onClick={() => onChangeCollapsed(!collapsed)}
+							tooltipPosition="bottom"
+						/>
+					)}
                     <IconButton
                         icon={<IconX />}
                         iconOnly
