@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import classNames from 'classnames';
-import {IconMinimize, IconX, IconMaximize} from '@tabler/icons';
+import {IconMinimize, IconX, IconMaximize, IconChevronUp, IconChevronDown} from '@tabler/icons';
 import {PassageEditContents} from '../../dialogs/passage-edit';
 import {IconButton} from '../control/icon-button';
 import {
@@ -38,7 +38,12 @@ export const PassageEditInline: React.FC<PassageEditInlineProps> = props => {
 	const isActive = state.activePassageId === passageId;
 	const [position, setPosition] = React.useState({top: initialTop, left: initialLeft});
 	const [isDragging, setIsDragging] = React.useState(false);
+	const [dimensions, setDimensions] = React.useState<{width: number; height: number} | null>(null);
+	const [isResizing, setIsResizing] = React.useState(false);
+	const headerRef = React.useRef<HTMLHeadingElement>(null);
 	const dragOffsetRef = React.useRef({x: 0, y: 0});
+	const resizeDimensionsRef = React.useRef({initialWidth: 0, initialHeight: 0, initialX: 0, initialY: 0});
+	const animationTimeoutRef = React.useRef<NodeJS.Timeout>();
 
 	// Get passage and story data
 	let passage: ReturnType<typeof passageWithId>;
@@ -80,6 +85,8 @@ export const PassageEditInline: React.FC<PassageEditInlineProps> = props => {
 
     const [maximized, setMaximized] = React.useState(false);
 
+	const [collapsed, setCollapsed] = React.useState(false);
+
 	const handleMouseDown = React.useCallback(
 		(event: React.MouseEvent) => {
 			// Set this editor as active
@@ -115,6 +122,30 @@ export const PassageEditInline: React.FC<PassageEditInlineProps> = props => {
 		[maximized, passage, story, storiesDispatch, dispatch, passageId]
 	);
 
+	const handleResizeStart = React.useCallback(
+		(event: React.MouseEvent) => {
+			if (maximized) return;
+
+			event.preventDefault();
+			event.stopPropagation();
+
+			// Set this editor as active
+			dispatch(setActiveRelativeEditor(passageId));
+
+			const rect = containerRef.current?.getBoundingClientRect();
+			if (rect) {
+				resizeDimensionsRef.current = {
+					initialWidth: rect.width,
+					initialHeight: rect.height,
+					initialX: event.clientX,
+					initialY: event.clientY
+				};
+			}
+			setIsResizing(true);
+		},
+		[maximized, dispatch, passageId]
+	);
+
 	// Global keydown listener for ESC key - only active editor responds
 	React.useEffect(() => {
 		if (!isActive) return;
@@ -134,26 +165,47 @@ export const PassageEditInline: React.FC<PassageEditInlineProps> = props => {
 	}, [isActive, handleClose]);
 
 	React.useEffect(() => {
-		if (!isDragging) return;
+		if (!isDragging && !isResizing) return;
+
+		const MIN_WIDTH = 400;
+		const MIN_HEIGHT = 300;
+		const newZoom = story.zoom || 1;
 
 		const handleMouseMove = (event: MouseEvent) => {
 			event.preventDefault();
 			event.stopPropagation();
 
-			const parentRect = containerRef.current?.parentElement?.getBoundingClientRect();
-			if (!parentRect) return;
+			if (isDragging) {
+				const parentRect = containerRef.current?.parentElement?.getBoundingClientRect();
+				if (!parentRect) return;
 
-			// Calculate new position based on mouse position minus the drag offset
-			setPosition({
-				left: event.clientX - parentRect.left - dragOffsetRef.current.x,
-				top: event.clientY - parentRect.top - dragOffsetRef.current.y
-			});
+				// Calculate new position based on mouse position minus the drag offset
+				// Account for zoom by dividing the screen-space movement by the current zoom level
+				setPosition({
+					left: (event.clientX - parentRect.left - dragOffsetRef.current.x) / newZoom,
+					top: (event.clientY - parentRect.top - dragOffsetRef.current.y) / newZoom
+				});
+			} else if (isResizing) {
+				// Calculate resize delta from initial position
+				const deltaX = (event.clientX - resizeDimensionsRef.current.initialX) / newZoom;
+				const deltaY = (event.clientY - resizeDimensionsRef.current.initialY) / newZoom;
+
+				// Calculate new dimensions
+				const newWidth = Math.max(MIN_WIDTH, resizeDimensionsRef.current.initialWidth + deltaX);
+				const newHeight = Math.max(MIN_HEIGHT, resizeDimensionsRef.current.initialHeight + deltaY);
+
+				setDimensions({
+					width: newWidth,
+					height: newHeight
+				});
+			}
 		};
 
 		const handleMouseUp = (event: MouseEvent) => {
 			event.preventDefault();
 			event.stopPropagation();
 			setIsDragging(false);
+			setIsResizing(false);
 		};
 
 		document.addEventListener('mousemove', handleMouseMove);
@@ -163,7 +215,7 @@ export const PassageEditInline: React.FC<PassageEditInlineProps> = props => {
 			document.removeEventListener('mousemove', handleMouseMove);
 			document.removeEventListener('mouseup', handleMouseUp);
 		};
-	}, [isDragging]);
+	}, [isDragging, isResizing, story.zoom]);
 
     const onChangeMaximized = React.useCallback(
         (newMaximized: boolean) => {
@@ -175,17 +227,31 @@ export const PassageEditInline: React.FC<PassageEditInlineProps> = props => {
         [initialLeft, initialTop]
     );
 
+	const onChangeCollapsed = React.useCallback(
+		(newCollapsed: boolean) => {
+			if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current);
+			setCollapsed(newCollapsed);
+		},
+		[]
+	);
+
 	const component = (
 		<div
-			className={classNames('passage-edit-inline', {maximized, dragging: isDragging, active: isActive})}
+			className={classNames('passage-edit-inline', {maximized, dragging: isDragging, active: isActive, resizing: isResizing, collapsed})}
 			ref={containerRef}
 			style={maximized ? undefined : {
 				top: `${position.top}px`,
-				left: `${position.left}px`
+				left: `${position.left}px`,
+				width: dimensions && !collapsed ? `${dimensions.width}px` : undefined,
+				height: collapsed && headerRef.current 
+					? `${headerRef.current.offsetHeight}px` 
+					: (dimensions && !collapsed ? `${dimensions.height}px` : undefined),
+				transform: `scale(${1 / (story.zoom || 1)})`,
+				transformOrigin: 'top left'
 			}}
 			onMouseDown={handleMouseDown}
 		>
-			<h2 className="passage-edit-inline-header">
+			<h2 className="passage-edit-inline-header" ref={headerRef}>
                 <div className="dialog-card-header">
                     <TagGrid
                         tags={passage.tags}
@@ -203,6 +269,13 @@ export const PassageEditInline: React.FC<PassageEditInlineProps> = props => {
                         onClick={() => onChangeMaximized(!maximized)}
                         tooltipPosition="bottom"
                     />
+					<IconButton
+						icon={collapsed ? <IconChevronUp /> : <IconChevronDown />}
+						iconOnly
+						label={collapsed ? t('common.expand') : t('common.collapse')}
+						onClick={() => onChangeCollapsed(!collapsed)}
+						tooltipPosition="bottom"
+					/>
                     <IconButton
                         icon={<IconX />}
                         iconOnly
@@ -215,6 +288,13 @@ export const PassageEditInline: React.FC<PassageEditInlineProps> = props => {
 			<div className="passage-edit-inline-contents">
 				<PassageEditContents passageId={passageId} storyId={storyId} />
 			</div>
+			{!maximized && (
+				<div
+					className="passage-edit-inline-resize-handle"
+					onMouseDown={handleResizeStart}
+					title={t('common.resize')}
+				/>
+			)}
 		</div>
 	);
 

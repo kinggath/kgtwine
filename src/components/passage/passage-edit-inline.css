@@ -11,6 +11,7 @@
 	border-radius: 4px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 	z-index: 10;
+	transform-origin: top left;
 }
 
 .passage-edit-inline.maximized {
@@ -66,6 +67,18 @@
 	flex: 1;
 }
 
+.passage-edit-inline.collapsed .passage-edit-inline-contents {
+	display: none;
+}
+
+.passage-edit-inline.collapsed {
+	min-height: 0 !important;
+}
+
+.passage-edit-inline.collapsed .passage-edit-inline-resize-handle {
+	display: none;
+}
+
 .passage-edit-inline-contents .passage-edit-contents {
 	display: flex;
 	flex-direction: column;
@@ -84,4 +97,24 @@
 .passage-edit-inline-contents .code-area {
 	flex-grow: 1;
 	overflow: auto;
+}
+
+.passage-edit-inline-resize-handle {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	width: 16px;
+	height: 16px;
+	cursor: se-resize;
+	background: linear-gradient(135deg, transparent 50%, var(--gray) 50%);
+	opacity: 0;
+	transition: opacity 0.2s ease;
+}
+
+.passage-edit-inline:hover .passage-edit-inline-resize-handle {
+	opacity: 0.6;
+}
+
+.passage-edit-inline.resizing .passage-edit-inline-resize-handle {
+	opacity: 1;
 }
