@@ -13,6 +13,10 @@ import {
 	useStoriesContext
 } from '../../store/stories';
 import {
+	addRelativeEditor,
+	useRelativePassageEditorsContext
+} from '../../store/relative-passage-editors';
+import {
 	addPassageEditors,
 	removePassageEditors,
 	useDialogsContext
@@ -30,7 +34,8 @@ const InnerPassageEditStack: React.FC<PassageEditStackProps> = props => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const {onChangeProps, onClose, passageIds, storyId, ...managementProps} =
 		props;
-	const {dispatch} = useDialogsContext();
+	const {dispatch, dialogs} = useDialogsContext();
+	const {dispatch: relativeEditorsDispatch} = useRelativePassageEditorsContext();
 	const {stories} = useStoriesContext();
 	const storyTagColors = storyWithId(stories, storyId).tagColors;
 	const passageInfo = passageIds.map(passageId => {
@@ -58,6 +63,45 @@ const InnerPassageEditStack: React.FC<PassageEditStackProps> = props => {
 		} else {
 			dispatch(removePassageEditors([passageId]));
 		}
+	}
+
+	function handleRemoveFromStack(
+		passageId: string,
+		event?: React.KeyboardEvent | React.MouseEvent
+	) {
+		event?.preventDefault();
+		event?.stopPropagation();
+
+		// Get the scroll position of the main-content container
+		const mainContentEl = document.querySelector('.main-content') as HTMLElement;
+		const scrollTop = mainContentEl?.scrollTop || 0;
+		const scrollLeft = mainContentEl?.scrollLeft || 0;
+
+		// Calculate bottom-right position: window width - card width (600px) - 16px padding
+		// Add scroll position to offset the editor within the passage-map
+		const left = scrollLeft + window.innerWidth - 600 - 16;
+		// Position at 8px from top (titlebar offset) plus scroll position
+		const top = scrollTop + 8;
+
+		// Add the relative editor at bottom-right position
+		// We use width = -8 so that when PassageMap calculates initialLeft as:
+		// left + width + 8, it results in the correct viewport position
+		relativeEditorsDispatch(
+			addRelativeEditor(passageId, storyId, {
+				top,
+				left,
+				width: -8,
+				height: 600
+			})
+		);
+
+		// Collapse all remaining dialogs in the stack
+		dialogs.forEach((_, index) => {
+			dispatch({type: 'setDialogCollapsed', collapsed: true, index});
+		});
+
+		// Remove from dialog stack
+		dispatch(removePassageEditors([passageId]));
 	}
 
 	return (
@@ -114,6 +158,7 @@ const InnerPassageEditStack: React.FC<PassageEditStackProps> = props => {
 							key={passageId}
 							maximizable
 							onClose={event => handleClose(passageId, event)}
+							onRemoveFromStack={event => handleRemoveFromStack(passageId, event)}
 						>
 							<PassageEditContents passageId={passageId} storyId={storyId} />
 						</DialogCard>

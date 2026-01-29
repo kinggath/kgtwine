@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import classNames from 'classnames';
-import {IconMinimize, IconX, IconMaximize, IconChevronUp, IconChevronDown} from '@tabler/icons';
+import {IconMinimize, IconX, IconMaximize, IconChevronUp, IconChevronDown, IconLock} from '@tabler/icons';
 import {PassageEditContents} from '../../dialogs/passage-edit';
 import {IconButton} from '../control/icon-button';
 import {
@@ -19,6 +19,8 @@ import {
 } from '../../store/stories';
 import {useTranslation} from 'react-i18next';
 import {useUndoableStoriesContext} from '../../store/undoable-stories';
+import {useDialogsContext, addPassageEditors} from '../../dialogs/context';
+import {usePrefsContext} from '../../store/prefs';
 import './passage-edit-inline.css';
 
 export interface PassageEditInlineProps {
@@ -33,6 +35,8 @@ export const PassageEditInline: React.FC<PassageEditInlineProps> = props => {
 	const {dispatch, state} = useRelativePassageEditorsContext();
 	const {stories} = useStoriesContext();
 	const {dispatch: storiesDispatch} = useUndoableStoriesContext();
+	const {dispatch: dialogsDispatch, dialogs} = useDialogsContext();
+	const {prefs} = usePrefsContext();
 	const containerRef = React.useRef<HTMLDivElement>(null);
 	const {t} = useTranslation();
 	const isActive = state.activePassageId === passageId;
@@ -77,6 +81,21 @@ export const PassageEditInline: React.FC<PassageEditInlineProps> = props => {
 		setPosition({top: initialTop, left: initialLeft});
 		dispatch(removeRelativeEditor(passageId));
 	}, [dispatch, passageId, initialLeft, initialTop, state.editors, isActive]);
+
+	const handleMoveToDialogStack = React.useCallback(() => {
+		// Expand any collapsed dialogs in the stack
+		dialogs.forEach((dialog, index) => {
+			if (dialog.collapsed) {
+				dialogsDispatch({type: 'setDialogCollapsed', collapsed: false, index});
+			}
+		});
+
+		// Add to dialog stack
+		dialogsDispatch(addPassageEditors(storyId, [passageId]));
+		
+		// Remove from inline editors
+		dispatch(removeRelativeEditor(passageId));
+	}, [dialogsDispatch, dialogs, passageId, storyId, dispatch]);
 
 	// Set this editor as active when it mounts
 	React.useEffect(() => {
@@ -247,8 +266,9 @@ export const PassageEditInline: React.FC<PassageEditInlineProps> = props => {
 					? `${headerRef.current.offsetHeight}px` 
 					: (dimensions && !collapsed ? `${dimensions.height}px` : undefined),
 				transform: `scale(${1 / (story.zoom || 1)})`,
-				transformOrigin: 'top left'
-			}}
+				transformOrigin: 'top left',
+				'--inactive-passage-opacity': prefs.inactivePassageOpacity
+			} as React.CSSProperties}
 			onMouseDown={handleMouseDown}
 		>
 			<h2 className="passage-edit-inline-header" ref={headerRef}>
@@ -260,6 +280,13 @@ export const PassageEditInline: React.FC<PassageEditInlineProps> = props => {
                     <VisibleWhitespace value={passage.name} />
                 </div>
                 <div className="dialog-card-header-controls">
+					<IconButton
+						icon={<IconLock />}
+						iconOnly
+						label={t('common.moveToStack')}
+						onClick={handleMoveToDialogStack}
+						tooltipPosition="bottom"
+					/>
                     <IconButton
                         icon={maximized ? <IconMinimize /> : <IconMaximize />}
                         iconOnly

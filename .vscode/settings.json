@@ -4,5 +4,8 @@
         "activityBar.background": "#202370",
         "titleBar.activeBackground": "#2D319D",
         "titleBar.activeForeground": "#FBFBFE"
+    },
+    "chat.tools.terminal.autoApprove": {
+        "npx tsc": true
     }
 }

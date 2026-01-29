@@ -83,10 +83,10 @@ export const InnerStoryEditRoute: React.FC = () => {
 
 export const StoryEditRoute: React.FC = () => (
 	<UndoableStoriesContextProvider>
-		<DialogsContextProvider>
-			<RelativePassageEditorsContextProvider>
+		<RelativePassageEditorsContextProvider>
+			<DialogsContextProvider>
 				<InnerStoryEditRoute />
-			</RelativePassageEditorsContextProvider>
-		</DialogsContextProvider>
+			</DialogsContextProvider>
+		</RelativePassageEditorsContextProvider>
 	</UndoableStoriesContextProvider>
 );

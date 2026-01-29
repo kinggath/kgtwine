@@ -35,5 +35,6 @@ export const defaults = (): PrefsState => ({
 	storyTagColors: {},
 	useCodeMirror: true,
 	passageRelativePosition: false,
+	inactivePassageOpacity: 0.85,
 	welcomeSeen: false
 });
