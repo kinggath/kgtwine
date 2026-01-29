@@ -42,9 +42,17 @@ export interface PrefsState {
 		version: string;
 	}[];
 	/**
+	 * Close all open passage editors when clicking off cards on the passage map.
+	 */
+	clickOffCardsToClose: boolean;
+	/**
 	 * Has the donation prompt been shown?
 	 */
 	donateShown: boolean;
+	/**
+	 * Disable right-click panning in the passage map.
+	 */
+	disableRightClickPan: boolean;
 	/**
 	 * Whether the cursor should blink in editor fields (passages, story JS, story
 	 * stylesheet).
@@ -110,6 +118,11 @@ export interface PrefsState {
 	 * Use CodeMirror for text editing?
 	 */
 	useCodeMirror: boolean;
+	/**
+	 * Position passage edit dialogs next to the passage card instead of at the
+	 * screen edge.
+	 */
+	passageRelativePosition: boolean;
 	/**
 	 * Has the user been shown the welcome route?
 	 */

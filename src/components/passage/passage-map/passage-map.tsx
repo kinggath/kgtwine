@@ -2,12 +2,17 @@ import * as React from 'react';
 import {DraggableData} from 'react-draggable';
 import {Passage, Story} from '../../../store/stories';
 import {boundingRect, Point} from '../../../util/geometry';
+import {useCloseAllPassages} from '../../../routes/story-edit/use-close-all-passages';
 import {PassageConnections} from '../passage-connections';
 import {PassageCardGroup} from '../passage-card-group';
+import {PassageMapContextMenu, PassageMapContextMenuHandle} from './passage-map-context-menu';
+import {PassageEditInline} from '../passage-edit-inline';
+import {useRelativePassageEditorsContext} from '../../../store/relative-passage-editors';
 import './passage-map.css';
 import classnames from 'classnames';
 
 export interface PassageMapProps {
+	clickOffCardsToClose?: boolean;
 	formatName: string;
 	formatVersion: string;
 	onDeselect: (passage: Passage) => void;
@@ -16,6 +21,7 @@ export interface PassageMapProps {
 	onSelect: (passage: Passage, exclusive: boolean) => void;
 	passages: Passage[];
 	startPassageId: string;
+	storyId?: string;
 	tagColors: Story['tagColors'];
 	visibleZoom: number;
 	zoom: number;
@@ -69,8 +75,12 @@ function dragReducer(state: DragState, action: DragAction) {
 
 const compactCardZoom = 0.6;
 
-export const PassageMap: React.FC<PassageMapProps> = props => {
+export const PassageMap = React.forwardRef<
+	PassageMapContextMenuHandle,
+	PassageMapProps
+>((props, ref) => {
 	const {
+		clickOffCardsToClose,
 		formatName,
 		formatVersion,
 		onDeselect,
@@ -86,6 +96,7 @@ export const PassageMap: React.FC<PassageMapProps> = props => {
 	const [compactCards, setCompactCards] = React.useState(
 		visibleZoom <= compactCardZoom
 	);
+	const {state: relativeEditorsState} = useRelativePassageEditorsContext();
 	const container = React.useRef<HTMLDivElement>(null);
 	const passageBounds = React.useMemo(() => {
 		// Need to inject a fake rect at the very top-left corner to anchor the
@@ -129,6 +140,15 @@ export const PassageMap: React.FC<PassageMapProps> = props => {
 	// We use a ref to avoid unnecessary re-renders.
 
 	const recentlyDragging = React.useRef(false);
+
+	// Track right-click timing to distinguish between context menu (quick click)
+	// and panning (click and hold).
+	const contextMenuRef = React.useRef<PassageMapContextMenuHandle>(null);
+	const rightClickTimeRef = React.useRef<number>(0);
+	const rightClickStartRef = React.useRef<{x: number; y: number} | null>(null);
+	const rightClickDistanceRef = React.useRef<number>(0);
+	const MIN_PAN_HOLD_MS = 200;
+	const MIN_PAN_DISTANCE_PX = 5;
 
 	// Only update the compact card state when visibleZoom and zoom are the same.
 	// This avoids re-rendering the cards in the middle of a zoom transition
@@ -194,6 +214,60 @@ export const PassageMap: React.FC<PassageMapProps> = props => {
 		[onSelect]
 	);
 
+	const handleContainerContextMenu = React.useCallback(
+		(event: React.MouseEvent<HTMLDivElement>) => {
+			event.preventDefault();
+
+			const timeSinceDown = Date.now() - rightClickTimeRef.current;
+			const distanceMoved = rightClickDistanceRef.current;
+
+			// If held for less than MIN_PAN_HOLD_MS and didn't move much, show context menu
+			if (timeSinceDown < MIN_PAN_HOLD_MS && distanceMoved < MIN_PAN_DISTANCE_PX) {
+				contextMenuRef.current?.open(event.clientX, event.clientY);
+			}
+		},
+		[]
+	);
+
+	const {handleCloseAllPassages, canClose} = useCloseAllPassages();
+
+	const handleContainerPointerDown = React.useCallback(
+		(event: React.PointerEvent<HTMLDivElement>) => {
+			// Close all passages if clicking off cards is enabled
+			if (
+				event.button === 0 &&
+				clickOffCardsToClose &&
+				canClose
+			) {
+				handleCloseAllPassages();
+			}
+
+			if (event.button === 2) {
+				rightClickTimeRef.current = Date.now();
+				rightClickStartRef.current = {x: event.clientX, y: event.clientY};
+				rightClickDistanceRef.current = 0;
+			}
+		},
+		[clickOffCardsToClose, canClose, handleCloseAllPassages]
+	);
+
+	const handleContainerPointerMove = React.useCallback(
+		(event: React.PointerEvent<HTMLDivElement>) => {
+			if (rightClickStartRef.current) {
+				const dx = event.clientX - rightClickStartRef.current.x;
+				const dy = event.clientY - rightClickStartRef.current.y;
+				rightClickDistanceRef.current = Math.sqrt(dx * dx + dy * dy);
+			}
+		},
+		[]
+	);
+
+	const stopPropagation = React.useCallback((event: React.MouseEvent) => {
+		event.stopPropagation();
+	}, []);
+
+	React.useImperativeHandle(ref, () => contextMenuRef.current!, []);
+
 	return (
 		<div
 			className={classnames('passage-map', {
@@ -201,6 +275,9 @@ export const PassageMap: React.FC<PassageMapProps> = props => {
 			})}
 			ref={container}
 			style={style}
+			onPointerUp={handleContainerContextMenu}
+			onPointerDown={handleContainerPointerDown}
+			onPointerMove={handleContainerPointerMove}
 		>
 			<PassageConnections
 				formatName={formatName}
@@ -212,16 +289,30 @@ export const PassageMap: React.FC<PassageMapProps> = props => {
 				passages={passages}
 				startPassageId={startPassageId}
 			/>
-			<PassageCardGroup
-				onDeselect={onDeselect}
-				onDragStart={handleDragStart}
-				onDrag={handleDrag}
-				onDragStop={handleDragStop}
-				onEdit={onEdit}
-				onSelect={handleSelect}
-				passages={passages}
-				tagColors={tagColors}
-			/>
+			<div onPointerDown={stopPropagation}>
+				<PassageCardGroup
+					onDeselect={onDeselect}
+					onDragStart={handleDragStart}
+					onDrag={handleDrag}
+					onDragStop={handleDragStop}
+					onEdit={onEdit}
+					onSelect={handleSelect}
+					passages={passages}
+					tagColors={tagColors}
+				/>
+				{relativeEditorsState.editors.map(editor => (
+					<PassageEditInline
+						key={editor.passageId}
+						passageId={editor.passageId}
+						storyId={editor.storyId}
+						initialLeft={editor.passageCardPosition.left + editor.passageCardPosition.width + 8}
+						initialTop={editor.passageCardPosition.top}
+					/>
+				))}
+			</div>
+			<PassageMapContextMenu ref={contextMenuRef} />
 		</div>
 	);
-};
+});
+
+PassageMap.displayName = 'PassageMap';

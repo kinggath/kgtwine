@@ -159,6 +159,7 @@
 			"title": "Podpořit vývoj Twinu"
 		},
 		"appPrefs": {
+			"clickOffCardsToClose": "Kliknutím mimo karty zavřete",
 			"codeEditorFont": "Font editoru kódu",
 			"codeEditorFontScale": "Velikost fontu editoru kódu",
 			"dialogWidth": "Šířka dialogu",
@@ -167,11 +168,13 @@
 				"wider": "Širší",
 				"widest": "Nejširší"
 			},
+			"disableRightClickPan": "Zakázat posouvání pravého kliknutí",
 			"editorCursorBlinks": "Blikající kurzor v editorech",
 			"fontExplanation": "Změna fontu zde ovnivní pouze uživatelské prostředí Twinu. Nezmění to font, který budou příběhy používat během přehrávání.",
 			"language": "Jazyk",
 			"passageEditorFont": "Font editoru pasáže",
 			"passageEditorFontScale": "Velikost fontu editoru pasáže",
+			"passageRelativePosition": "Passage Editor Relative Position",
 			"themeLight": "Světlý",
 			"themeDark": "Tmavý",
 			"themeSystem": "Podle systému",
@@ -179,6 +182,7 @@
 			"title": "Nastavení"
 		},
 		"passageEdit": {
+			"closeAll": "Zavřít všechny",
 			"editorCrashed": "Něco se s tímto editorem pokazilo. Zkuste ho zavřit a tuto pasáž znovu upravit.",
 			"passageTextEditorLabel": "Text pasáže",
 			"passageTextPlaceholder": "Zadejte sem text vaší pasáže. K vytvoření odkazu na jinou pasáž napište její název a obklopte ho [[dvěmi hranatými závorkami]].",

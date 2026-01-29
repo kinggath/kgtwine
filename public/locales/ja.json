@@ -169,6 +169,7 @@
 			"title": "Twine開発を支援"
 		},
 		"appPrefs": {
+			"clickOffCardsToClose": "カード外をクリックして閉じる",
 			"codeEditorFont": "コードエディターのフォント",
 			"codeEditorFontScale": "コードエディターのフォントサイズ",
 			"dialogWidth": "ダイアログの幅",
@@ -177,11 +178,13 @@
 				"wider": "広い",
 				"widest": "最も広い"
 			},
+			"disableRightClickPan": "右クリックパンを無効化",
 			"editorCursorBlinks": "エディターでカーソルを点滅させる",
 			"fontExplanation": "ここでのフォント変更はTwineエディターにのみ適用されます。再生時のストーリーのフォントは変わりません。",
 			"language": "言語",
 			"passageEditorFont": "パッセージエディターのフォント",
 			"passageEditorFontScale": "パッセージエディターのフォントサイズ",
+			"passageRelativePosition": "Passage Editor Relative Position",
 			"themeLight": "ライト",
 			"themeDark": "ダーク",
 			"themeSystem": "システム",
@@ -190,6 +193,7 @@
 			"useEnhancedEditors": "拡張エディターを使用"
 		},
 		"passageEdit": {
+			"closeAll": "すべて閉じる",
 			"editorCrashed": "このエディターで問題が発生しました。閉じてからこのパッセージを編集し直してください。",
 			"passageTextEditorLabel": "パッセージ本文",
 			"passageTextPlaceholder": "ここにパッセージの本文を入力します。別のパッセージへリンクするには、名前を二重角括弧で囲みます（[[例]]）。",

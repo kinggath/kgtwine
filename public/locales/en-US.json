@@ -169,6 +169,7 @@
 			"title": "Support Twine Development"
 		},
 		"appPrefs": {
+			"clickOffCardsToClose": "Click Off Cards to Close",
 			"codeEditorFont": "Code Editor Font",
 			"codeEditorFontScale": "Code Editor Font Size",
 			"dialogWidth": "Dialog Width",
@@ -177,11 +178,13 @@
 				"wider": "Wider",
 				"widest": "Widest"
 			},
+			"disableRightClickPan": "Disable Right-Click Panning",
 			"editorCursorBlinks": "Blinking Cursor in Editors",
 			"fontExplanation": "Changing the font here only affects the Twine editor. It will not change the font a story uses when played.",
 			"language": "Language",
 			"passageEditorFont": "Passage Editor Font",
 			"passageEditorFontScale": "Passage Editor Font Size",
+			"passageRelativePosition": "Passage Editor Relative Position",
 			"themeLight": "Light",
 			"themeDark": "Dark",
 			"themeSystem": "System",
@@ -190,6 +193,7 @@
 			"useEnhancedEditors": "Use Enhanced Editors"
 		},
 		"passageEdit": {
+			"closeAll": "Close All",
 			"editorCrashed": "Something went wrong with this editor. Try closing it and editing this passage again.",
 			"passageTextEditorLabel": "Passage Text",
 			"passageTextPlaceholder": "Enter the body text of your passage here. To link to another passage, put two square brackets around its name, [[like this]].",

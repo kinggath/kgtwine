@@ -115,10 +115,12 @@ export function fakePrefs(overrides?: Partial<PrefsState>): PrefsState {
 		appTheme: faker.helpers.arrayElement(['light', 'dark', 'system']),
 		codeEditorFontFamily: faker.lorem.words(2),
 		codeEditorFontScale: 0.8 + faker.number.int(0.5),
+		clickOffCardsToClose: faker.datatype.boolean(),
 		dialogWidth: faker.number.int(600),
 		disabledStoryFormatEditorExtensions: [
 			{name: faker.lorem.words(2), version: faker.system.semver()}
 		],
+		disableRightClickPan: faker.datatype.boolean(),
 		donateShown: faker.datatype.boolean(),
 		editorCursorBlinks: faker.datatype.boolean(),
 		firstRunTime: new Date().getTime(),
@@ -142,6 +144,7 @@ export function fakePrefs(overrides?: Partial<PrefsState>): PrefsState {
 		// Changing this preference should be explicit in a test because it affects
 		// editorCursorBlinks in some contexts.
 		useCodeMirror: true,
+		passageRelativePosition: faker.datatype.boolean(),
 		welcomeSeen: faker.datatype.boolean(),
 		...overrides
 	};

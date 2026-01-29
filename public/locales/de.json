@@ -159,6 +159,7 @@
 			"title": "Unterstütze die Twine Entwicklung"
 		},
 		"appPrefs": {
+			"clickOffCardsToClose": "Außerhalb der Karten klicken zum Schließen",
 			"codeEditorFont": "Code Editor Font",
 			"codeEditorFontScale": "Code Editor Font Größe",
 			"dialogWidth": "Dialog Breite",
@@ -167,11 +168,13 @@
 				"wider": "Breiter",
 				"widest": "Am Breitesten"
 			},
+			"disableRightClickPan": "Rechtsklick-Panning deaktivieren",
 			"editorCursorBlinks": "Blinkender Cursor in den Editoren",
 			"fontExplanation": "Font Änderungen an dieser Stelle betreffen nur den Twine Editor. Es wird nicht der Font den eine Geschichte beim Spielen benutzt ändern.",
 			"language": "Sprache",
 			"passageEditorFont": "Abschnitts Editor Font",
 			"passageEditorFontScale": "Abschnitts Editor Font Größe",
+			"passageRelativePosition": "Passage Editor Relative Position",
 			"themeLight": "Hell",
 			"themeDark": "Dunkel",
 			"themeSystem": "System",
@@ -179,6 +182,7 @@
 			"title": "Einstellungen"
 		},
 		"passageEdit": {
+			"closeAll": "Alle schließen",
 			"editorCrashed": "Etwas ist mit diesem Editor schief gelaufen. Versuche ihn zu schließen und editiere diesen Abschnitt nochmal.",
 			"passageTextEditorLabel": "Text des Abschnitts",
 			"passageTextPlaceholder": "Gebe den Text deines Abschnitts hier ein. Um einen anderen Abschnitt zu verlinken setze zwei eckige Klammern um dessen Namen, [[sowie hier]].",

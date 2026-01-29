@@ -4,9 +4,11 @@ export const defaults = (): PrefsState => ({
 	appTheme: 'system',
 	codeEditorFontFamily: 'var(--font-monospaced)',
 	codeEditorFontScale: 1,
+	clickOffCardsToClose: false,
 	dialogWidth: 600,
 	disabledStoryFormatEditorExtensions: [],
 	donateShown: false,
+	disableRightClickPan: false,
 	editorCursorBlinks: true,
 	firstRunTime: new Date().getTime(),
 	lastUpdateSeen: '',
@@ -32,5 +34,6 @@ export const defaults = (): PrefsState => ({
 	storyListTagFilter: [],
 	storyTagColors: {},
 	useCodeMirror: true,
+	passageRelativePosition: false,
 	welcomeSeen: false
 });

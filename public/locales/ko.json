@@ -159,6 +159,7 @@
 			"title": "Twine 개발 지원"
 		},
 		"appPrefs": {
+			"clickOffCardsToClose": "카드 밖을 클릭하여 닫기",
 			"codeEditorFont": "코드 편집기 글꼴",
 			"codeEditorFontScale": "코드 편집기 글꼴 크기",
 			"dialogWidth": "대화상자 너비",
@@ -167,11 +168,13 @@
 				"wider": "더 넓게",
 				"widest": "가장 넓게"
 			},
+			"disableRightClickPan": "오른쪽 클릭 패닝 비활성화",
 			"editorCursorBlinks": "편집기에서 커서 깜박임",
 			"fontExplanation": "여기에서 글꼴을 변경하면 Twine 편집기에만 영향을 미칩니다. 스토리를 재생할 때 사용하는 글꼴은 변경되지 않습니다.",
 			"language": "언어",
 			"passageEditorFont": "구절 편집기 글꼴",
 			"passageEditorFontScale": "구절 편집기 글꼴 크기",
+			"passageRelativePosition": "Passage Editor Relative Position",
 			"themeLight": "밝게",
 			"themeDark": "어둡게",
 			"themeSystem": "시스템",
@@ -179,6 +182,7 @@
 			"title": "환경 설정"
 		},
 		"passageEdit": {
+			"closeAll": "모두 닫기",
 			"editorCrashed": "편집기에 문제가 발생했습니다. 닫고 이 구절을 다시 편집해 보세요.",
 			"passageTextEditorLabel": "구절 텍스트",
 			"passageTextPlaceholder": "여기에 본문 텍스트를 입력하세요. 다른 구절로 연결하려면 [[이와 같이]] 이름을 두 개의 대괄호로 묶으세요.",

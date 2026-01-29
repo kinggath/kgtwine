@@ -159,6 +159,7 @@
 			"title": "支持 Twine 开发"
 		},
 		"appPrefs": {
+			"clickOffCardsToClose": "点击卡片外关闭",
 			"codeEditorFont": "代码编辑器字体",
 			"codeEditorFontScale": "代码编辑器字体大小",
 			"dialogWidth": "对话框宽度",
@@ -167,11 +168,13 @@
 				"wider": "较宽",
 				"widest": "最宽"
 			},
+			"disableRightClickPan": "禁用右锫应润豬",
 			"editorCursorBlinks": "代码编辑器中的光标闪烁",
 			"fontExplanation": "此处的字体改变只影响 Twine 编辑器，游玩故事的字体不会发生改变。",
 			"language": "语言",
 			"passageEditorFont": "片段编辑器字体",
 			"passageEditorFontScale": "片段编辑器字体大小",
+			"passageRelativePosition": "Passage Editor Relative Position",
 			"themeLight": "亮色",
 			"themeDark": "暗色",
 			"themeSystem": "跟随系统",
@@ -179,6 +182,7 @@
 			"title": "偏好设置"
 		},
 		"passageEdit": {
+			"closeAll": "关闭全部",
 			"editorCrashed": "编辑器遇到了一些错误。尝试关闭它并重新编辑这个片段。",
 			"passageTextEditorLabel": "片段文本",
 			"passageTextPlaceholder": "在这里输入您的片段的文本。要链接到其他片段需要在它名字前后加两个方括号，[[就像这样]]。",
@@ -291,7 +295,7 @@
 			"error": "在检查Twine更新版本时遇到了错误。",
 			"updateAvailable": "较新版本的Twine现已可用。",
 			"upToDate": "已经是Twine可用的最新版本。"
-		}		
+		}
 	},
 	"routes": {
 		"storyEdit": {

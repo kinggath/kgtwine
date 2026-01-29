@@ -3,7 +3,9 @@ import {useParams} from 'react-router-dom';
 import {MainContent} from '../../components/container/main-content';
 import {DocumentTitle} from '../../components/document-title/document-title';
 import {DialogsContextProvider} from '../../dialogs';
+import {RelativePassageEditorsContextProvider} from '../../store/relative-passage-editors';
 import {storyWithId} from '../../store/stories';
+import {usePrefsContext} from '../../store/prefs';
 import {
 	UndoableStoriesContextProvider,
 	useUndoableStoriesContext
@@ -21,6 +23,7 @@ import './story-edit-route.css';
 export const InnerStoryEditRoute: React.FC = () => {
 	const {storyId} = useParams<{storyId: string}>();
 	const {stories} = useUndoableStoriesContext();
+	const {prefs} = usePrefsContext();
 	const story = storyWithId(stories, storyId);
 	const [fuzzyFinderOpen, setFuzzyFinderOpen] = React.useState(false);
 	const mainContent = React.useRef<HTMLDivElement>(null);
@@ -48,6 +51,7 @@ export const InnerStoryEditRoute: React.FC = () => {
 			<MainContent grabbable padded={false} ref={mainContent}>
 				<MarqueeablePassageMap
 					container={mainContent}
+					clickOffCardsToClose={prefs.clickOffCardsToClose}
 					formatName={story.storyFormat}
 					formatVersion={story.storyFormatVersion}
 					onDeselect={handleDeselectPassage}
@@ -57,6 +61,7 @@ export const InnerStoryEditRoute: React.FC = () => {
 					onSelectRect={handleSelectRect}
 					passages={story.passages}
 					startPassageId={story.startPassage}
+					storyId={storyId}
 					tagColors={story.tagColors}
 					visibleZoom={visibleZoom}
 					zoom={story.zoom}
@@ -79,7 +84,9 @@ export const InnerStoryEditRoute: React.FC = () => {
 export const StoryEditRoute: React.FC = () => (
 	<UndoableStoriesContextProvider>
 		<DialogsContextProvider>
-			<InnerStoryEditRoute />
+			<RelativePassageEditorsContextProvider>
+				<InnerStoryEditRoute />
+			</RelativePassageEditorsContextProvider>
 		</DialogsContextProvider>
 	</UndoableStoriesContextProvider>
 );

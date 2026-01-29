@@ -78,6 +78,23 @@ export const AppPrefsDialog: React.FC<
 					onChange={handleUseCodeMirrorChange}
 					value={prefs.useCodeMirror}
 				/>
+				<CheckboxButton
+					label={t('dialogs.appPrefs.disableRightClickPan')}
+					onChange={value => dispatch(setPref('disableRightClickPan', value))}
+					value={prefs.disableRightClickPan}
+				/>
+				<CheckboxButton
+					label={t('dialogs.appPrefs.clickOffCardsToClose')}
+					onChange={value => dispatch(setPref('clickOffCardsToClose', value))}
+					value={prefs.clickOffCardsToClose}
+				/>
+				<CheckboxButton
+					label={t('dialogs.appPrefs.passageRelativePosition')}
+					onChange={value =>
+						dispatch(setPref('passageRelativePosition', value))
+					}
+					value={prefs.passageRelativePosition}
+				/>
 				<p className="font-explanation">
 					{t('dialogs.appPrefs.fontExplanation')}
 				</p>

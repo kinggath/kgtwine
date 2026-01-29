@@ -159,6 +159,7 @@
 			"title": "Supporta lo sviluppo di Twine"
 		},
 		"appPrefs": {
+			"clickOffCardsToClose": "Fai clic fuori dalle schede per chiudere",
 			"codeEditorFont": "Carattere dell'editor del codice",
 			"codeEditorFontScale": "Dimensione del font dell'editor del codice",
 			"dialogWidth": "Larghezza del dialogo",
@@ -167,11 +168,13 @@
 				"wider": "Più largo",
 				"widest": "Il più ampio"
 			},
+			"disableRightClickPan": "Disabilita Scorrimento Clic Destro",
 			"editorCursorBlinks": "Cursore lampeggiante negli editor",
 			"fontExplanation": "Cambiare il font qui riguarda solo l'editor Twine. Non cambierà il font utilizzato da una storia quando viene riprodotta.",
 			"language": "Lingua",
 			"passageEditorFont": "Carattere dell'editor del passaggio",
 			"passageEditorFontScale": "Dimensione del carattere dell'editor del passaggio",
+			"passageRelativePosition": "Passage Editor Relative Position",
 			"themeLight": "Chiaro",
 			"themeDark": "Scuro",
 			"themeSystem": "Sistema",

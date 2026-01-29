@@ -159,6 +159,7 @@
 			"title": "Apoiar o Desenvolviment do Twine"
 		},
 		"appPrefs": {
+			"clickOffCardsToClose": "Clique fora dos cartões para fechar",
 			"codeEditorFont": "Fonte do Editor de Código",
 			"codeEditorFontScale": "Tamanho da Fonte do Editor de Código",
 			"dialogWidth": "Largura da Caixa de Texto",
@@ -167,11 +168,13 @@
 				"wider": "Larga",
 				"widest": "Mais Larga"
 			},
+			"disableRightClickPan": "Desativar movimento com botão direito",
 			"editorCursorBlinks": "O Cursor Pisca nos Editores",
 			"fontExplanation": "Alterar a fonte aqui, afeta apenas o editor do Twine. A fonte usada na história não será alterada.",
 			"language": "Língua",
 			"passageEditorFont": "Fonte do Editor de Passagem",
 			"passageEditorFontScale": "Tamanho da Fonte do Editor de Passagem",
+			"passageRelativePosition": "Passage Editor Relative Position",
 			"themeLight": "Claro",
 			"themeDark": "Escuro",
 			"themeSystem": "Sistema",
@@ -179,6 +182,7 @@
 			"title": "Preferências"
 		},
 		"passageEdit": {
+			"closeAll": "Fechar tudo",
 			"editorCrashed": "Alguma coisa esquisita aconteceu com o editor. Tenta fechá-lo e editar a passagem outra vez.",
 			"passageTextEditorLabel": "Texto da Passagem",
 			"passageTextPlaceholder": "Escreve o texto da passagem aqui. Para ligares a outra passagem, envolve uma letra, palavra ou expressão com dois colchetes, [[desta maneira]].",
@@ -391,7 +395,7 @@
 			"storyFormats": "Formatos de História"
 		},
 		"build": {
-			"exportAsTwee": "Exportar para o formato Twee",			
+			"exportAsTwee": "Exportar para o formato Twee",
 			"play": "Jogar",
 			"proof": "Rever",
 			"publishToFile": "Publicar para Ficheiro",

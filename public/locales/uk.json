@@ -157,6 +157,7 @@
 			"title": "Підтримати розробку Twine"
 		},
 		"appPrefs": {
+			"clickOffCardsToClose": "Клацніть поза картками, щоб закрити",
 			"codeEditorFont": "Шрифт редактора",
 			"codeEditorFontScale": "Розмір шрифту редактора",
 			"dialogWidth": "Ширина діалогу",
@@ -165,11 +166,13 @@
 				"wider": "Ширша",
 				"widest": "Найширша"
 			},
+			"disableRightClickPan": "Виключити панорування по правому кліку",
 			"editorCursorBlinks": "Блимаючий курсор в редакторі",
 			"fontExplanation": "Ці шрифти використовуються лише в редакторі Twine. Вони не впливають на шрифт, який використовується під час відтворення оповідання.",
 			"language": "Мова",
 			"passageEditorFont": "Шрифт редактора параграфів",
 			"passageEditorFontScale": "Розмір шрифта редактора параграфів",
+			"passageRelativePosition": "Passage Editor Relative Position",
 			"themeLight": "Світла",
 			"themeDark": "Темна",
 			"themeSystem": "Системна",
@@ -177,6 +180,7 @@
 			"title": "Налаштування"
 		},
 		"passageEdit": {
+			"closeAll": "Закрити все",
 			"editorCrashed": "Щось не так з редактором. Спробуйте його закрити та відкрити знову.",
 			"passageTextEditorLabel": "Текст параграфа",
 			"passageTextPlaceholder": "Введіть текст параграфа тут. Щоб створити посилання на параграф, візьміть його назву у дві квадратні дужки, [[ось так]].",

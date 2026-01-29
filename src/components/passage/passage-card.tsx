@@ -36,6 +36,7 @@ export const PassageCard: React.FC<PassageCardProps> = React.memo(props => {
 		tagColors
 	} = props;
 	const {t} = useTranslation();
+
 	const className = React.useMemo(
 		() =>
 			classNames('passage-card', {
@@ -106,19 +107,22 @@ export const PassageCard: React.FC<PassageCardProps> = React.memo(props => {
 			onStart={onDragStart}
 			onDrag={onDrag}
 			onStop={onDragStop}
+			cancel=".passage-edit-inline"
 		>
 			<div className={className} ref={container} style={style} data-passage-tags={passage.tags.join(' ')}>
-				<SelectableCard
-					highlighted={passage.highlighted}
-					label={passage.name}
-					onDoubleClick={handleEdit}
-					onSelect={handleSelect}
-					selected={passage.selected}
-				>
-					<TagStripe tagColors={tagColors} tags={passage.tags} />
-					<h2>{passage.name}</h2>
-					<CardContent>{excerpt}</CardContent>
-				</SelectableCard>
+				<div className="passage-card-inner">
+					<SelectableCard
+						highlighted={passage.highlighted}
+						label={passage.name}
+						onDoubleClick={handleEdit}
+						onSelect={handleSelect}
+						selected={passage.selected}
+					>
+						<TagStripe tagColors={tagColors} tags={passage.tags} />
+						<h2>{passage.name}</h2>
+						<CardContent>{excerpt}</CardContent>
+					</SelectableCard>
+				</div>
 			</div>
 		</DraggableCore>
 	);

@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import * as React from 'react';
+import {usePrefsContext} from '../../store/prefs';
 import {Point} from '../../util/geometry';
 import {DocumentTitle} from '../document-title/document-title';
 import './main-content.css';
@@ -14,6 +15,7 @@ export interface MainContentProps
 export const MainContent = React.forwardRef<HTMLDivElement, MainContentProps>(
 	(props, ref) => {
 		const {children, grabbable, title} = props;
+		const {prefs} = usePrefsContext();
 		const containerRef = React.useRef<HTMLDivElement>(null);
 		const className = classNames('main-content', {
 			padded: props.padded ?? true
@@ -53,7 +55,6 @@ export const MainContent = React.forwardRef<HTMLDivElement, MainContentProps>(
 				container.removeEventListener('pointerleave', stopGrab);
 				container.removeEventListener('pointermove', moveListener);
 				container.style.cursor = '';
-				event.preventDefault();
 			}
 
 			function upListener(event: PointerEvent) {
@@ -67,7 +68,6 @@ export const MainContent = React.forwardRef<HTMLDivElement, MainContentProps>(
 					return;
 				}
 
-				container.setPointerCapture(event.pointerId);
 				container.addEventListener('pointerleave', stopGrab);
 				container.addEventListener('pointermove', moveListener);
 				container.addEventListener('pointerup', upListener);
@@ -77,7 +77,6 @@ export const MainContent = React.forwardRef<HTMLDivElement, MainContentProps>(
 					top: container.scrollTop
 				};
 				dragMouseStart = {left: event.clientX, top: event.clientY};
-				event.preventDefault();
 			}
 
 			function ignoreContext(event: Event) {
@@ -85,14 +84,14 @@ export const MainContent = React.forwardRef<HTMLDivElement, MainContentProps>(
 			}
 
 			if (grabbable && container) {
-				container.addEventListener('pointerdown', downListener);
-				container.addEventListener('contextmenu', ignoreContext);
-				return () => {
-					container.removeEventListener('pointerdown', downListener);
-					container.removeEventListener('contextmenu', ignoreContext);
-				};
-			}
-		}, [grabbable]);
+					!prefs.disableRightClickPan && container.addEventListener('pointerdown', downListener);
+					container.addEventListener('contextmenu', ignoreContext);
+					return () => {
+						!prefs.disableRightClickPan && container.removeEventListener('pointerdown', downListener);
+						container.removeEventListener('contextmenu', ignoreContext);
+					};
+				}
+			}, [grabbable, prefs.disableRightClickPan]);
 
 		return (
 			<div className={className} ref={containerRef}>
