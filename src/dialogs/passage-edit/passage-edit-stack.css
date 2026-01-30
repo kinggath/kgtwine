@@ -23,3 +23,18 @@
 	width: 1em;
 	transform: translateY(0.65em);
 }
+
+.passage-edit-stack .passage-title-input {
+	font: bold 120% var(--font-system);
+	color: var(--dark-gray);
+	background: transparent;
+	border: 1px solid var(--gray);
+	border-radius: 2px;
+	padding: 2px 4px;
+	outline: none;
+	flex: 1;
+}
+
+.passage-edit-stack .passage-title-input:focus {
+	border-color: var(--blue);
+}

@@ -23,12 +23,12 @@
 	border-radius: 0;
 	right: 0;
 	bottom: 0;
-	z-index: 99999999 !important;
 	pointer-events: auto;
 }
 
 .passage-edit-inline.active {
 	z-index: 101;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 .passage-edit-inline:not(.active) {
@@ -122,4 +122,19 @@
 
 .passage-edit-inline.resizing .passage-edit-inline-resize-handle {
 	opacity: 1;
+}
+
+.passage-edit-inline .passage-title-input {
+	font: bold 100% var(--font-system);
+	color: var(--dark-gray);
+	background: transparent;
+	border: 1px solid var(--gray);
+	border-radius: 2px;
+	padding: 2px 4px;
+	outline: none;
+	flex: 1;
+}
+
+.passage-edit-inline .passage-title-input:focus {
+	border-color: var(--blue);
 }

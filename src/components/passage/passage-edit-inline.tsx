@@ -15,6 +15,7 @@ import {
 	passageWithId,
 	selectPassage,
 	storyWithId,
+	updatePassage,
 	useStoriesContext
 } from '../../store/stories';
 import {useTranslation} from 'react-i18next';
@@ -48,6 +49,11 @@ export const PassageEditInline: React.FC<PassageEditInlineProps> = props => {
 	const dragOffsetRef = React.useRef({x: 0, y: 0});
 	const resizeDimensionsRef = React.useRef({initialWidth: 0, initialHeight: 0, initialX: 0, initialY: 0});
 	const animationTimeoutRef = React.useRef<NodeJS.Timeout>();
+	const titleInputRef = React.useRef<HTMLInputElement>(null);
+	const titleMouseDownRef = React.useRef<{x: number; y: number} | null>(null);
+	const [isEditingTitle, setIsEditingTitle] = React.useState(false);
+	const [editedName, setEditedName] = React.useState('');
+	const [validationError, setValidationError] = React.useState('');
 
 	// Get passage and story data
 	let passage: ReturnType<typeof passageWithId>;
@@ -102,6 +108,90 @@ export const PassageEditInline: React.FC<PassageEditInlineProps> = props => {
 		dispatch(setActiveRelativeEditor(passageId));
 	}, [dispatch, passageId]);
 
+	// Validation function for passage name
+	const validateName = React.useCallback(
+		(name: string): string => {
+			if (name.trim() === '') {
+				return t('components.renamePassageButton.emptyName');
+			}
+
+			if (story.passages.some(p => p.id !== passage.id && p.name === name)) {
+				return t('components.renamePassageButton.nameAlreadyUsed');
+			}
+
+			return '';
+		},
+		[story.passages, passage.id, t]
+	);
+
+	// Handle starting title edit
+	const handleStartTitleEdit = React.useCallback(() => {
+		setEditedName(passage.name);
+		setValidationError('');
+		setIsEditingTitle(true);
+	}, [passage.name]);
+
+	// Handle confirming title edit
+	const handleConfirmTitleEdit = React.useCallback(() => {
+		const error = validateName(editedName);
+		if (error) {
+			// If there's a validation error, revert and exit edit mode
+			setIsEditingTitle(false);
+			setEditedName('');
+			setValidationError('');
+			return;
+		}
+
+		if (editedName !== passage.name) {
+			storiesDispatch(updatePassage(story, passage, {name: editedName}));
+		}
+
+		setIsEditingTitle(false);
+		setValidationError('');
+	}, [editedName, passage.id, passage.name, story.id, storiesDispatch, validateName]);
+
+	// Handle canceling title edit
+	const handleCancelTitleEdit = React.useCallback(() => {
+		setIsEditingTitle(false);
+		setEditedName('');
+		setValidationError('');
+	}, []);
+
+	// Handle title input change
+	const handleTitleChange = React.useCallback(
+		(event: React.ChangeEvent<HTMLInputElement>) => {
+			const newName = event.target.value;
+			setEditedName(newName);
+			const error = validateName(newName);
+			setValidationError(error);
+		},
+		[validateName]
+	);
+
+	// Handle title input key down
+	const handleTitleKeyDown = React.useCallback(
+		(event: React.KeyboardEvent<HTMLInputElement>) => {
+			if (event.key === 'Enter') {
+				event.preventDefault();
+				event.stopPropagation();
+				handleConfirmTitleEdit();
+			} else if (event.key === 'Escape') {
+				event.preventDefault();
+				event.stopPropagation();
+				handleCancelTitleEdit();
+			}
+		},
+		[handleConfirmTitleEdit, handleCancelTitleEdit]
+	);
+
+	// Auto-focus and select text when entering edit mode
+	React.useEffect(() => {
+		if (isEditingTitle && titleInputRef.current) {
+			titleInputRef.current.focus();
+			titleInputRef.current.select();
+		}
+	}, [isEditingTitle]);
+
     const [maximized, setMaximized] = React.useState(false);
 
 	const [collapsed, setCollapsed] = React.useState(false);
@@ -141,6 +231,26 @@ export const PassageEditInline: React.FC<PassageEditInlineProps> = props => {
 		[maximized, passage, story, storiesDispatch, dispatch, passageId]
 	);
 
+	// Handle title mousedown - track position to detect clicks vs drags
+	const handleTitleMouseDown = React.useCallback((event: React.MouseEvent) => {
+		titleMouseDownRef.current = {x: event.clientX, y: event.clientY};
+	}, []);
+
+	// Handle title mouseup - check if it was a click (no significant movement)
+	const handleTitleMouseUp = React.useCallback((event: React.MouseEvent) => {
+		const CLICK_THRESHOLD = 5; // pixels
+		if (titleMouseDownRef.current) {
+			const dx = Math.abs(event.clientX - titleMouseDownRef.current.x);
+			const dy = Math.abs(event.clientY - titleMouseDownRef.current.y);
+			
+			// Only enter edit mode if mouse didn't move much (it's a click, not a drag)
+			if (dx < CLICK_THRESHOLD && dy < CLICK_THRESHOLD) {
+				handleStartTitleEdit();
+			}
+			titleMouseDownRef.current = null;
+		}
+	}, [handleStartTitleEdit]);
+
 	const handleResizeStart = React.useCallback(
 		(event: React.MouseEvent) => {
 			if (maximized) return;
@@ -171,9 +281,16 @@ export const PassageEditInline: React.FC<PassageEditInlineProps> = props => {
 
 		const handleKeyDown = (event: KeyboardEvent) => {
 			if (event.key === 'Escape') {
-				event.preventDefault();
-				event.stopPropagation();
-				handleClose();
+				// If editing title, cancel edit without closing the card
+				if (isEditingTitle) {
+					event.preventDefault();
+					event.stopPropagation();
+					handleCancelTitleEdit();
+				} else {
+					event.preventDefault();
+					event.stopPropagation();
+					handleClose();
+				}
 			}
 		};
 
@@ -181,7 +298,7 @@ export const PassageEditInline: React.FC<PassageEditInlineProps> = props => {
 		return () => {
 			document.removeEventListener('keydown', handleKeyDown);
 		};
-	}, [isActive, handleClose]);
+	}, [isActive, isEditingTitle, handleClose, handleCancelTitleEdit]);
 
 	React.useEffect(() => {
 		if (!isDragging && !isResizing) return;
@@ -277,7 +394,26 @@ export const PassageEditInline: React.FC<PassageEditInlineProps> = props => {
                         tags={passage.tags}
                         tagColors={storyTagColors}
                     />
-                    <VisibleWhitespace value={passage.name} />
+                    {isEditingTitle ? (
+                        <input
+                            ref={titleInputRef}
+                            type="text"
+                            value={editedName}
+                            onChange={handleTitleChange}
+                            onBlur={handleConfirmTitleEdit}
+                            onKeyDown={handleTitleKeyDown}
+                            className="passage-title-input"
+                            style={{color: validationError ? 'red' : undefined}}
+                        />
+                    ) : (
+                        <div 
+                            onMouseDown={handleTitleMouseDown}
+                            onMouseUp={handleTitleMouseUp}
+                            style={{cursor: 'pointer'}}
+                        >
+                            <VisibleWhitespace value={passage.name} />
+                        </div>
+                    )}
                 </div>
                 <div className="dialog-card-header-controls">
 					<IconButton
