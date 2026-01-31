@@ -1,3 +1,7 @@
 .passage-map-context-menu {
 	z-index: 2000;
 }
+
+.passage-map-context-menu button {
+	width: 100%;
+}

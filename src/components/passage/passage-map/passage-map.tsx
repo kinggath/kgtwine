@@ -21,6 +21,7 @@ export interface PassageMapProps {
 	onSelect: (passage: Passage, exclusive: boolean) => void;
 	passages: Passage[];
 	startPassageId: string;
+	story?: Story;
 	storyId?: string;
 	tagColors: Story['tagColors'];
 	visibleZoom: number;
@@ -89,6 +90,7 @@ export const PassageMap = React.forwardRef<
 		onSelect,
 		passages,
 		startPassageId,
+		story,
 		tagColors,
 		visibleZoom,
 		zoom
@@ -223,10 +225,26 @@ export const PassageMap = React.forwardRef<
 
 			// If held for less than MIN_PAN_HOLD_MS and didn't move much, show context menu
 			if (timeSinceDown < MIN_PAN_HOLD_MS && distanceMoved < MIN_PAN_DISTANCE_PX) {
-				contextMenuRef.current?.open(event.clientX, event.clientY);
+				// Convert screen coordinates to passage map coordinates
+				// The passage map is scaled by visibleZoom, so we need to account for that
+				if (container.current) {
+					const rect = container.current.getBoundingClientRect();
+					// Get position relative to the scaled passage map element
+					const mapX = (event.clientX - rect.left) / visibleZoom;
+					const mapY = (event.clientY - rect.top) / visibleZoom;
+					console.log('Opening context menu:', {
+						screenX: event.clientX,
+						screenY: event.clientY,
+						mapX,
+						mapY,
+						rect,
+						visibleZoom
+					});
+					contextMenuRef.current?.open(event.clientX, event.clientY, mapX, mapY);
+				}
 			}
 		},
-		[]
+		[visibleZoom]
 	);
 
 	const {handleCloseAllPassages, canClose} = useCloseAllPassages();
@@ -311,7 +329,7 @@ export const PassageMap = React.forwardRef<
 					/>
 				))}
 			</div>
-			<PassageMapContextMenu ref={contextMenuRef} />
+			<PassageMapContextMenu ref={contextMenuRef} story={story} />
 		</div>
 	);
 });

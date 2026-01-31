@@ -62,8 +62,7 @@ export const InnerStoryEditRoute: React.FC = () => {
 					onSelect={handleSelectPassage}
 					onSelectRect={handleSelectRect}
 					passages={story.passages}
-					startPassageId={story.startPassage}
-					storyId={storyId}
+					startPassageId={story.startPassage}				story={story}					storyId={storyId}
 					tagColors={story.tagColors}
 					visibleZoom={visibleZoom}
 					zoom={story.zoom}
