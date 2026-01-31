@@ -11,6 +11,7 @@ import {codeMirrorOptionsFromPrefs} from '../../util/codemirror-options';
 
 export interface PassageTextProps {
 	disabled?: boolean;
+	isNewlyCreated?: boolean;
 	onChange: (value: string) => void;
 	onEditorChange: (value: CodeMirror.Editor) => void;
 	passage: Passage;
@@ -22,6 +23,7 @@ export interface PassageTextProps {
 export const PassageText: React.FC<PassageTextProps> = props => {
 	const {
 		disabled,
+		isNewlyCreated = false,
 		onChange,
 		onEditorChange,
 		passage,
@@ -117,11 +119,15 @@ export const PassageText: React.FC<PassageTextProps> = props => {
 			// is intended to run after the animation completes.
 
 			window.setTimeout(() => {
-				editor.focus();
+				// Only auto-focus the editor if this isn't a newly created passage,
+				// or if the preference is set to focus the content (not title).
+				if (!isNewlyCreated || prefs.newPassageInitialFocus === 'content') {
+					editor.focus();
+				}
 				editor.refresh();
 			}, 400);
 		},
-		[onEditorChange]
+		[onEditorChange, isNewlyCreated, prefs]
 	);
 
 	// Emulate the above behavior re: focus if we aren't using CodeMirror.
@@ -134,10 +140,14 @@ export const PassageText: React.FC<PassageTextProps> = props => {
 				return;
 			}
 
-			area.focus();
-			area.setSelectionRange(area.value.length, area.value.length);
+			// Only auto-focus the editor if this isn't a newly created passage,
+			// or if the preference is set to focus the content (not title).
+			if (!isNewlyCreated || prefs.newPassageInitialFocus === 'content') {
+				area.focus();
+				area.setSelectionRange(area.value.length, area.value.length);
+			}
 		}
-	}, []);
+	}, [isNewlyCreated, prefs]);
 
 	const options = React.useMemo(
 		() => ({

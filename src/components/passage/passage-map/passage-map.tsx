@@ -307,6 +307,7 @@ export const PassageMap = React.forwardRef<
 						storyId={editor.storyId}
 						initialLeft={editor.passageCardPosition.left + editor.passageCardPosition.width + 8}
 						initialTop={editor.passageCardPosition.top}
+						isNewlyCreated={editor.isNewlyCreated}
 					/>
 				))}
 			</div>

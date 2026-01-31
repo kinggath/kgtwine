@@ -7,6 +7,7 @@ export interface RelativeEditor {
 		width: number;
 		height: number;
 	};
+	isNewlyCreated?: boolean;
 }
 
 export interface RelativePassageEditorsState {
@@ -15,7 +16,7 @@ export interface RelativePassageEditorsState {
 }
 
 export type RelativePassageEditorsAction =
-	| {type: 'add'; passageId: string; storyId: string; passageCardPosition: {top: number; left: number; width: number; height: number}}
+	| {type: 'add'; passageId: string; storyId: string; passageCardPosition: {top: number; left: number; width: number; height: number}; isNewlyCreated?: boolean}
 	| {type: 'remove'; passageId: string}
 	| {type: 'setActive'; passageId: string | null}
 	| {type: 'closeAll'};

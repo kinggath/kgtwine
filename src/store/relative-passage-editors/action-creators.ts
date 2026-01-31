@@ -3,9 +3,10 @@ import {RelativePassageEditorsAction} from './relative-passage-editors.types';
 export function addRelativeEditor(
 	passageId: string,
 	storyId: string,
-	passageCardPosition: {top: number; left: number; width: number; height: number}
+	passageCardPosition: {top: number; left: number; width: number; height: number},
+	isNewlyCreated?: boolean
 ): RelativePassageEditorsAction {
-	return {type: 'add', passageId, storyId, passageCardPosition};
+	return {type: 'add', passageId, storyId, passageCardPosition, isNewlyCreated};
 }
 
 export function removeRelativeEditor(

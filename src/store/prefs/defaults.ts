@@ -36,5 +36,7 @@ export const defaults = (): PrefsState => ({
 	useCodeMirror: true,
 	passageRelativePosition: false,
 	inactivePassageOpacity: 0.85,
+	autoEditNewPassages: true,
+	newPassageInitialFocus: 'title',
 	welcomeSeen: false
 });

@@ -95,6 +95,25 @@ export const AppPrefsDialog: React.FC<
 					}
 					value={prefs.passageRelativePosition}
 				/>
+				<CheckboxButton
+					label={t('dialogs.appPrefs.autoEditNewPassages')}
+					onChange={value => dispatch(setPref('autoEditNewPassages', value))}
+					value={prefs.autoEditNewPassages}
+				/>
+				{prefs.autoEditNewPassages && (
+					<TextSelect
+						onChange={e =>
+							dispatch(setPref('newPassageInitialFocus', e.target.value as 'title' | 'content'))
+						}
+						options={[
+							{label: t('dialogs.appPrefs.newPassageInitialFocus.title'), value: 'title'},
+							{label: t('dialogs.appPrefs.newPassageInitialFocus.content'), value: 'content'}
+						]}
+						value={prefs.newPassageInitialFocus}
+					>
+						{t('dialogs.appPrefs.newPassageInitialFocus.label')}
+					</TextSelect>
+				)}
 				{prefs.passageRelativePosition && (
 					<div>
 						<label htmlFor="inactive-passage-opacity">

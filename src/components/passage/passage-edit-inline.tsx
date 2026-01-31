@@ -29,10 +29,11 @@ export interface PassageEditInlineProps {
 	storyId: string;
 	initialLeft: number;
 	initialTop: number;
+	isNewlyCreated?: boolean;
 }
 
 export const PassageEditInline: React.FC<PassageEditInlineProps> = props => {
-	const {passageId, storyId, initialLeft, initialTop} = props;
+	const {passageId, storyId, initialLeft, initialTop, isNewlyCreated = false} = props;
 	const {dispatch, state} = useRelativePassageEditorsContext();
 	const {stories} = useStoriesContext();
 	const {dispatch: storiesDispatch} = useUndoableStoriesContext();
@@ -107,6 +108,14 @@ export const PassageEditInline: React.FC<PassageEditInlineProps> = props => {
 	React.useEffect(() => {
 		dispatch(setActiveRelativeEditor(passageId));
 	}, [dispatch, passageId]);
+
+	// Auto-focus title for newly created passages
+	React.useEffect(() => {
+		if (isNewlyCreated && prefs.newPassageInitialFocus === 'title') {
+			setIsEditingTitle(true);
+			setEditedName(passage.name);
+		}
+	}, [isNewlyCreated, passage.name, prefs.newPassageInitialFocus]);
 
 	// Validation function for passage name
 	const validateName = React.useCallback(
@@ -451,7 +460,11 @@ export const PassageEditInline: React.FC<PassageEditInlineProps> = props => {
                 </div>
 			</h2>
 			<div className="passage-edit-inline-contents">
-				<PassageEditContents passageId={passageId} storyId={storyId} />
+			<PassageEditContents
+				isNewlyCreated={isNewlyCreated}
+				passageId={passageId}
+				storyId={storyId}
+			/>
 			</div>
 			{!maximized && (
 				<div

@@ -33,6 +33,7 @@ export const Dialogs: React.FC = () => {
 		<div className="dialogs" style={containerStyle}>
 			<TransitionGroup component={null}>
 				{dialogs.map((dialog, index) => {
+
 					const managementProps = {
 						collapsed: dialog.collapsed,
 						highlighted: dialog.highlighted,
@@ -52,10 +53,10 @@ export const Dialogs: React.FC = () => {
 						<DialogTransition key={index}>
 							{dialog.maximized ? (
 								<div className="maximized" style={maximizedStyle}>
-									<dialog.component {...dialog.props} {...managementProps} />
+									<dialog.component {...(dialog.props || {})} {...managementProps} />
 								</div>
 							) : (
-								<dialog.component {...dialog.props} {...managementProps} />
+								<dialog.component {...(dialog.props || {})} {...managementProps} />
 							)}
 						</DialogTransition>
 					);

@@ -16,6 +16,7 @@ import {usePrefsContext} from '../../store/prefs';
 
 export interface PassageEditContentsProps {
 	disabled?: boolean;
+	isNewlyCreated?: boolean;
 	passageId: string;
 	storyId: string;
 }
@@ -23,7 +24,7 @@ export interface PassageEditContentsProps {
 export const PassageEditContents: React.FC<
 	PassageEditContentsProps
 > = props => {
-	const {disabled, passageId, storyId} = props;
+	const {disabled, isNewlyCreated = false, passageId, storyId} = props;
 	const [storyFormatExtensionsEnabled, setStoryFormatExtensionsEnabled] =
 		React.useState(true);
 	const [editorCrashed, setEditorCrashed] = React.useState(false);
@@ -109,6 +110,7 @@ export const PassageEditContents: React.FC<
 			<ErrorBoundary>
 				<PassageText
 					disabled={disabled}
+					isNewlyCreated={isNewlyCreated}
 					onChange={handlePassageTextChange}
 					onEditorChange={setCmEditor}
 					passage={passage}
