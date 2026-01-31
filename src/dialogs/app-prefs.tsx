@@ -95,6 +95,28 @@ export const AppPrefsDialog: React.FC<
 					}
 					value={prefs.passageRelativePosition}
 				/>
+				{prefs.passageRelativePosition && (
+					<div>
+						<label htmlFor="inactive-passage-opacity">
+							{t('dialogs.appPrefs.inactivePassageOpacity')}:{' '}
+							{Math.round(prefs.inactivePassageOpacity * 100)}%
+						</label>
+						<input
+							id="inactive-passage-opacity"
+							type="range"
+							min="0"
+							max="100"
+							step="5"
+							value={Math.round(prefs.inactivePassageOpacity * 100)}
+							onChange={e =>
+								dispatch(
+									setPref('inactivePassageOpacity', parseInt(e.target.value) / 100)
+								)
+							}
+							style={{width: '100%', marginTop: '8px'}}
+						/>
+					</div>
+				)}
 				<p className="font-explanation">
 					{t('dialogs.appPrefs.fontExplanation')}
 				</p>

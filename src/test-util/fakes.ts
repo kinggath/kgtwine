@@ -145,6 +145,7 @@ export function fakePrefs(overrides?: Partial<PrefsState>): PrefsState {
 		// editorCursorBlinks in some contexts.
 		useCodeMirror: true,
 		passageRelativePosition: faker.datatype.boolean(),
+		inactivePassageOpacity: 0.5 + faker.number.float(0.5),
 		welcomeSeen: faker.datatype.boolean(),
 		...overrides
 	};

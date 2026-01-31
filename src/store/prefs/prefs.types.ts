@@ -124,6 +124,11 @@ export interface PrefsState {
 	 */
 	passageRelativePosition: boolean;
 	/**
+	 * Opacity level (0-1) for inactive passage edit cards when passageRelativePosition is enabled.
+	 * Also controls brightness inversely (0 = bright, 1 = normal).
+	 */
+	inactivePassageOpacity: number;
+	/**
 	 * Has the user been shown the welcome route?
 	 */
 	welcomeSeen: boolean;

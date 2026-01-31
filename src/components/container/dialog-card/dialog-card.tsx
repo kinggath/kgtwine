@@ -4,6 +4,7 @@ import {useTranslation} from 'react-i18next';
 import {
 	IconChevronDown,
 	IconChevronUp,
+	IconLockOff,
 	IconMaximize,
 	IconMinimize,
 	IconX
@@ -27,6 +28,7 @@ export interface DialogCardProps {
 	onChangeHighlighted: (value: boolean) => void;
 	onChangeMaximized: (value: boolean) => void;
 	onClose: (event?: React.KeyboardEvent | React.MouseEvent) => void;
+	onRemoveFromStack?: (event?: React.KeyboardEvent | React.MouseEvent) => void;
 }
 
 export const DialogCard: React.FC<DialogCardProps> = props => {
@@ -43,7 +45,8 @@ export const DialogCard: React.FC<DialogCardProps> = props => {
 		onChangeCollapsed,
 		onChangeHighlighted,
 		onChangeMaximized,
-		onClose
+		onClose,
+		onRemoveFromStack
 	} = props;
 	const {didCatch, ErrorBoundary, error} = useErrorBoundary();
 	const {t} = useTranslation();
@@ -88,6 +91,15 @@ export const DialogCard: React.FC<DialogCardProps> = props => {
 						{headerDisplayLabel ?? headerLabel}
 					</div>
 					<div className="dialog-card-header-controls">
+						{onRemoveFromStack && (
+							<IconButton
+								icon={<IconLockOff />}
+								iconOnly
+								label={t('common.removeFromStack')}
+								onClick={onRemoveFromStack}
+								tooltipPosition="bottom"
+							/>
+						)}
 						{maximizable && (
 							<IconButton
 								icon={maximized ? <IconMinimize /> : <IconMaximize />}
