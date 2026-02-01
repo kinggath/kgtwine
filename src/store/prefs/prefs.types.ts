@@ -129,6 +129,14 @@ export interface PrefsState {
 	 */
 	inactivePassageOpacity: number;
 	/**
+	 * Automatically open newly created passages in the editor with title autofocus.
+	 */
+	autoEditNewPassages: boolean;
+	/**
+	 * Where to focus when automatically opening newly created passages: 'title' for the passage title or 'content' for the passage content editor.
+	 */
+	newPassageInitialFocus: 'title' | 'content';
+	/**
 	 * Has the user been shown the welcome route?
 	 */
 	welcomeSeen: boolean;

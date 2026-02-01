@@ -5,6 +5,11 @@ import {useTranslation} from 'react-i18next';
 import {IconButton} from '../../../../components/control/icon-button';
 import {deletePassages, Passage, Story} from '../../../../store/stories';
 import {useUndoableStoriesContext} from '../../../../store/undoable-stories';
+import {
+	removeRelativeEditor,
+	useRelativePassageEditorsContext
+} from '../../../../store/relative-passage-editors';
+import {useDialogsContext, removePassageEditors} from '../../../../dialogs/context';
 
 export interface DeletePassagesButtonProps {
 	passages: Passage[];
@@ -16,6 +21,8 @@ export const DeletePassagesButton: React.FC<
 > = props => {
 	const {passages, story} = props;
 	const {dispatch} = useUndoableStoriesContext();
+	const {dispatch: relativeEditorsDispatch} = useRelativePassageEditorsContext();
+	const {dispatch: dialogsDispatch} = useDialogsContext();
 	const {t} = useTranslation();
 	const disabled = React.useMemo(() => {
 		if (passages.length === 0) {
@@ -29,13 +36,24 @@ export const DeletePassagesButton: React.FC<
 			return;
 		}
 
+		const passageIds = passages.map(p => p.id);
+
+		// Close any inline editors for these passages
+		passageIds.forEach(passageId => {
+			relativeEditorsDispatch(removeRelativeEditor(passageId));
+		});
+
+		// Close any dialog stack editors for these passages
+		dialogsDispatch(removePassageEditors(passageIds));
+
+		// Now delete the passages
 		dispatch(
 			deletePassages(story, passages),
 			passages.length > 1
 				? 'undoChange.deletePassages'
 				: 'undoChange.deletePassage'
 		);
-	}, [dispatch, passages, story]);
+	}, [dispatch, relativeEditorsDispatch, dialogsDispatch, passages, story]);
 
 	useHotkeys('Backspace,Delete', handleClick, [handleClick]);
 

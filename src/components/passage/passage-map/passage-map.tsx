@@ -21,6 +21,7 @@ export interface PassageMapProps {
 	onSelect: (passage: Passage, exclusive: boolean) => void;
 	passages: Passage[];
 	startPassageId: string;
+	story?: Story;
 	storyId?: string;
 	tagColors: Story['tagColors'];
 	visibleZoom: number;
@@ -89,6 +90,7 @@ export const PassageMap = React.forwardRef<
 		onSelect,
 		passages,
 		startPassageId,
+		story,
 		tagColors,
 		visibleZoom,
 		zoom
@@ -149,6 +151,8 @@ export const PassageMap = React.forwardRef<
 	const rightClickDistanceRef = React.useRef<number>(0);
 	const MIN_PAN_HOLD_MS = 200;
 	const MIN_PAN_DISTANCE_PX = 5;
+
+	const {handleCloseAllPassages, canClose} = useCloseAllPassages();
 
 	// Only update the compact card state when visibleZoom and zoom are the same.
 	// This avoids re-rendering the cards in the middle of a zoom transition
@@ -223,20 +227,32 @@ export const PassageMap = React.forwardRef<
 
 			// If held for less than MIN_PAN_HOLD_MS and didn't move much, show context menu
 			if (timeSinceDown < MIN_PAN_HOLD_MS && distanceMoved < MIN_PAN_DISTANCE_PX) {
-				contextMenuRef.current?.open(event.clientX, event.clientY);
+				// Convert screen coordinates to passage map coordinates
+				// The passage map is scaled by visibleZoom, so we need to account for that
+				if (container.current) {
+					const rect = container.current.getBoundingClientRect();
+					// Get position relative to the scaled passage map element
+					const mapX = (event.clientX - rect.left) / visibleZoom;
+					const mapY = (event.clientY - rect.top) / visibleZoom;
+					console.log('Opening context menu:', {
+						screenX: event.clientX,
+						screenY: event.clientY,
+						mapX,
+						mapY,
+						rect,
+						visibleZoom
+					});
+				contextMenuRef.current?.open(mapX, mapY, visibleZoom);
 			}
-		},
-		[]
-	);
+		}
+	},
+	[visibleZoom]
+);
 
-	const {handleCloseAllPassages, canClose} = useCloseAllPassages();
-
-	const handleContainerPointerDown = React.useCallback(
-		(event: React.PointerEvent<HTMLDivElement>) => {
-			// Close all passages if clicking off cards is enabled
-			if (
-				event.button === 0 &&
-				clickOffCardsToClose &&
+const handleContainerPointerDown = React.useCallback(
+	(event: React.PointerEvent<HTMLDivElement>) => {
+		// Close all passages if clicking off cards is enabled
+		if (
 				canClose
 			) {
 				handleCloseAllPassages();
@@ -307,10 +323,11 @@ export const PassageMap = React.forwardRef<
 						storyId={editor.storyId}
 						initialLeft={editor.passageCardPosition.left + editor.passageCardPosition.width + 8}
 						initialTop={editor.passageCardPosition.top}
+						isNewlyCreated={editor.isNewlyCreated}
 					/>
 				))}
 			</div>
-			<PassageMapContextMenu ref={contextMenuRef} />
+			<PassageMapContextMenu ref={contextMenuRef} story={story} />
 		</div>
 	);
 });

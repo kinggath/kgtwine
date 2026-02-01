@@ -18,6 +18,7 @@ import {usePassageChangeHandlers} from './use-passage-change-handlers';
 import {useViewCenter} from './use-view-center';
 import {useZoomShortcuts} from './use-zoom-shortcuts';
 import {useZoomTransition} from './use-zoom-transition';
+import {useAutoOpenNewPassages} from './use-auto-open-new-passages';
 import './story-edit-route.css';
 
 export const InnerStoryEditRoute: React.FC = () => {
@@ -39,6 +40,7 @@ export const InnerStoryEditRoute: React.FC = () => {
 
 	useZoomShortcuts(story);
 	useInitialPassageCreation(story, getCenter);
+	useAutoOpenNewPassages(storyId);
 
 	return (
 		<div className="story-edit-route">
@@ -60,8 +62,7 @@ export const InnerStoryEditRoute: React.FC = () => {
 					onSelect={handleSelectPassage}
 					onSelectRect={handleSelectRect}
 					passages={story.passages}
-					startPassageId={story.startPassage}
-					storyId={storyId}
+					startPassageId={story.startPassage}				story={story}					storyId={storyId}
 					tagColors={story.tagColors}
 					visibleZoom={visibleZoom}
 					zoom={story.zoom}

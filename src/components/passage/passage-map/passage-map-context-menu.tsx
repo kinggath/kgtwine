@@ -1,40 +1,47 @@
 import * as React from 'react';
-import {usePopper} from 'react-popper';
 import {CSSTransition} from 'react-transition-group';
+import {IconPlus} from '@tabler/icons';
+import {useTranslation} from 'react-i18next';
 import {ButtonBar} from '../../container/button-bar';
 import {ButtonCard} from '../../container/button-card';
+import {IconButton} from '../../control/icon-button';
 import {CloseAllPassagesButton} from '../../../routes/story-edit/toolbar/passage/close-all-passages-button';
+import {createUntitledPassage, Story} from '../../../store/stories';
+import {useUndoableStoriesContext} from '../../../store/undoable-stories';
 import './passage-map-context-menu.css';
 
 export interface PassageMapContextMenuHandle {
 	close: () => void;
-	open: (x: number, y: number) => void;
+	open: (mapX: number, mapY: number, zoom: number) => void;
+}
+
+interface PassageMapContextMenuContentProps {
+	isOpen: boolean;
+	onClose: () => void;
+	mapX: number;
+	mapY: number;
+	zoom: number;
+	story?: Story;
 }
 
 const PassageMapContextMenuContent = React.forwardRef<
 	HTMLDivElement,
-	{isOpen: boolean; onClose: () => void; x: number; y: number}
->(({isOpen, onClose, x, y}, ref) => {
+	PassageMapContextMenuContentProps
+>(({isOpen, onClose, mapX, mapY, zoom, story}, ref) => {
+	const {dispatch} = useUndoableStoriesContext();
+	const {t} = useTranslation();
 	const [menuEl, setMenuEl] = React.useState<HTMLDivElement | null>(null);
-	
-	const virtualEl = React.useMemo(
-		() => ({
-			getBoundingClientRect: () => ({
-				width: 0,
-				height: 0,
-				top: y,
-				left: x,
-				bottom: y,
-				right: x
-			})
-		}),
-		[x, y]
-	);
 
-	const {styles, attributes} = usePopper(virtualEl as any, menuEl, {
-		strategy: 'fixed',
-		placement: 'bottom-start'
-	});
+	const handleCreatePassage = React.useCallback(() => {
+		if (story) {
+			dispatch(createUntitledPassage(story, mapX, mapY), 'undoChange.newPassage');
+			onClose();
+		}
+	}, [story, mapX, mapY, dispatch, onClose]);
+	
+	// Calculate menu position using logical coordinates with a small offset
+	const menuLeft = mapX + 5;
+	const menuTop = mapY + 5;
 
 	// Sync the external ref with our internal state ref
 	React.useEffect(() => {
@@ -78,11 +85,31 @@ const PassageMapContextMenuContent = React.forwardRef<
 			<div
 				className="passage-map-context-menu"
 				ref={setMenuEl}
-				style={styles.popper}
-				{...attributes.popper}
+				style={{
+					top: `${menuTop}px`,
+					left: `${menuLeft}px`,
+					transform: `scale(${1 / zoom})`,
+					transformOrigin: '-5px -5px'
+				}}
 			>
 				<ButtonCard floating>
 					<ButtonBar orientation="vertical">
+					<div
+						onPointerDown={(e) => {
+							if (e.button !== 0) return;
+							e.preventDefault();
+							e.stopPropagation();
+							handleCreatePassage();
+						}}
+						onMouseDown={(e) => e.stopPropagation()}
+						style={{ display: "flex", width: "100%" }}
+					>
+						<IconButton
+							icon={<IconPlus />}
+							label={t('common.new')}
+							disabled={!story}
+						/>
+					</div>
 					<CloseAllPassagesButton onClose={onClose} />
 					</ButtonBar>
 				</ButtonCard>
@@ -93,18 +120,22 @@ const PassageMapContextMenuContent = React.forwardRef<
 
 PassageMapContextMenuContent.displayName = 'PassageMapContextMenuContent';
 
-export interface PassageMapContextMenuProps {}
+export interface PassageMapContextMenuProps {
+	story?: Story;
+}
 
 export const PassageMapContextMenu = React.forwardRef<
 	PassageMapContextMenuHandle,
 	PassageMapContextMenuProps
->((props, ref) => {
+>(({story}, ref) => {
 	const [isOpen, setIsOpen] = React.useState(false);
-	const [position, setPosition] = React.useState({x: 0, y: 0});
+	const [mapPosition, setMapPosition] = React.useState({x: 0, y: 0});
+	const [zoom, setZoom] = React.useState(1);
 	const menuRef = React.useRef<HTMLDivElement>(null);
 
-	const handleOpen = React.useCallback((x: number, y: number) => {
-		setPosition({x, y});
+	const handleOpen = React.useCallback((mapX: number, mapY: number, zoom: number) => {
+		setMapPosition({x: mapX, y: mapY});
+		setZoom(zoom);
 		setIsOpen(true);
 	}, []);
 
@@ -122,8 +153,10 @@ export const PassageMapContextMenu = React.forwardRef<
 			isOpen={isOpen}
 			onClose={handleClose}
 			ref={menuRef}
-			x={position.x}
-			y={position.y}
+			mapX={mapPosition.x}
+			mapY={mapPosition.y}
+			zoom={zoom}
+			story={story}
 		/>
 	);
 });

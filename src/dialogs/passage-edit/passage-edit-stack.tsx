@@ -19,6 +19,7 @@ import {
 	addRelativeEditor,
 	useRelativePassageEditorsContext
 } from '../../store/relative-passage-editors';
+import {usePrefsContext} from '../../store/prefs';
 import {
 	addPassageEditors,
 	removePassageEditors,
@@ -31,16 +32,18 @@ import './passage-edit-stack.css';
 export interface PassageEditStackProps extends DialogComponentProps {
 	passageIds: string[];
 	storyId: string;
+	newlyCreatedPassageIds?: string[];
 }
 
 const InnerPassageEditStack: React.FC<PassageEditStackProps> = props => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const {onChangeProps, onClose, passageIds, storyId, ...managementProps} =
+	const {onChangeProps, onClose, passageIds, storyId, newlyCreatedPassageIds = [], ...managementProps} =
 		props;
 	const {dispatch, dialogs} = useDialogsContext();
 	const {dispatch: relativeEditorsDispatch} = useRelativePassageEditorsContext();
 	const {stories} = useStoriesContext();
 	const {dispatch: storiesDispatch} = useUndoableStoriesContext();
+	const {prefs} = usePrefsContext();
 	const {t} = useTranslation();
 	const story = storyWithId(stories, storyId);
 	const storyTagColors = story.tagColors;
@@ -53,6 +56,21 @@ const InnerPassageEditStack: React.FC<PassageEditStackProps> = props => {
 	const [editedName, setEditedName] = React.useState('');
 	const [validationError, setValidationError] = React.useState('');
 	const titleInputRef = React.useRef<HTMLInputElement>(null);
+
+	// Auto-focus title for newly created passages
+	React.useEffect(() => {
+		if (newlyCreatedPassageIds.length > 0 && prefs.newPassageInitialFocus === 'title') {
+			const firstNewPassageId = newlyCreatedPassageIds[0];
+			const passage = passageIds.find(id => id === firstNewPassageId);
+			if (passage) {
+				const passageData = passageWithId(stories, storyId, passage);
+				setEditingPassageId(passage);
+				setEditedName(passageData.name);
+				// Clear the newly created flag from props so we don't keep focusing
+				onChangeProps({passageIds, storyId, newlyCreatedPassageIds: []});
+			}
+		}
+	}, []);
 
 	// Validation function for passage name
 	const validateName = React.useCallback(
@@ -253,6 +271,7 @@ const InnerPassageEditStack: React.FC<PassageEditStackProps> = props => {
 							>
 								<PassageEditContents
 									disabled
+									isNewlyCreated={newlyCreatedPassageIds.includes(passageId)}
 									passageId={passageId}
 									storyId={storyId}
 								/>
@@ -274,7 +293,11 @@ const InnerPassageEditStack: React.FC<PassageEditStackProps> = props => {
 							onClose={event => handleClose(passageId, event)}
 							onRemoveFromStack={event => handleRemoveFromStack(passageId, event)}
 						>
-							<PassageEditContents passageId={passageId} storyId={storyId} />
+							<PassageEditContents
+								isNewlyCreated={newlyCreatedPassageIds.includes(passageId)}
+								passageId={passageId}
+								storyId={storyId}
+							/>
 						</DialogCard>
 					);
 				})}
@@ -284,10 +307,15 @@ const InnerPassageEditStack: React.FC<PassageEditStackProps> = props => {
 };
 
 export const PassageEditStack: React.FC<PassageEditStackProps> = props => {
-	const {passageIds, storyId} = props;
+	const {passageIds, storyId} = props as any;
 	const {stories} = useStoriesContext();
 
-	const existingPassageIds = passageIds.filter(passageId => {
+	// If passageIds isn't set yet, don't render anything until it is
+	if (!Array.isArray(passageIds) || passageIds.length === 0) {
+		return null;
+	}
+
+	const existingPassageIds = (passageIds as string[]).filter(passageId => {
 		try {
 			passageWithId(stories, storyId, passageId);
 		} catch {
@@ -297,17 +325,19 @@ export const PassageEditStack: React.FC<PassageEditStackProps> = props => {
 		return true;
 	});
 
-	// If there aren't any passages to display, render nothing and call onClose.
+	// Handle updating props or closing dialog using effects
+	React.useEffect(() => {
+		// If all passages were filtered out (invalid), close the dialog
+		if (existingPassageIds.length === 0 && passageIds.length > 0) {
+			props.onClose();
+		}
+		// If passages differ from what we were asked to display, update props
+		else if (existingPassageIds.length !== passageIds.length) {
+			props.onChangeProps({...props, passageIds: existingPassageIds});
+		}
+	}, [existingPassageIds.length, passageIds.length, props, existingPassageIds, passageIds]);
 
 	if (existingPassageIds.length === 0) {
-		props.onClose();
-		return null;
-	}
-
-	// If passages differ from what we were asked to display, change our props.
-
-	if (existingPassageIds.length !== passageIds.length) {
-		props.onChangeProps({...props, passageIds: existingPassageIds});
 		return null;
 	}
 

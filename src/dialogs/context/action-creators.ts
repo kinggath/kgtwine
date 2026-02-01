@@ -9,7 +9,8 @@ import {PassageEditStack} from '../passage-edit';
 export function addPassageEditors(
 	storyId: string,
 	passageIds: string[],
-	editorLimit = 6
+	editorLimit = 6,
+	isNewlyCreated = false
 ): Thunk<DialogsState, DialogsAction> {
 	return (dispatch, state) => {
 		const currentState = state();
@@ -33,13 +34,20 @@ export function addPassageEditors(
 				updatedPassageIds.length = editorLimit;
 			}
 
+			const props: Record<string, any> = {
+				...currentState[passageEditStackIndex].props,
+				storyId: currentState[passageEditStackIndex].props?.storyId || storyId,
+				passageIds: updatedPassageIds
+			};
+
+			if (isNewlyCreated) {
+				props.newlyCreatedPassageIds = passageIds;
+			}
+
 			dispatch({
 				type: 'setDialogProps',
 				index: passageEditStackIndex,
-				props: {
-					...currentState[passageEditStackIndex].props,
-					passageIds: updatedPassageIds
-				}
+				props
 			});
 		} else {
 			// Add a new stack, clamping length.
@@ -49,13 +57,19 @@ export function addPassageEditors(
 				clampedPassageIds.length = editorLimit;
 			}
 
+			const props: Record<string, any> = {
+				storyId,
+				passageIds: clampedPassageIds
+			};
+
+			if (isNewlyCreated) {
+				props.newlyCreatedPassageIds = passageIds;
+			}
+
 			dispatch({
 				type: 'addDialog',
 				component: PassageEditStack,
-				props: {
-					storyId,
-					passageIds: clampedPassageIds
-				}
+				props
 			});
 		}
 	};
@@ -90,6 +104,7 @@ export function removePassageEditors(
 				index: passageEditStackIndex,
 				props: {
 					...currentState[passageEditStackIndex].props,
+					storyId: currentState[passageEditStackIndex].props!.storyId,
 					passageIds: updatedPassageIds
 				}
 			});

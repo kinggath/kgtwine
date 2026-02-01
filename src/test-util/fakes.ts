@@ -146,6 +146,8 @@ export function fakePrefs(overrides?: Partial<PrefsState>): PrefsState {
 		useCodeMirror: true,
 		passageRelativePosition: faker.datatype.boolean(),
 		inactivePassageOpacity: 0.5 + faker.number.float(0.5),
+		autoEditNewPassages: faker.datatype.boolean(),
+		newPassageInitialFocus: faker.helpers.arrayElement(['title', 'content']),
 		welcomeSeen: faker.datatype.boolean(),
 		...overrides
 	};

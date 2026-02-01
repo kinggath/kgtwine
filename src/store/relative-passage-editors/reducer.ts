@@ -17,7 +17,7 @@ export const reducer: React.Reducer<
 			console.error('REDUCER ADDING EDITOR:', action.passageId);
 			return {
 				...state,
-				editors: [...state.editors, {passageId: action.passageId, storyId: action.storyId, passageCardPosition: action.passageCardPosition}]
+				editors: [...state.editors, {passageId: action.passageId, storyId: action.storyId, passageCardPosition: action.passageCardPosition, isNewlyCreated: action.isNewlyCreated}]
 			};
 		}
 
