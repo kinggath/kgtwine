@@ -152,6 +152,8 @@ export const PassageMap = React.forwardRef<
 	const MIN_PAN_HOLD_MS = 200;
 	const MIN_PAN_DISTANCE_PX = 5;
 
+	const {handleCloseAllPassages, canClose} = useCloseAllPassages();
+
 	// Only update the compact card state when visibleZoom and zoom are the same.
 	// This avoids re-rendering the cards in the middle of a zoom transition
 	// (which causes jank).
@@ -240,21 +242,17 @@ export const PassageMap = React.forwardRef<
 						rect,
 						visibleZoom
 					});
-					contextMenuRef.current?.open(event.clientX, event.clientY, mapX, mapY);
-				}
+				contextMenuRef.current?.open(mapX, mapY, visibleZoom);
 			}
-		},
-		[visibleZoom]
-	);
+		}
+	},
+	[visibleZoom]
+);
 
-	const {handleCloseAllPassages, canClose} = useCloseAllPassages();
-
-	const handleContainerPointerDown = React.useCallback(
-		(event: React.PointerEvent<HTMLDivElement>) => {
-			// Close all passages if clicking off cards is enabled
-			if (
-				event.button === 0 &&
-				clickOffCardsToClose &&
+const handleContainerPointerDown = React.useCallback(
+	(event: React.PointerEvent<HTMLDivElement>) => {
+		// Close all passages if clicking off cards is enabled
+		if (
 				canClose
 			) {
 				handleCloseAllPassages();

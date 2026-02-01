@@ -1,4 +1,5 @@
 .passage-map-context-menu {
+	position: absolute;
 	z-index: 2000;
 }
 
