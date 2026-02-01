@@ -17,6 +17,7 @@ export interface PassageCardProps {
 	onDrag?: DraggableCoreProps['onDrag'];
 	onDragStop?: DraggableCoreProps['onStop'];
 	onSelect: (passage: Passage, exclusive: boolean) => void;
+	onContextMenu?: (passage: Passage, event: React.MouseEvent<HTMLDivElement>) => void;
 	passage: Passage;
 	tagColors: TagColors;
 }
@@ -32,6 +33,7 @@ export const PassageCard: React.FC<PassageCardProps> = React.memo(props => {
 		onDragStop,
 		onEdit,
 		onSelect,
+		onContextMenu,
 		passage,
 		tagColors
 	} = props;
@@ -99,6 +101,13 @@ export const PassageCard: React.FC<PassageCardProps> = React.memo(props => {
 		},
 		[onSelect, passage]
 	);
+	const handleContextMenu = React.useCallback(
+		(event: React.MouseEvent<HTMLDivElement>) => {
+			event.preventDefault();
+			onContextMenu?.(passage, event);
+		},
+		[onContextMenu, passage]
+	);
 
 	return (
 		<DraggableCore
@@ -109,7 +118,13 @@ export const PassageCard: React.FC<PassageCardProps> = React.memo(props => {
 			onStop={onDragStop}
 			cancel=".passage-edit-inline"
 		>
-			<div className={className} ref={container} style={style} data-passage-tags={passage.tags.join(' ')}>
+		<div
+			className={className}
+			ref={container}
+			style={style}
+			data-passage-tags={passage.tags.join(' ')}
+			onContextMenu={handleContextMenu}
+		>
 				<div className="passage-card-inner">
 					<SelectableCard
 						highlighted={passage.highlighted}

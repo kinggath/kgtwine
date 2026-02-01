@@ -17,6 +17,7 @@
 		"close": "Close",
 		"collapse": "Collapse",
 		"color": "Color",
+		"copy": "Copy",
 		"create": "Create",
 		"custom": "Custom",
 		"delete": "Delete",
@@ -35,6 +36,7 @@
 		"next": "Next",
 		"ok": "OK",
 		"passage": "Passage",
+		"paste": "Paste",
 		"play": "Play",
 		"preferences": "Preferences",
 		"publishToFile": "Publish To File",
@@ -216,6 +218,13 @@
 		"passageTags": {
 			"noTags": "No tags have been added to passages in this story.",
 			"title": "Passage Tags"
+		},
+		"pasteMode": {
+			"description": "How would you like to paste {{count}} card(s)?",
+			"title": "Paste Cards",
+			"withoutLinks": "Paste Without Links",
+			"withParentLinks": "Paste With Parent Links (cards linking to the copies)",
+			"withChildLinks": "Paste With Child Links (links from the copies)"
 		},
 		"storyFormats": {
 			"addStoryFormatButton": {
@@ -455,6 +464,7 @@
 		"deletePassages": "Delete Passages",
 		"movePassage": "Move Passage",
 		"movePassages": "Move Passages",
+		"pastePassages": "Paste Cards",
 		"renamePassage": "Rename Passage",
 		"removeTag": "Remove Tag",
 		"renameTag": "Rename Tag",
