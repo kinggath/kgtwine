@@ -36,30 +36,35 @@ export function useAutoOpenNewPassages(storyId: string) {
 
 		// If a new passage was added, open it for editing
 		if (currentPassageCount > previousPassageCount) {
-			// Find the newly added passage (most recent one based on lastUpdate)
-			const newPassages = story.passages.slice(previousPassageCount);
+			const numberOfNewPassages = currentPassageCount - previousPassageCount;
 
-			if (newPassages.length > 0) {
-				const newPassage = newPassages[0];
+			// Only auto-open if exactly one passage was created (not multiple pastes)
+			if (numberOfNewPassages === 1) {
+				// Find the newly added passage (most recent one based on lastUpdate)
+				const newPassages = story.passages.slice(previousPassageCount);
 
-				if (prefs.passageRelativePosition) {
-					relativeDispatch(
-						addRelativeEditor(
-							newPassage.id,
-							storyId,
-							{
-								top: newPassage.top,
-								left: newPassage.left,
-								width: newPassage.width,
-								height: newPassage.height
-							},
-							true // isNewlyCreated flag
-						)
-					);
-				} else {
-					dialogsDispatch(
-						addPassageEditors(storyId, [newPassage.id], 6, true)
-					);
+				if (newPassages.length > 0) {
+					const newPassage = newPassages[0];
+
+					if (prefs.passageRelativePosition) {
+						relativeDispatch(
+							addRelativeEditor(
+								newPassage.id,
+								storyId,
+								{
+									top: newPassage.top,
+									left: newPassage.left,
+									width: newPassage.width,
+									height: newPassage.height
+								},
+								true // isNewlyCreated flag
+							)
+						);
+					} else {
+						dialogsDispatch(
+							addPassageEditors(storyId, [newPassage.id], 6, true)
+						);
+					}
 				}
 			}
 		}

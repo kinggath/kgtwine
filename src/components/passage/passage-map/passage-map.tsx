@@ -8,6 +8,7 @@ import {PassageCardGroup} from '../passage-card-group';
 import {PassageMapContextMenu, PassageMapContextMenuHandle} from './passage-map-context-menu';
 import {PassageEditInline} from '../passage-edit-inline';
 import {useRelativePassageEditorsContext} from '../../../store/relative-passage-editors';
+import {usePassageCopyPasteShortcuts} from '../../../util/use-passage-copy-paste-shortcuts';
 import './passage-map.css';
 import classnames from 'classnames';
 
@@ -91,6 +92,7 @@ export const PassageMap = React.forwardRef<
 		passages,
 		startPassageId,
 		story,
+		storyId: storyIdProp,
 		tagColors,
 		visibleZoom,
 		zoom
@@ -153,6 +155,20 @@ export const PassageMap = React.forwardRef<
 	const MIN_PAN_DISTANCE_PX = 5;
 
 	const {handleCloseAllPassages, canClose} = useCloseAllPassages();
+
+	// Get selected passage IDs for keyboard shortcuts
+	const selectedPassageIds = React.useMemo(
+		() => passages.filter(p => p.selected).map(p => p.id),
+		[passages]
+	);
+
+	// Set up keyboard shortcuts for copy/paste
+	const {handleMouseMove} = usePassageCopyPasteShortcuts({
+		selectedPassageIds,
+		storyId: storyIdProp || story?.id,
+		visibleZoom,
+		containerRef: container
+	});
 
 	// Only update the compact card state when visibleZoom and zoom are the same.
 	// This avoids re-rendering the cards in the middle of a zoom transition
@@ -317,6 +333,7 @@ export const PassageMap = React.forwardRef<
 			onPointerUp={handleContainerContextMenu}
 			onPointerDown={handleContainerPointerDown}
 			onPointerMove={handleContainerPointerMove}
+			onMouseMove={handleMouseMove}
 		>
 			<PassageConnections
 				formatName={formatName}
