@@ -142,6 +142,47 @@ export function reverseAction(
 				storyId: action.storyId
 			};
 
+		case 'createAndUpdatePassages':
+			// Reverse: first restore the updated passages to their original state,
+			// then delete the created passages
+			return (dispatch, getState) => {
+				// Restore updated passages first using the old state
+				const passageUpdates: Record<string, Partial<Passage>> = {};
+				for (const passageId of Object.keys(action.passageUpdates)) {
+					const passage = passageWithId(state, action.storyId, passageId);
+					passageUpdates[passageId] = Object.keys(action.passageUpdates[passageId]).reduce(
+						(result, propName) => ({
+							...result,
+							[propName]: passage[propName as keyof Passage]
+						}),
+						{} as Passage
+					);
+				}
+
+				dispatch({
+					type: 'updatePassages',
+					passageUpdates,
+					storyId: action.storyId
+				});
+
+				// Then delete the created passages
+				for (const props of action.newPassageProps) {
+					if (props.id) {
+						dispatch({
+							type: 'deletePassage',
+							passageId: props.id,
+							storyId: action.storyId
+						});
+					} else if (props.name) {
+						dispatch({
+							type: 'deletePassage',
+							passageId: passageWithName(getState(), action.storyId, props.name).id,
+							storyId: action.storyId
+						});
+					}
+				}
+			};
+
 		case 'updateStory': {
 			const story = storyWithId(state, action.storyId);
 			const props = Object.keys(action.props).reduce(

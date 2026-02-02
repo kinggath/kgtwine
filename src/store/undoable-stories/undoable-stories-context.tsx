@@ -34,6 +34,46 @@ export const UndoableStoriesContextProvider: React.FC = props => {
 	});
 	const dispatchAndRecordStoryAction = React.useCallback(
 		(action: StoriesActionOrThunk, description?: string) => {
+			// If it's a thunk, we need to intercept its dispatches to capture the actual actions
+			if (typeof action === 'function' && description) {
+				const dispatchedActions: StoriesActionOrThunk[] = [];
+				const interceptingDispatch: React.Dispatch<StoriesActionOrThunk> = (
+					actionOrThunk: StoriesActionOrThunk
+				) => {
+					// Capture the actual action/thunk being dispatched
+					dispatchedActions.push(actionOrThunk);
+					// Pass it to the real dispatch
+					return storiesDispatch(actionOrThunk);
+				};
+
+				// Execute the thunk with our intercepting dispatch
+				const thunk = action as any;
+				thunk(interceptingDispatch, () => stories);
+
+				// Record the actual actions that were dispatched
+				if (dispatchedActions.length === 1) {
+					// Single action - use it directly for undo
+					dispatch({
+						type: 'addChange',
+						action: dispatchedActions[0],
+						description: description,
+						storiesState: stories
+					});
+				} else if (dispatchedActions.length > 1) {
+					// Multiple actions - wrap them in a thunk for undo
+					dispatch({
+						type: 'addChange',
+						action: (dispatchUndo) => {
+							dispatchedActions.forEach(dispatchUndo);
+						},
+						description: description,
+						storiesState: stories
+					});
+				}
+
+				return;
+			}
+
 			if (description) {
 				dispatch({
 					type: 'addChange',
@@ -57,7 +97,7 @@ export const UndoableStoriesContextProvider: React.FC = props => {
 	if (state.changes.length > 0) {
 		if (state.currentChange >= 0) {
 			undo = () => {
-				storiesDispatch(state.changes[state.currentChange].undo);
+			storiesDispatch(state.changes[state.currentChange].undo);
 				dispatch({type: 'updateCurrent', change: -1});
 			};
 			undoLabel = t('common.undoChange', {

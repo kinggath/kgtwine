@@ -223,8 +223,8 @@
 			"description": "How would you like to paste {{count}} card(s)?",
 			"title": "Paste Cards",
 			"withoutLinks": "Paste Without Links",
-			"withParentLinks": "Paste With Parent Links (cards linking to the copies)",
-			"withChildLinks": "Paste With Child Links (links from the copies)"
+			"withLinks": "Paste with Links",
+			"withInternalLinks": "Paste with Internal Links"
 		},
 		"storyFormats": {
 			"addStoryFormatButton": {

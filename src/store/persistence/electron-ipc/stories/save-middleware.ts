@@ -107,6 +107,11 @@ export function saveMiddleware(
 			}
 			break;
 
+		case 'createAndUpdatePassages':
+			// Always save for composite actions
+			saveStory(storyWithId(state, action.storyId), formats);
+			break;
+
 		default:
 			console.warn(
 				`Story action ${

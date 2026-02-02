@@ -55,28 +55,28 @@ export const PasteModeDialog: React.FC<PasteModeDialogProps> = ({
 							<span>{t('dialogs.pasteMode.withoutLinks')}</span>
 						</label>
 					)}
-					{availableModes.includes('withParentLinks') && (
+					{availableModes.includes('withLinks') && (
 						<label>
 							<input
 								type="radio"
 								name="pasteMode"
-								value="withParentLinks"
-								checked={selectedMode === 'withParentLinks'}
-								onChange={() => setSelectedMode('withParentLinks')}
+								value="withLinks"
+								checked={selectedMode === 'withLinks'}
+								onChange={() => setSelectedMode('withLinks')}
 							/>
-							<span>{t('dialogs.pasteMode.withParentLinks')}</span>
+							<span>{t('dialogs.pasteMode.withLinks')}</span>
 						</label>
 					)}
-					{availableModes.includes('withChildLinks') && (
+					{availableModes.includes('withInternalLinks') && (
 						<label>
 							<input
 								type="radio"
 								name="pasteMode"
-								value="withChildLinks"
-								checked={selectedMode === 'withChildLinks'}
-								onChange={() => setSelectedMode('withChildLinks')}
+								value="withInternalLinks"
+								checked={selectedMode === 'withInternalLinks'}
+								onChange={() => setSelectedMode('withInternalLinks')}
 							/>
-							<span>{t('dialogs.pasteMode.withChildLinks')}</span>
+							<span>{t('dialogs.pasteMode.withInternalLinks')}</span>
 						</label>
 					)}
 				</div>

@@ -8,8 +8,6 @@ import {IconButton} from '../../control/icon-button';
 import {CloseAllPassagesButton} from '../../../routes/story-edit/toolbar/passage/close-all-passages-button';
 import {createUntitledPassage, Passage, Story} from '../../../store/stories';
 import {useUndoableStoriesContext} from '../../../store/undoable-stories';
-import {useDialogsContext} from '../../../dialogs';
-import {PasteModeDialog} from '../../../dialogs/paste-mode';
 import {
 	copyPassages,
 	pastePassages,
@@ -34,14 +32,14 @@ interface PassageMapContextMenuContentProps {
 	passages: Passage[];
 	hasClipboard: boolean;
 	setHasClipboard: (value: boolean) => void;
+	availablePasteModes: PasteMode[];
 }
 
 const PassageMapContextMenuContent = React.forwardRef<
 	HTMLDivElement,
 	PassageMapContextMenuContentProps
->(({isOpen, onClose, mapX, mapY, zoom, story, passages, hasClipboard, setHasClipboard}, ref) => {
+>(({isOpen, onClose, mapX, mapY, zoom, story, passages, hasClipboard, setHasClipboard, availablePasteModes}, ref) => {
 	const {dispatch: undoableDispatch} = useUndoableStoriesContext();
-	const {dispatch: dialogsDispatch} = useDialogsContext();
 	const {t} = useTranslation();
 	const [menuEl, setMenuEl] = React.useState<HTMLDivElement | null>(null);
 	const selectedPassagesRef = React.useRef<Passage[]>([]);
@@ -73,37 +71,17 @@ const PassageMapContextMenuContent = React.forwardRef<
 		}
 	}, [undoableDispatch, onClose, setHasClipboard]);
 
-	const handlePastePassages = React.useCallback(() => {
+	const handlePasteWithMode = React.useCallback((mode: PasteMode) => {
 		if (!story) return;
 
-		const clipboardPassages = getClipboardPassages();
-		if (!clipboardPassages || clipboardPassages.length === 0) return;
-
-		const availableModes = getAvailablePasteModes(story, clipboardPassages);
-
-		if (availableModes.length === 0) return;
-
-		const handlePasteConfirm = (mode: PasteMode) => {
-			undoableDispatch(
-				pastePassages(story.id, mapX, mapY, mode),
-				`undoChange.pastePassages`
-			);
-			setHasClipboard(false);
-		};
-
-		dialogsDispatch({
-			type: 'addDialog',
-			component: PasteModeDialog,
-			props: {
-				availableModes,
-				pasteCount: clipboardPassages.length,
-				onPaste: handlePasteConfirm
-			}
-		});
-
+		undoableDispatch(
+			pastePassages(story.id, mapX, mapY, mode),
+			`undoChange.pastePassages`
+		);
+		setHasClipboard(false);
 		onClose();
-	}, [story, mapX, mapY, undoableDispatch, dialogsDispatch, onClose, setHasClipboard]);
-	
+	}, [story, mapX, mapY, undoableDispatch, onClose, setHasClipboard]);
+
 	// Calculate menu position using logical coordinates with a small offset
 	const menuLeft = mapX + 5;
 	const menuTop = mapY + 5;
@@ -203,21 +181,53 @@ const PassageMapContextMenuContent = React.forwardRef<
 							/>
 						</div>
 						<div
-							onPointerDown={(e) => {
-								e.stopPropagation();
-								e.preventDefault();
-								if (e.button !== 0) return;
-								handlePastePassages();
-							}}
+							className="paste-submenu-wrapper"
 							onMouseDown={(e) => e.stopPropagation()}
 							onClick={(e) => e.stopPropagation()}
-							style={{display: 'flex', width: '100%'}}
+							style={{display: 'flex', width: '100%', position: 'relative', flexDirection: 'column'}}
 						>
-							<IconButton
-								icon={<IconClipboard />}
-								label={t('common.paste')}
-								disabled={!hasClipboard}
-							/>
+							<div style={{display: 'flex', width: '100%'}}>
+								<IconButton
+									icon={<IconClipboard />}
+									label={t('common.paste')}
+									disabled={!hasClipboard}
+								/>
+							</div>
+							{hasClipboard && (
+								<div className="paste-submenu">
+									{(['withoutLinks', 'withLinks', 'withInternalLinks'] as PasteMode[]).map((mode) => {
+										const isAvailable = availablePasteModes.includes(mode);
+										const label =
+											mode === 'withoutLinks'
+												? t('dialogs.pasteMode.withoutLinks')
+												: mode === 'withInternalLinks'
+												? t('dialogs.pasteMode.withInternalLinks')
+												: t('dialogs.pasteMode.withLinks');
+
+										return (
+											<button
+												key={mode}
+												className="paste-submenu-item"
+												disabled={!isAvailable}
+												onPointerDown={(e) => {
+													e.stopPropagation();
+													e.preventDefault();
+													if (e.button !== 0) return;
+													if (isAvailable) {
+														handlePasteWithMode(mode);
+													}
+												}}
+												onMouseDown={(e) => e.stopPropagation()}
+												onClick={(e) => {
+													e.stopPropagation();
+												}}
+											>
+												{label}
+											</button>
+										);
+									})}
+								</div>
+							)}
 						</div>
 						<CloseAllPassagesButton onClose={onClose} />
 					</ButtonBar>
@@ -242,6 +252,7 @@ export const PassageMapContextMenu = React.forwardRef<
 	const [mapPosition, setMapPosition] = React.useState({x: 0, y: 0});
 	const [zoom, setZoom] = React.useState(1);
 	const [hasClipboard, setHasClipboard] = React.useState(hasClipboardPassages());
+	const [availablePasteModes, setAvailablePasteModes] = React.useState<PasteMode[]>([]);
 	const menuRef = React.useRef<HTMLDivElement>(null);
 
 	const handleOpen = React.useCallback((mapX: number, mapY: number, zoom: number) => {
@@ -250,7 +261,17 @@ export const PassageMapContextMenu = React.forwardRef<
 		setZoom(zoom);
 		setIsOpen(true);
 		setHasClipboard(hasClip);
-	}, []);
+		// Update available paste modes when opening
+		if (story) {
+			const clipboardPassages = getClipboardPassages();
+			if (clipboardPassages && clipboardPassages.length > 0) {
+				const modes = getAvailablePasteModes(story, clipboardPassages);
+				setAvailablePasteModes(modes);
+			} else {
+				setAvailablePasteModes([]);
+			}
+		}
+	}, [story]);
 
 	const handleClose = React.useCallback(() => {
 		setIsOpen(false);
@@ -273,6 +294,7 @@ export const PassageMapContextMenu = React.forwardRef<
 			passages={passages}
 			hasClipboard={hasClipboard}
 			setHasClipboard={setHasClipboard}
+			availablePasteModes={availablePasteModes}
 		/>
 	);
 });
