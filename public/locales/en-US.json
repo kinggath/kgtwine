@@ -11,6 +11,7 @@
 	"common": {
 		"add": "Add",
 		"appName": "Twine",
+		"apply": "Apply",
 		"back": "Back",
 		"build": "Build",
 		"cancel": "Cancel",
@@ -202,6 +203,10 @@
 			"theme": "Theme",
 			"title": "Preferences",
 			"useEnhancedEditors": "Use Enhanced Editors"
+		},
+		"bulkTagPassages": {
+			"selectedTagsLabel": "Tags to add:",
+			"title": "Add Tags to {{count}} Card(s)"
 		},
 		"passageEdit": {
 			"closeAll": "Close All",
@@ -458,6 +463,7 @@
 	},
 	"undoChange": {
 		"addTag": "Add Tag",
+		"addTagsToPassages": "Add Tags to Passages",
 		"changeTagColor": "Change Tag Color",
 		"newPassage": "New Passage",
 		"deletePassage": "Delete Passage",

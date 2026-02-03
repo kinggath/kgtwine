@@ -1,3 +1,4 @@
+export * from './add-tags-to-passages';
 export * from './create-newly-linked-passages';
 export * from './create-story';
 export * from './create-untitled-passage';

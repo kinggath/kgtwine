@@ -1,0 +1,67 @@
+.bulk-tag-passages-bar {
+	background: var(--white);
+	border-bottom: 1px solid var(--border-color);
+	padding: var(--grid-size);
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.bulk-tag-passages-bar__content {
+	display: flex;
+	flex-direction: column;
+	gap: var(--grid-size);
+	max-width: 100%;
+}
+
+.bulk-tag-passages-bar__title {
+	font-weight: bold;
+	display: block;
+	padding: 0 var(--grid-size);
+}
+
+.bulk-tag-passages-bar__form {
+	display: flex;
+	gap: var(--grid-size);
+	align-items: flex-start;
+	flex-wrap: wrap;
+	padding: 0 var(--grid-size);
+}
+
+.bulk-tag-passages-bar__form input {
+	flex: 1;
+	min-width: 200px;
+}
+
+.bulk-tag-passages-bar__error {
+	color: var(--error-color);
+	font-size: 0.875rem;
+	width: 100%;
+	padding: 0 var(--grid-size);
+	display: block;
+}
+
+.bulk-tag-passages-bar__selected-tags {
+	padding: 0 var(--grid-size);
+	border-top: 1px solid var(--border-color);
+	padding-top: var(--grid-size);
+}
+
+.bulk-tag-passages-bar__selected-tags-label {
+	font-size: 0.875rem;
+	display: block;
+	margin-bottom: calc(var(--grid-size) / 2);
+	opacity: 0.8;
+}
+
+.bulk-tag-passages-bar__tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: calc(var(--grid-size) / 2);
+}
+
+.bulk-tag-passages-bar .button-bar {
+	padding: 0 var(--grid-size);
+	border-top: 1px solid var(--border-color);
+	padding-top: var(--grid-size);
+	justify-content: flex-start;
+}
