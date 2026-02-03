@@ -8,6 +8,7 @@ import {PassageCardGroup} from '../passage-card-group';
 import {PassageMapContextMenu, PassageMapContextMenuHandle} from './passage-map-context-menu';
 import {PassageEditInline} from '../passage-edit-inline';
 import {useRelativePassageEditorsContext} from '../../../store/relative-passage-editors';
+import {usePassageCopyPasteShortcuts} from '../../../util/use-passage-copy-paste-shortcuts';
 import './passage-map.css';
 import classnames from 'classnames';
 
@@ -91,6 +92,7 @@ export const PassageMap = React.forwardRef<
 		passages,
 		startPassageId,
 		story,
+		storyId: storyIdProp,
 		tagColors,
 		visibleZoom,
 		zoom
@@ -153,6 +155,20 @@ export const PassageMap = React.forwardRef<
 	const MIN_PAN_DISTANCE_PX = 5;
 
 	const {handleCloseAllPassages, canClose} = useCloseAllPassages();
+
+	// Get selected passage IDs for keyboard shortcuts
+	const selectedPassageIds = React.useMemo(
+		() => passages.filter(p => p.selected).map(p => p.id),
+		[passages]
+	);
+
+	// Set up keyboard shortcuts for copy/paste
+	const {handleMouseMove} = usePassageCopyPasteShortcuts({
+		selectedPassageIds,
+		storyId: storyIdProp || story?.id,
+		visibleZoom,
+		containerRef: container
+	});
 
 	// Only update the compact card state when visibleZoom and zoom are the same.
 	// This avoids re-rendering the cards in the middle of a zoom transition
@@ -249,7 +265,7 @@ export const PassageMap = React.forwardRef<
 	[visibleZoom]
 );
 
-const handleContainerPointerDown = React.useCallback(
+	const handleContainerPointerDown = React.useCallback(
 	(event: React.PointerEvent<HTMLDivElement>) => {
 		// Close all passages if clicking off cards is enabled
 		if (
@@ -282,6 +298,29 @@ const handleContainerPointerDown = React.useCallback(
 		event.stopPropagation();
 	}, []);
 
+	const handlePassageCardContextMenu = React.useCallback(
+		(passage: Passage, event: React.MouseEvent<HTMLDivElement>) => {
+			event.preventDefault();
+
+			// Convert screen coordinates to passage map coordinates
+			if (container.current) {
+				const rect = container.current.getBoundingClientRect();
+				// Get position relative to the scaled passage map element
+				const mapX = (event.clientX - rect.left) / visibleZoom;
+				const mapY = (event.clientY - rect.top) / visibleZoom;
+
+				// If the passage is not selected, select it exclusively
+				if (!passage.selected) {
+					onSelect(passage, true);
+				}
+
+				// Open the context menu at the click position
+				contextMenuRef.current?.open(mapX, mapY, visibleZoom);
+			}
+		},
+		[onSelect, visibleZoom]
+	);
+
 	React.useImperativeHandle(ref, () => contextMenuRef.current!, []);
 
 	return (
@@ -294,6 +333,7 @@ const handleContainerPointerDown = React.useCallback(
 			onPointerUp={handleContainerContextMenu}
 			onPointerDown={handleContainerPointerDown}
 			onPointerMove={handleContainerPointerMove}
+			onMouseMove={handleMouseMove}
 		>
 			<PassageConnections
 				formatName={formatName}
@@ -313,6 +353,7 @@ const handleContainerPointerDown = React.useCallback(
 					onDragStop={handleDragStop}
 					onEdit={onEdit}
 					onSelect={handleSelect}
+					onContextMenu={handlePassageCardContextMenu}
 					passages={passages}
 					tagColors={tagColors}
 				/>
@@ -327,7 +368,7 @@ const handleContainerPointerDown = React.useCallback(
 					/>
 				))}
 			</div>
-			<PassageMapContextMenu ref={contextMenuRef} story={story} />
+			<PassageMapContextMenu ref={contextMenuRef} story={story} passages={passages} />
 		</div>
 	);
 });

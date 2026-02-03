@@ -1,6 +1,7 @@
 export * from './create-newly-linked-passages';
 export * from './create-story';
 export * from './create-untitled-passage';
+export * from './copy-paste-passages';
 export * from './delete-passage';
 export * from './delete-story';
 export * from './duplicate-story';

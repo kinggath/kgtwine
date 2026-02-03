@@ -171,6 +171,13 @@ export interface UpdatePassagesAction {
 	storyId: string;
 }
 
+export interface CreateAndUpdatePassagesAction {
+	type: 'createAndUpdatePassages';
+	newPassageProps: Partial<Passage>[];
+	passageUpdates: Record<string, Partial<Passage>>;
+	storyId: string;
+}
+
 export interface DeletePassageAction {
 	type: 'deletePassage';
 	passageId: string;
@@ -193,6 +200,7 @@ export type StoriesAction =
 	| CreatePassagesAction
 	| UpdatePassageAction
 	| UpdatePassagesAction
+	| CreateAndUpdatePassagesAction
 	| DeletePassageAction
 	| DeletePassagesAction;
 

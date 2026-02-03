@@ -11,7 +11,7 @@ export interface PassageCardGroupProps
 
 export const PassageCardGroup: React.FC<PassageCardGroupProps> = React.memo(
 	props => {
-		const {passages} = props;
+		const {passages, onContextMenu} = props;
 
 		// Passages must be sorted so that tabbing around follows a logical pattern.
 
@@ -31,7 +31,11 @@ export const PassageCardGroup: React.FC<PassageCardGroupProps> = React.memo(
 			<TransitionGroup component={null}>
 				{sortedPassages.map(passage => (
 					<CSSTransition classNames="pop" key={passage.id} timeout={200}>
-						<PassageCard passage={passage} {...props} />
+					<PassageCard
+						passage={passage}
+						{...props}
+						onContextMenu={onContextMenu}
+					/>
 					</CSSTransition>
 				))}
 			</TransitionGroup>

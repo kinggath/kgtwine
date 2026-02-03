@@ -162,6 +162,35 @@ export function saveMiddleware(state: StoriesState, action: StoriesAction) {
 			break;
 		}
 
+		case 'createAndUpdatePassages': {
+			const story = storyWithId(state, action.storyId);
+
+			doUpdateTransaction(transaction => {
+				saveStory(transaction, story);
+
+				// Save all newly created passages
+				for (const props of action.newPassageProps) {
+					if (!props.name) {
+						throw new Error('Passage was created but with no name specified');
+					}
+
+					savePassage(
+						transaction,
+						passageWithName(state, story.id, props.name)
+					);
+				}
+
+				// Save all updated passages
+				for (const passageId of Object.keys(action.passageUpdates)) {
+					savePassage(
+						transaction,
+						passageWithId(state, action.storyId, passageId)
+					);
+				}
+			});
+			break;
+		}
+
 		case 'updateStory': {
 			const story = storyWithId(state, action.storyId);
 
