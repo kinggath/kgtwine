@@ -8,3 +8,11 @@
 	margin-bottom: var(--grid-size);
 	margin-right: var(--grid-size);
 }
+
+.tag-card-button .card {
+	overflow: visible;
+}
+
+.tag-card-button .card-content {
+	overflow: visible;
+}

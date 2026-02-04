@@ -1,96 +1,143 @@
 @import '../../styles/colors.css';
 @import '../../styles/metrics.css';
 
-.tag-button .menu-button > .icon-button {
+.tag-button {
+	display: inline-block;
+	position: relative;
+}
+
+.tag-button__trigger {
 	background-color: var(--off-white);
 	border: 1px solid var(--light-gray);
 	border-radius: var(--control-height);
 	height: var(--control-height);
+	padding: 0 0.75rem;
 	font-size: 85%;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	transition: background-color 0.2s;
 }
 
-.tag-button .menu-button > .icon-button:focus {
+.tag-button__trigger:focus {
+	outline: none;
 	box-shadow: inset 0 0 0px 2px var(--blue), 0 1px 1px var(--light-gray);
 }
 
-.tag-button .menu-button > .icon-button:hover {
+.tag-button__trigger:hover {
 	background-color: var(--light-gray);
 }
 
-.tag-button.color-red .menu-button > .icon-button {
+.tag-button.color-red .tag-button__trigger {
 	background-color: var(--faint-red);
 	border-color: var(--light-red);
-}
-
-.tag-button.color-red .menu-button > .icon-button .icon {
 	color: var(--dark-red);
 }
 
-.tag-button.color-red .menu-button > .icon-button:hover {
+.tag-button.color-red .tag-button__trigger:hover {
 	background-color: var(--light-red);
 }
 
-.tag-button.color-orange .menu-button > .icon-button {
+.tag-button.color-orange .tag-button__trigger {
 	background-color: var(--faint-orange);
 	border-color: var(--light-orange);
-}
-
-.tag-button.color-orange .menu-button > .icon-button .icon {
 	color: var(--dark-orange);
 }
 
-.tag-button.color-orange .menu-button > .icon-button:hover {
+.tag-button.color-orange .tag-button__trigger:hover {
 	background-color: var(--light-orange);
 }
 
-.tag-button.color-yellow .menu-button > .icon-button {
+.tag-button.color-yellow .tag-button__trigger {
 	background-color: var(--faint-yellow);
 	border-color: var(--light-yellow);
-}
-
-.tag-button.color-yellow .menu-button > .icon-button .icon {
 	color: var(--dark-yellow);
 }
 
-.tag-button.color-yellow .menu-button > .icon-button:hover {
+.tag-button.color-yellow .tag-button__trigger:hover {
 	background-color: var(--light-yellow);
 }
 
-.tag-button.color-green .menu-button > .icon-button {
+.tag-button.color-green .tag-button__trigger {
 	background-color: var(--faint-green);
 	border-color: var(--light-green);
-}
-
-.tag-button.color-green .menu-button > .icon-button .icon {
 	color: var(--dark-green);
 }
 
-.tag-button.color-green .menu-button > .icon-button:hover {
+.tag-button.color-green .tag-button__trigger:hover {
 	background-color: var(--light-green);
 }
 
-.tag-button.color-blue .menu-button > .icon-button {
+.tag-button.color-blue .tag-button__trigger {
 	background-color: var(--faint-blue);
 	border-color: var(--light-blue);
-}
-
-.tag-button.color-blue .menu-button > .icon-button .icon {
 	color: var(--dark-blue);
 }
 
-.tag-button.color-blue .menu-button > .icon-button:hover {
+.tag-button.color-blue .tag-button__trigger:hover {
 	background-color: var(--light-blue);
 }
 
-.tag-button.color-purple .menu-button > .icon-button {
+.tag-button.color-purple .tag-button__trigger {
 	background-color: var(--faint-purple);
 	border-color: var(--light-purple);
-}
-
-.tag-button.color-purple .menu-button > .icon-button .icon {
 	color: var(--dark-purple);
 }
 
-.tag-button.color-purple .menu-button > .icon-button:hover {
+.tag-button.color-purple .tag-button__trigger:hover {
 	background-color: var(--light-purple);
+}
+
+.tag-button--hex .tag-button__trigger {
+	background-color: rgba(var(--hex-rgb), 0.15);
+	border-color: rgba(var(--hex-rgb), 0.3);
+	color: rgb(var(--hex-rgb));
+}
+
+.tag-button--hex .tag-button__trigger:hover {
+	background-color: rgba(var(--hex-rgb), 0.25);
+}
+
+.tag-button__dropdown {
+	position: absolute;
+	top: calc(100% + 0.25rem);
+	left: 0;
+	background: var(--white);
+	border: 1px solid var(--border-color);
+	border-radius: 0.25rem;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+	z-index: 1000;
+	min-width: 220px;
+}
+
+.tag-button__dropdown-separator {
+	height: 1px;
+	background: var(--border-color);
+	margin: 0.25rem 0;
+}
+
+.tag-button__dropdown-item {
+	display: block;
+	width: 100%;
+	padding: 0.5rem 0.75rem;
+	background: none;
+	border: none;
+	text-align: left;
+	cursor: pointer;
+	font-size: 0.875rem;
+	color: var(--text);
+	transition: background-color 0.2s;
+}
+
+.tag-button__dropdown-item:hover {
+	background-color: var(--off-white);
+}
+
+.tag-button__dropdown-item--remove {
+	color: var(--danger);
+}
+
+.tag-button__dropdown-item--remove:hover {
+	background-color: rgba(255, 0, 0, 0.1);
 }

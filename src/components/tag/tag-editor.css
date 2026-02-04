@@ -53,3 +53,17 @@
 	border: 1px solid var(--light-purple);
 	color: var(--dark-purple);
 }
+/* Hex color support */
+.tag-editor .tag-name.tag-name--hex {
+	background-color: rgba(var(--hex-rgb), 0.15);
+	border: 1px solid rgba(var(--hex-rgb), 0.3);
+	color: rgb(var(--hex-rgb));
+}
+
+.tag-editor {
+	grid-template-columns: auto auto auto;
+}
+
+.tag-editor .color-picker {
+	grid-column: 1 / -1;
+}
