@@ -15,6 +15,7 @@
 		"back": "Back",
 		"build": "Build",
 		"cancel": "Cancel",
+		"clear": "Clear",
 		"close": "Close",
 		"collapse": "Collapse",
 		"color": "Color",
@@ -209,6 +210,10 @@
 		"bulkTagPassages": {
 			"selectedTagsLabel": "Tags to add:",
 			"title": "Add Tags to {{count}} Card(s)"
+		},
+		"searchByTag": {
+			"selectedTagsLabel": "Highlighting by:",
+			"title": "Search by Tag"
 		},
 		"passageEdit": {
 			"closeAll": "Close All",

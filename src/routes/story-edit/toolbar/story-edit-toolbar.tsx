@@ -13,10 +13,22 @@ export interface StoryEditToolbarProps {
 	getCenter: () => Point;
 	onOpenFuzzyFinder: () => void;
 	story: Story;
+	searchByTagOpen?: boolean;
+	onSearchByTagToggle?: () => void;
+	highlightedTagNames?: string[];
+	onHighlightedTagNamesChange?: (tags: string[]) => void;
 }
 
 export const StoryEditToolbar: React.FC<StoryEditToolbarProps> = props => {
-	const {getCenter, onOpenFuzzyFinder, story} = props;
+	const {
+		getCenter,
+		onOpenFuzzyFinder,
+		story,
+		searchByTagOpen,
+		onSearchByTagToggle,
+		highlightedTagNames,
+		onHighlightedTagNamesChange
+	} = props;
 	const {t} = useTranslation();
 
 	return (
@@ -33,6 +45,10 @@ export const StoryEditToolbar: React.FC<StoryEditToolbarProps> = props => {
 						getCenter={getCenter}
 						onOpenFuzzyFinder={onOpenFuzzyFinder}
 						story={story}
+						searchByTagOpen={searchByTagOpen}
+						onSearchByTagToggle={onSearchByTagToggle}
+						highlightedTagNames={highlightedTagNames}
+						onHighlightedTagNamesChange={onHighlightedTagNamesChange}
 					/>
 				),
 				[t('common.story')]: <StoryActions story={story} />,

@@ -27,6 +27,7 @@ export interface PassageMapProps {
 	tagColors: Story['tagColors'];
 	visibleZoom: number;
 	zoom: number;
+	highlightedTagNames?: string[];
 }
 
 interface DragState {
@@ -356,6 +357,7 @@ export const PassageMap = React.forwardRef<
 					onContextMenu={handlePassageCardContextMenu}
 					passages={passages}
 					tagColors={tagColors}
+					highlightedTagNames={props.highlightedTagNames}
 				/>
 				{relativeEditorsState.editors.map(editor => (
 					<PassageEditInline

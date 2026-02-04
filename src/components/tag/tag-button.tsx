@@ -1,7 +1,7 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import {useTranslation} from 'react-i18next';
-import {IconChevronDown} from '@tabler/icons';
+import {IconChevronDown, IconX} from '@tabler/icons';
 import {Color, isValidHexColor} from '../../util/color';
 import {ColorPicker} from '../control/color-picker';
 import './tag-button.css';
@@ -12,9 +12,11 @@ export interface TagButtonProps {
 	name: string;
 	onChangeColor: (color: Color) => void;
 	onRemove: () => void;
+	variant?: 'default' | 'removable';
 }
 
 export const TagButton: React.FC<TagButtonProps> = props => {
+	const {variant = 'default'} = props;
 	const {t} = useTranslation();
 	const [open, setOpen] = React.useState(false);
 	const menuRef = React.useRef<HTMLDivElement>(null);
@@ -25,6 +27,14 @@ export const TagButton: React.FC<TagButtonProps> = props => {
 			return '0, 0, 0';
 		}
 		return `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`;
+	}
+
+	function handleClick() {
+		if (variant === 'removable') {
+			props.onRemove();
+		} else {
+			setOpen(!open);
+		}
 	}
 
 	React.useEffect(() => {
@@ -49,21 +59,26 @@ export const TagButton: React.FC<TagButtonProps> = props => {
 			className={classNames('tag-button', {
 				'tag-button--hex': isValidHexColor(props.color as string),
 				[`color-${props.color}`]: !isValidHexColor(props.color as string),
-				'tag-button--open': open
+				'tag-button--open': open,
+				'tag-button--removable': variant === 'removable'
 			})}
 			style={style}
 		>
 			<button
 				className="tag-button__trigger"
 				disabled={props.disabled}
-				onClick={() => setOpen(!open)}
+				onClick={handleClick}
 				type="button"
 			>
 				{props.name}
-				<IconChevronDown size={16} />
+				{variant === 'removable' ? (
+					<IconX size={16} />
+				) : (
+					<IconChevronDown size={16} />
+				)}
 			</button>
 
-			{open && (
+			{open && variant === 'default' && (
 				<div className="tag-button__dropdown">
 					<ColorPicker
 						color={props.color}

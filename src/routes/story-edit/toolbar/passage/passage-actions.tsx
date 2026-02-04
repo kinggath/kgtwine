@@ -19,15 +19,29 @@ import {TestPassageButton} from './test-passage-button';
 import {CloseAllPassagesButton} from './close-all-passages-button';
 import {BulkTagPassagesButton} from './bulk-tag-passages-button';
 import {BulkTagPassagesBar} from './bulk-tag-passages-bar';
+import {SearchByTagButton} from './search-by-tag-button';
+import {SearchByTagBar} from './search-by-tag-bar';
 
 export interface PassageActionsProps {
 	getCenter: () => Point;
 	onOpenFuzzyFinder: () => void;
 	story: Story;
+	searchByTagOpen?: boolean;
+	onSearchByTagToggle?: () => void;
+	highlightedTagNames?: string[];
+	onHighlightedTagNamesChange?: (tags: string[]) => void;
 }
 
 export const PassageActions: React.FC<PassageActionsProps> = props => {
-	const {getCenter, onOpenFuzzyFinder, story} = props;
+	const {
+		getCenter,
+		onOpenFuzzyFinder,
+		story,
+		searchByTagOpen,
+		onSearchByTagToggle,
+		highlightedTagNames,
+		onHighlightedTagNamesChange
+	} = props;
 	const {dispatch} = useStoriesContext();
 	const [bulkTagOpen, setBulkTagOpen] = React.useState(false);
 	const selectedPassages = React.useMemo(
@@ -69,6 +83,12 @@ export const PassageActions: React.FC<PassageActionsProps> = props => {
 					story={story}
 					onToggleOpen={setBulkTagOpen}
 				/>
+				{onSearchByTagToggle && (
+					<SearchByTagButton
+						onClick={onSearchByTagToggle}
+						disabled={!story.passages.some(p => p.tags.length > 0)}
+					/>
+				)}
 				<TestPassageButton passage={soloSelectedPassage} story={story} />
 				<StartAtPassageButton passage={soloSelectedPassage} story={story} />
 				<GoToPassageButton onOpenFuzzyFinder={onOpenFuzzyFinder} />
@@ -84,6 +104,14 @@ export const PassageActions: React.FC<PassageActionsProps> = props => {
 					passages={selectedPassages}
 					story={story}
 					onClose={() => setBulkTagOpen(false)}
+				/>
+			)}
+			{searchByTagOpen && highlightedTagNames !== undefined && onHighlightedTagNamesChange && (
+				<SearchByTagBar
+					story={story}
+					highlightedTags={highlightedTagNames}
+					onHighlightedTagsChange={onHighlightedTagNamesChange}
+					onClose={onSearchByTagToggle}
 				/>
 			)}
 		</>

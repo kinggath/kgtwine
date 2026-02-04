@@ -38,8 +38,3 @@
 .tag-stripe .color-purple {
 	background: var(--purple);
 }
-
-/* Hex color support - inline styles */
-.tag-stripe .color-hex {
-	/* background color is set inline via style prop */
-}

@@ -8,6 +8,7 @@ import {SelectableCard} from '../container/card/selectable-card';
 import {Passage, TagColors} from '../../store/stories';
 import {TagStripe} from '../tag/tag-stripe';
 import {passageIsEmpty} from '../../util/passage-is-empty';
+import {isValidHexColor} from '../../util/color';
 import './passage-card.css';
 
 export interface PassageCardProps {
@@ -20,6 +21,7 @@ export interface PassageCardProps {
 	onContextMenu?: (passage: Passage, event: React.MouseEvent<HTMLDivElement>) => void;
 	passage: Passage;
 	tagColors: TagColors;
+	highlightedTagNames?: string[];
 }
 
 // Needs to fill a large-sized passage card.
@@ -35,17 +37,47 @@ export const PassageCard: React.FC<PassageCardProps> = React.memo(props => {
 		onSelect,
 		onContextMenu,
 		passage,
-		tagColors
+		tagColors,
+		highlightedTagNames
 	} = props;
 	const {t} = useTranslation();
+
+	// Check if any of this passage's tags match the highlighted tags
+	const isHighlighted = React.useMemo(() => {
+		if (!highlightedTagNames || highlightedTagNames.length === 0) {
+			return false;
+		}
+		return passage.tags.some(tag => highlightedTagNames.includes(tag));
+	}, [passage.tags, highlightedTagNames]);
+
+	// Get the color of the first matching tag
+	const highlightColor = React.useMemo(() => {
+		if (!isHighlighted || !highlightedTagNames) {
+			return undefined;
+		}
+		const matchingTag = passage.tags.find(tag => highlightedTagNames.includes(tag));
+		return matchingTag ? tagColors[matchingTag] : undefined;
+	}, [isHighlighted, highlightedTagNames, passage.tags, tagColors]);
+
+	function hexToRgb(hex: string): string {
+		const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+		if (!result) {
+			return '59, 130, 246'; // fallback to blue
+		}
+		const r = parseInt(result[1], 16);
+		const g = parseInt(result[2], 16);
+		const b = parseInt(result[3], 16);
+		return `${r}, ${g}, ${b}`;
+	}
 
 	const className = React.useMemo(
 		() =>
 			classNames('passage-card', {
 				empty: passageIsEmpty(passage),
-				selected: passage.selected
+				selected: passage.selected,
+				'tag-search-highlighted': isHighlighted
 			}),
-		[passage]
+		[passage, isHighlighted]
 	);
 	const container = React.useRef<HTMLDivElement>(null);
 	const excerpt = React.useMemo(() => {
@@ -64,13 +96,34 @@ export const PassageCard: React.FC<PassageCardProps> = React.memo(props => {
 		);
 	}, [passage.text, t]);
 	const style = React.useMemo(
-		() => ({
-			height: passage.height,
-			left: passage.left,
-			top: passage.top,
-			width: passage.width
-		}),
-		[passage.height, passage.left, passage.top, passage.width]
+		() => {
+			const baseStyle: React.CSSProperties = {
+				height: passage.height,
+				left: passage.left,
+				top: passage.top,
+				width: passage.width
+			};
+
+			if (highlightColor && isHighlighted) {
+				if (isValidHexColor(highlightColor as string)) {
+					(baseStyle as any)['--highlight-color'] = hexToRgb(highlightColor as string);
+				} else {
+					// Map predefined color names to their RGB values
+					const colorMap: {[key: string]: string} = {
+						red: '239, 68, 68',
+						orange: '249, 115, 22',
+						yellow: '234, 179, 8',
+						green: '34, 197, 94',
+						blue: '59, 130, 246',
+						purple: '147, 51, 234'
+					};
+					(baseStyle as any)['--highlight-color'] = colorMap[highlightColor as string] || '59, 130, 246';
+				}
+			}
+
+			return baseStyle;
+		},
+		[passage.height, passage.left, passage.top, passage.width, highlightColor, isHighlighted]
 	);
 	const handleMouseDown = React.useCallback(
 		(event: MouseEvent) => {
