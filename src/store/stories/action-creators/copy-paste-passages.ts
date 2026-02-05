@@ -101,25 +101,66 @@ function updateLinksInText(text: string, nameMapping: Map<string, string>): stri
 
 	// Process each link replacement
 	for (const [oldName, newName] of nameMapping) {
-		// Escape special regex characters in names
-		const escapedOldName = oldName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-		const escapedNewName = newName.replace(/\$/g, '$$$$'); // Escape $ for replacement
-
 		// Match [[oldName]], [[display|oldName]], [[display->oldName]], [[oldName<-display]]
 		// This handles: [[link]], [[display|link]], [[display->link]], [[link<-display]]
 		result = result.replace(
 			new RegExp(`\\[\\[([^\\[\\]]*)\\]\\]`, 'g'),
 			(match) => {
-				// Check if this link contains the old name
-				if (!match.includes(oldName)) {
-					return match;
+				// Extract the link content (without brackets)
+				const linkContent = match.slice(2, -2); // Remove [[ and ]]
+
+				// Parse the link to find the target using the same logic as parseLinks
+				// Formats: [[Card]], [[display|Card]], [[display->Card]], [[Card<-display]]
+				let targetName: string;
+
+				// Handle [[display->target]] format (rightmost '->') 
+				const arrowIndex = linkContent.lastIndexOf('->');
+				if (arrowIndex !== -1) {
+					targetName = linkContent.substring(arrowIndex + 2).trim();
+				}
+				// Handle [[target<-display]] format (leftmost '<-')
+				else if (linkContent.includes('<-')) {
+					targetName = linkContent.substring(0, linkContent.indexOf('<-')).trim();
+				}
+				// Handle [[display|target]] format (rightmost '|')
+				else if (linkContent.includes('|')) {
+					const pipeIndex = linkContent.lastIndexOf('|');
+					targetName = linkContent.substring(pipeIndex + 1).trim();
+				}
+				// [[target]] format
+				else {
+					targetName = linkContent.trim();
 				}
 
-				// Replace the old name with the new name inside the link
-				return match.replace(
-					new RegExp(escapedOldName, 'g'),
-					escapedNewName
-				);
+				// Only replace if the target exactly matches the old name
+				if (targetName === oldName) {
+					// Reconstruct the link with the new target name
+					let newLinkContent: string;
+
+					// Handle [[display->target]] format
+					const arrowIdx = linkContent.lastIndexOf('->');
+					if (arrowIdx !== -1) {
+						newLinkContent = linkContent.substring(0, arrowIdx + 2) + newName;
+					}
+					// Handle [[target<-display]] format
+					else if (linkContent.includes('<-')) {
+						const leftArrowIdx = linkContent.indexOf('<-');
+						newLinkContent = newName + linkContent.substring(leftArrowIdx);
+					}
+					// Handle [[display|target]] format
+					else if (linkContent.includes('|')) {
+						const pipeIdx = linkContent.lastIndexOf('|');
+						newLinkContent = linkContent.substring(0, pipeIdx + 1) + newName;
+					}
+					// [[target]] format
+					else {
+						newLinkContent = newName;
+					}
+
+					return '[[' + newLinkContent + ']]';
+				}
+
+				return match;
 			}
 		);
 	}
