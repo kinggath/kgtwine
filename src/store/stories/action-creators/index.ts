@@ -1,4 +1,5 @@
 export * from './add-tags-to-passages';
+export * from './create-batch-passages';
 export * from './create-newly-linked-passages';
 export * from './create-story';
 export * from './create-untitled-passage';
@@ -9,6 +10,7 @@ export * from './duplicate-story';
 export * from './find-replace';
 export * from './highlight-passages';
 export * from './import-stories';
+export * from './link-batch-passages';
 export * from './move-passages';
 export * from './rename-passage-tag';
 export * from './rename-story-tag';

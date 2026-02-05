@@ -211,6 +211,21 @@
 			"selectedTagsLabel": "Tags to add:",
 			"title": "Add Tags to {{count}} Card(s)"
 		},
+		"createBatch": {
+			"title": "Create Batch of Cards",
+			"label": "Create Batch",
+			"cardCount": "Number of Cards",
+			"baseName": "Base Name",
+			"baseNameHint": "Cards will be named: 'Base Name 1', 'Base Name 2', etc.",
+			"orientation": "Orientation",
+			"orientationHorizontal": "Horizontal (one-to-many)",
+			"orientationVertical": "Vertical (series)",
+			"linkToSourceCard": "Link to Card",
+			"linkToSourceCardHintHorizontal": "All new cards will link from the clicked card.",
+			"linkToSourceCardHintVertical": "Only the first new card will link from the clicked card.",
+			"linkCardsTogether": "Link Cards Together",
+			"linkCardsTogetherHint": "New cards will link to each other in a chain."
+		},
 		"searchByTag": {
 			"selectedTagsLabel": "Highlighting by:",
 			"title": "Search by Tag"
