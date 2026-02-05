@@ -10,7 +10,15 @@ export const colors = [
 	'purple'
 ];
 
-export type Color = typeof colors[number];
+export type PredefinedColor = typeof colors[number];
+export type Color = PredefinedColor | string; // string for hex colors like "#FF0000"
+
+/**
+ * Validates if a value is a valid hex color code (e.g., "#FF0000" or "#fff").
+ */
+export function isValidHexColor(value: string): boolean {
+	return /^#[0-9A-Fa-f]{3}([0-9A-Fa-f]{3})?$/.test(value);
+}
 
 /**
  * Generates a hue (as in the HSL colorspace) for a string.

@@ -2,9 +2,9 @@ import * as React from 'react';
 import {useTranslation} from 'react-i18next';
 import classNames from 'classnames';
 import {IconWriting} from '@tabler/icons';
-import {colors, Color} from '../../util/color';
+import {Color, isValidHexColor} from '../../util/color';
 import {PromptButton, PromptValidationResponse} from '../control/prompt-button';
-import {TextSelect} from '../control/text-select';
+import {ColorPicker} from '../control/color-picker';
 import './tag-editor.css';
 
 export interface TagEditorProps {
@@ -28,9 +28,26 @@ export const TagEditor: React.FC<TagEditorProps> = props => {
 		return {valid: true};
 	}
 
+	function hexToRgb(hex: string): string {
+		const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+		if (!result) {
+			return '0, 0, 0';
+		}
+		return `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`;
+	}
+
+	const isHex = isValidHexColor(props.color as string);
+	const style = isHex ? {'--hex-rgb': hexToRgb(props.color as string)} as React.CSSProperties : undefined;
+
 	return (
 		<div className="tag-editor">
-			<span className={classNames('tag-name', `color-${props.color}`)}>
+			<span 
+				className={classNames('tag-name', {
+					'tag-name--hex': isValidHexColor(props.color as string),
+					[`color-${props.color}`]: !isValidHexColor(props.color as string)
+				})}
+				style={style}
+			>
 				{props.name}
 			</span>
 			<PromptButton
@@ -42,16 +59,10 @@ export const TagEditor: React.FC<TagEditorProps> = props => {
 				value={newName}
 				validate={validate}
 			/>
-			<TextSelect
-				onChange={e => onChangeColor(e.target.value)}
-				options={colors.map(color => ({
-					label: t(`colors.${color}`),
-					value: color
-				}))}
-				value={color ?? ''}
-			>
-				{t('common.color')}
-			</TextSelect>
+			<ColorPicker
+				color={color}
+				onChangeColor={onChangeColor}
+			/>
 		</div>
 	);
 };

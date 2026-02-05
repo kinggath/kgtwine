@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {TagColors} from '../../store/stories';
+import {isValidHexColor} from '../../util/color';
 import './tag-grid.css';
 import classNames from 'classnames';
 
@@ -29,13 +30,19 @@ export const TagGrid: React.FC<TagGridProps> = React.memo(props => {
 		<div className={classNames('tag-grid', {hidden: rows.length === 0})}>
 			{rows.map((row, index) => (
 				<span className="row" key={index}>
-					{row.map(tag => (
-						<span
-							className={`color-${props.tagColors[tag]}`}
-							key={tag}
-							title={tag}
-						/>
-					))}
+					{row.map(tag => {
+						const color = props.tagColors[tag];
+						const isHex = isValidHexColor(color as string);
+						const style = isHex ? {backgroundColor: color} : undefined;
+						return (
+							<span
+								className={isHex ? 'color-hex' : `color-${color}`}
+								key={tag}
+								title={tag}
+								style={style}
+							/>
+						);
+					})}
 				</span>
 			))}
 		</div>

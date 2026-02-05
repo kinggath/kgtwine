@@ -27,6 +27,7 @@ export const TagCardButton: React.FC<TagCardButtonProps> = props => {
 		props;
 	const [newTagName, setNewTagName] = React.useState('');
 	const [open, setOpen] = React.useState(false);
+	const inputRef = React.useRef<HTMLInputElement>(null);
 	const {t} = useTranslation();
 	const tagCompletions = React.useMemo(
 		() => allTags.filter(tag => !tags.includes(tag)),
@@ -85,6 +86,11 @@ export const TagCardButton: React.FC<TagCardButtonProps> = props => {
 		}
 	}
 
+	function onClick() {
+		// Focus the input when the form is clicked
+		inputRef.current?.focus();
+	}
+
 	return (
 		<span className="tag-card-button">
 			<CardButton
@@ -96,8 +102,9 @@ export const TagCardButton: React.FC<TagCardButtonProps> = props => {
 				label={label}
 			>
 				<CardContent>
-					<form onSubmit={handleSubmit}>
+					<form onSubmit={handleSubmit} onClick={onClick}>
 						<AutocompleteTextInput
+							ref={inputRef}
 							completions={tagCompletions}
 							id={id}
 							onChange={handleNewTagNameChange}

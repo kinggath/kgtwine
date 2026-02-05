@@ -11,15 +11,18 @@
 	"common": {
 		"add": "Add",
 		"appName": "Twine",
+		"apply": "Apply",
 		"back": "Back",
 		"build": "Build",
 		"cancel": "Cancel",
+		"clear": "Clear",
 		"close": "Close",
 		"collapse": "Collapse",
 		"color": "Color",
 		"copy": "Copy",
 		"create": "Create",
 		"custom": "Custom",
+		"customColor": "Custom Color",
 		"delete": "Delete",
 		"deleteCount": "Delete ({{count}})",
 		"deselectAll": "Deselect All",
@@ -30,6 +33,7 @@
 		"expand": "Expand",
 		"help": "Help",
 		"import": "Import",
+		"invalidHexColor": "Please enter a valid hex color (e.g., #FF0000 or #fff)",
 		"maximize": "Maximize",
 		"more": "More",
 		"new": "New",
@@ -202,6 +206,14 @@
 			"theme": "Theme",
 			"title": "Preferences",
 			"useEnhancedEditors": "Use Enhanced Editors"
+		},
+		"bulkTagPassages": {
+			"selectedTagsLabel": "Tags to add:",
+			"title": "Add Tags to {{count}} Card(s)"
+		},
+		"searchByTag": {
+			"selectedTagsLabel": "Highlighting by:",
+			"title": "Search by Tag"
 		},
 		"passageEdit": {
 			"closeAll": "Close All",
@@ -458,6 +470,7 @@
 	},
 	"undoChange": {
 		"addTag": "Add Tag",
+		"addTagsToPassages": "Add Tags to Passages",
 		"changeTagColor": "Change Tag Color",
 		"newPassage": "New Passage",
 		"deletePassage": "Delete Passage",

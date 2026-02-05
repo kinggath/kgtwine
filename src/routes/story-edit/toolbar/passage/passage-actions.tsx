@@ -17,16 +17,33 @@ import {DeselectAllPassagesButton} from './deselect-all-passages-button';
 import {StartAtPassageButton} from './start-at-passage-button';
 import {TestPassageButton} from './test-passage-button';
 import {CloseAllPassagesButton} from './close-all-passages-button';
+import {BulkTagPassagesButton} from './bulk-tag-passages-button';
+import {BulkTagPassagesBar} from './bulk-tag-passages-bar';
+import {SearchByTagButton} from './search-by-tag-button';
+import {SearchByTagBar} from './search-by-tag-bar';
 
 export interface PassageActionsProps {
 	getCenter: () => Point;
 	onOpenFuzzyFinder: () => void;
 	story: Story;
+	searchByTagOpen?: boolean;
+	onSearchByTagToggle?: () => void;
+	highlightedTagNames?: string[];
+	onHighlightedTagNamesChange?: (tags: string[]) => void;
 }
 
 export const PassageActions: React.FC<PassageActionsProps> = props => {
-	const {getCenter, onOpenFuzzyFinder, story} = props;
+	const {
+		getCenter,
+		onOpenFuzzyFinder,
+		story,
+		searchByTagOpen,
+		onSearchByTagToggle,
+		highlightedTagNames,
+		onHighlightedTagNamesChange
+	} = props;
 	const {dispatch} = useStoriesContext();
+	const [bulkTagOpen, setBulkTagOpen] = React.useState(false);
 	const selectedPassages = React.useMemo(
 		() => story.passages.filter(passage => passage.selected),
 		[story.passages]
@@ -50,24 +67,53 @@ export const PassageActions: React.FC<PassageActionsProps> = props => {
 	}
 
 	return (
-		<ButtonBar>
-			<CreatePassageButton getCenter={getCenter} story={story} />
-			<EditPassagesButton passages={selectedPassages} story={story} />
-			<RenamePassageButton
-				onRename={name => handleRename(name, soloSelectedPassage)}
-				passage={soloSelectedPassage}
-				story={story}
-			/>
-			<DeletePassagesButton passages={selectedPassages} story={story} />
-			<TestPassageButton passage={soloSelectedPassage} story={story} />
-			<StartAtPassageButton passage={soloSelectedPassage} story={story} />
-			<GoToPassageButton onOpenFuzzyFinder={onOpenFuzzyFinder} />
-			<SelectAllPassagesButton story={story} />
-			<DeselectAllPassagesButton
-				story={story}
-				selectedPassages={selectedPassages}
-			/>
-			<CloseAllPassagesButton />
-		</ButtonBar>
+		<>
+			<ButtonBar>
+				<CreatePassageButton getCenter={getCenter} story={story} />
+				<EditPassagesButton passages={selectedPassages} story={story} />
+				<RenamePassageButton
+					onRename={name => handleRename(name, soloSelectedPassage)}
+					passage={soloSelectedPassage}
+					story={story}
+				/>
+				<DeletePassagesButton passages={selectedPassages} story={story} />
+				<BulkTagPassagesButton
+					isOpen={bulkTagOpen}
+					passages={selectedPassages}
+					story={story}
+					onToggleOpen={setBulkTagOpen}
+				/>
+				{onSearchByTagToggle && (
+					<SearchByTagButton
+						onClick={onSearchByTagToggle}
+						disabled={!story.passages.some(p => p.tags.length > 0)}
+					/>
+				)}
+				<TestPassageButton passage={soloSelectedPassage} story={story} />
+				<StartAtPassageButton passage={soloSelectedPassage} story={story} />
+				<GoToPassageButton onOpenFuzzyFinder={onOpenFuzzyFinder} />
+				<SelectAllPassagesButton story={story} />
+				<DeselectAllPassagesButton
+					story={story}
+					selectedPassages={selectedPassages}
+				/>
+				<CloseAllPassagesButton />
+			</ButtonBar>
+			{bulkTagOpen && (
+				<BulkTagPassagesBar
+					passages={selectedPassages}
+					story={story}
+					onClose={() => setBulkTagOpen(false)}
+				/>
+			)}
+			{searchByTagOpen && highlightedTagNames !== undefined && onHighlightedTagNamesChange && (
+				<SearchByTagBar
+					story={story}
+					highlightedTags={highlightedTagNames}
+					onHighlightedTagsChange={onHighlightedTagNamesChange}
+					onClose={onSearchByTagToggle}
+				/>
+			)}
+		</>
 	);
 };

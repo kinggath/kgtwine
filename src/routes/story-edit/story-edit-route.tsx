@@ -27,6 +27,8 @@ export const InnerStoryEditRoute: React.FC = () => {
 	const {prefs} = usePrefsContext();
 	const story = storyWithId(stories, storyId);
 	const [fuzzyFinderOpen, setFuzzyFinderOpen] = React.useState(false);
+	const [searchByTagOpen, setSearchByTagOpen] = React.useState(false);
+	const [highlightedTagNames, setHighlightedTagNames] = React.useState<string[]>([]);
 	const mainContent = React.useRef<HTMLDivElement>(null);
 	const {getCenter, setCenter} = useViewCenter(story, mainContent);
 	const {
@@ -49,6 +51,10 @@ export const InnerStoryEditRoute: React.FC = () => {
 				getCenter={getCenter}
 				onOpenFuzzyFinder={() => setFuzzyFinderOpen(true)}
 				story={story}
+				searchByTagOpen={searchByTagOpen}
+				onSearchByTagToggle={() => setSearchByTagOpen(prev => !prev)}
+				highlightedTagNames={highlightedTagNames}
+				onHighlightedTagNamesChange={setHighlightedTagNames}
 			/>
 			<MainContent grabbable padded={false} ref={mainContent}>
 				<MarqueeablePassageMap
@@ -66,6 +72,7 @@ export const InnerStoryEditRoute: React.FC = () => {
 					tagColors={story.tagColors}
 					visibleZoom={visibleZoom}
 					zoom={story.zoom}
+					highlightedTagNames={highlightedTagNames}
 				/>
 				<PassageFuzzyFinder
 					onClose={() => setFuzzyFinderOpen(false)}
