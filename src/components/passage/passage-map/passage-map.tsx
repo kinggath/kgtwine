@@ -251,14 +251,6 @@ export const PassageMap = React.forwardRef<
 					// Get position relative to the scaled passage map element
 					const mapX = (event.clientX - rect.left) / visibleZoom;
 					const mapY = (event.clientY - rect.top) / visibleZoom;
-					console.log('Opening context menu:', {
-						screenX: event.clientX,
-						screenY: event.clientY,
-						mapX,
-						mapY,
-						rect,
-						visibleZoom
-					});
 				contextMenuRef.current?.open(mapX, mapY, visibleZoom);
 			}
 		}
@@ -315,8 +307,8 @@ export const PassageMap = React.forwardRef<
 					onSelect(passage, true);
 				}
 
-				// Open the context menu at the click position
-				contextMenuRef.current?.open(mapX, mapY, visibleZoom);
+				// Open the context menu at the click position, passing the passage ID
+				contextMenuRef.current?.open(mapX, mapY, visibleZoom, passage.id);
 			}
 		},
 		[onSelect, visibleZoom]

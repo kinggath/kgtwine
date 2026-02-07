@@ -3,6 +3,7 @@ export * from './app-donation';
 export * from './app-prefs';
 export * from './context';
 export * from './context/dialogs';
+export * from './create-batch';
 export * from './dialogs.types';
 export * from './passage-edit';
 export * from './passage-tags';

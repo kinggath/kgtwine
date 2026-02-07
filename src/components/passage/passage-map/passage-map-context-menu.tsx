@@ -8,18 +8,21 @@ import {IconButton} from '../../control/icon-button';
 import {CloseAllPassagesButton} from '../../../routes/story-edit/toolbar/passage/close-all-passages-button';
 import {createUntitledPassage, Passage, Story} from '../../../store/stories';
 import {useUndoableStoriesContext} from '../../../store/undoable-stories';
+import {useDialogsContext} from '../../../dialogs';
+import {CreateBatchDialog, CreateBatchParams} from '../../../dialogs/create-batch';
 import {
 	copyPassages,
 	pastePassages,
 	getAvailablePasteModes,
 	PasteMode
 } from '../../../store/stories/action-creators/copy-paste-passages';
+import {createBatchPassages} from '../../../store/stories/action-creators/create-batch-passages';
 import {hasClipboardPassages, getClipboardPassages} from '../../../util/passage-clipboard';
 import './passage-map-context-menu.css';
 
 export interface PassageMapContextMenuHandle {
 	close: () => void;
-	open: (mapX: number, mapY: number, zoom: number) => void;
+	open: (mapX: number, mapY: number, zoom: number, passageId?: string) => void;
 }
 
 interface PassageMapContextMenuContentProps {
@@ -33,13 +36,15 @@ interface PassageMapContextMenuContentProps {
 	hasClipboard: boolean;
 	setHasClipboard: (value: boolean) => void;
 	availablePasteModes: PasteMode[];
+	passageId?: string; // ID of passage that was right-clicked
 }
 
 const PassageMapContextMenuContent = React.forwardRef<
 	HTMLDivElement,
 	PassageMapContextMenuContentProps
->(({isOpen, onClose, mapX, mapY, zoom, story, passages, hasClipboard, setHasClipboard, availablePasteModes}, ref) => {
+>(({isOpen, onClose, mapX, mapY, zoom, story, passages, hasClipboard, setHasClipboard, availablePasteModes, passageId}, ref) => {
 	const {dispatch: undoableDispatch} = useUndoableStoriesContext();
+	const {dispatch: dialogDispatch} = useDialogsContext();
 	const {t} = useTranslation();
 	const [menuEl, setMenuEl] = React.useState<HTMLDivElement | null>(null);
 	const selectedPassagesRef = React.useRef<Passage[]>([]);
@@ -51,14 +56,36 @@ const PassageMapContextMenuContent = React.forwardRef<
 		}
 	}, [isOpen, passages]);
 
-
-
 	const handleCreatePassage = React.useCallback(() => {
 		if (story) {
 			undoableDispatch(createUntitledPassage(story, mapX, mapY), 'undoChange.newPassage');
 			onClose();
 		}
 	}, [story, mapX, mapY, undoableDispatch, onClose]);
+
+	const handleCreateBatch = React.useCallback(() => {
+		if (story) {
+			dialogDispatch({
+				type: 'addDialog',
+				component: CreateBatchDialog,
+				props: {
+					sourcePassageId: passageId,
+					onCreateBatch: (batchParams: CreateBatchParams) => {
+						// Create the passages
+						undoableDispatch(
+							createBatchPassages(story, {
+								...batchParams,
+								centerX: mapX,
+								centerY: mapY
+							}),
+							'undoChange.createBatch'
+						);
+					}
+				}
+			});
+			onClose();
+		}
+	}, [story, mapX, mapY, passageId, dialogDispatch, undoableDispatch, onClose]);
 
 	const handleCopyPassages = React.useCallback(() => {
 		// Use captured passages instead of filtered current passages
@@ -160,6 +187,31 @@ const PassageMapContextMenuContent = React.forwardRef<
 							<IconButton
 								icon={<IconPlus />}
 								label={t('common.new')}
+								onClick={e => {
+									handleCreatePassage();
+									e.stopPropagation();
+								}}
+								disabled={!story}
+							/>
+						</div>
+						<div
+							onPointerDown={(e) => {
+								e.stopPropagation();
+								e.preventDefault();
+								if (e.button !== 0) return;
+								handleCreateBatch();
+							}}
+							onMouseDown={(e) => e.stopPropagation()}
+							onClick={(e) => e.stopPropagation()}
+							style={{display: 'flex', width: '100%'}}
+						>
+							<IconButton
+								icon={<IconPlus />}
+								label={t('dialogs.createBatch.label')}
+								onClick={e => {
+									handleCreateBatch();
+									e.stopPropagation();
+								}}
 								disabled={!story}
 							/>
 						</div>
@@ -253,12 +305,15 @@ export const PassageMapContextMenu = React.forwardRef<
 	const [zoom, setZoom] = React.useState(1);
 	const [hasClipboard, setHasClipboard] = React.useState(hasClipboardPassages());
 	const [availablePasteModes, setAvailablePasteModes] = React.useState<PasteMode[]>([]);
+	const [passageId, setPassageId] = React.useState<string | undefined>(undefined);
 	const menuRef = React.useRef<HTMLDivElement>(null);
 
-	const handleOpen = React.useCallback((mapX: number, mapY: number, zoom: number) => {
+	const handleOpen = React.useCallback((mapX: number, mapY: number, zoom: number, clickedPassageId?: string) => {
+		console.log('handleOpen called with clickedPassageId:', clickedPassageId);
 		const hasClip = hasClipboardPassages();
 		setMapPosition({x: mapX, y: mapY});
 		setZoom(zoom);
+		setPassageId(clickedPassageId);
 		setIsOpen(true);
 		setHasClipboard(hasClip);
 		// Update available paste modes when opening
@@ -295,6 +350,7 @@ export const PassageMapContextMenu = React.forwardRef<
 			hasClipboard={hasClipboard}
 			setHasClipboard={setHasClipboard}
 			availablePasteModes={availablePasteModes}
+			passageId={passageId}
 		/>
 	);
 });
