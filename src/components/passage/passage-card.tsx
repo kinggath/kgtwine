@@ -19,6 +19,9 @@ export interface PassageCardProps {
 	onDragStop?: DraggableCoreProps['onStop'];
 	onSelect: (passage: Passage, exclusive: boolean) => void;
 	onContextMenu?: (passage: Passage, event: React.MouseEvent<HTMLDivElement>) => void;
+	onLinkHandleMouseDown?: (passage: Passage, event: React.MouseEvent<HTMLDivElement>) => void;
+	onLinkHandleMouseOver?: (passage: Passage) => void;
+	onLinkHandleMouseLeave?: () => void;
 	passage: Passage;
 	tagColors: TagColors;
 	highlightedTagNames?: string[];
@@ -36,6 +39,9 @@ export const PassageCard: React.FC<PassageCardProps> = React.memo(props => {
 		onEdit,
 		onSelect,
 		onContextMenu,
+		onLinkHandleMouseDown,
+		onLinkHandleMouseOver,
+		onLinkHandleMouseLeave,
 		passage,
 		tagColors,
 		highlightedTagNames
@@ -162,6 +168,30 @@ export const PassageCard: React.FC<PassageCardProps> = React.memo(props => {
 		[onContextMenu, passage]
 	);
 
+	const handleLinkHandleMouseDown = React.useCallback(
+		(event: React.MouseEvent<HTMLDivElement>) => {
+			event.stopPropagation();
+			onLinkHandleMouseDown?.(passage, event);
+		},
+		[onLinkHandleMouseDown, passage]
+	);
+
+	const handleLinkHandleMouseOver = React.useCallback(
+		(event: React.MouseEvent<HTMLDivElement>) => {
+			event.stopPropagation();
+			onLinkHandleMouseOver?.(passage);
+		},
+		[onLinkHandleMouseOver, passage]
+	);
+
+	const handleLinkHandleMouseLeave = React.useCallback(
+		(event: React.MouseEvent<HTMLDivElement>) => {
+			event.stopPropagation();
+			onLinkHandleMouseLeave?.();
+		},
+		[onLinkHandleMouseLeave, passage]
+	);
+
 	return (
 		<DraggableCore
 			nodeRef={container}
@@ -177,6 +207,8 @@ export const PassageCard: React.FC<PassageCardProps> = React.memo(props => {
 			style={style}
 			data-passage-tags={passage.tags.join(' ')}
 			onContextMenu={handleContextMenu}
+			onMouseOver={handleLinkHandleMouseOver}
+			onMouseLeave={handleLinkHandleMouseLeave}
 		>
 				<div className="passage-card-inner">
 					<SelectableCard
@@ -190,6 +222,10 @@ export const PassageCard: React.FC<PassageCardProps> = React.memo(props => {
 						<h2>{passage.name}</h2>
 						<CardContent>{excerpt}</CardContent>
 					</SelectableCard>
+					<div
+						className="passage-card-link-handle"
+						onMouseDown={handleLinkHandleMouseDown}
+					/>
 				</div>
 			</div>
 		</DraggableCore>
