@@ -11,11 +11,13 @@ export interface PassageConnectionGroupProps {
 	offset: Point;
 	self: Set<Passage>;
 	variant?: 'link' | 'reference';
+	onUpdatePassage?: (passage: Passage, props: Partial<Passage>) => void;
+	isDraggingLink?: boolean;
 }
 
 export const PassageConnectionGroup: React.FC<PassageConnectionGroupProps> = React.memo(
 	props => {
-		const {broken, connections, offset, self, variant = 'link'} = props;
+		const {broken, connections, offset, self, variant = 'link', onUpdatePassage: _onUpdatePassage, isDraggingLink} = props;
 
 		return (
 			<>
@@ -27,6 +29,8 @@ export const PassageConnectionGroup: React.FC<PassageConnectionGroupProps> = Rea
 							key={connection[0].name + end.name}
 							start={connection[0]}
 							variant={variant}
+							onUpdatePassage={_onUpdatePassage}
+							isDraggingLink={isDraggingLink}
 						/>
 					))
 				)}

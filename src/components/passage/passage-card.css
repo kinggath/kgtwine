@@ -95,11 +95,11 @@
 	box-shadow: 0 0 12px rgba(var(--highlight-color, 59 130 246), 0.2);
 }
 .passage-card-link-handle {
-	width: 12px;
-	height: 12px;
+	width: 18px;
+	height: 18px;
 	border-radius: 50%;
 	position: absolute;
-	bottom: -6px;
+	bottom: -9px;
 	left: 50%;
 	transform: translateX(-50%);
 	cursor: grab;

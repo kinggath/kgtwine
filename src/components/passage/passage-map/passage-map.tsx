@@ -459,6 +459,8 @@ export const PassageMap = React.forwardRef<
 				}}
 				passages={passages}
 				startPassageId={startPassageId}
+				onUpdatePassage={onUpdatePassage}
+				isDraggingLink={linkDragState.sourcePassageId !== null}
 			/>
 			<div onPointerDown={stopPropagation}>
 				<PassageCardGroup

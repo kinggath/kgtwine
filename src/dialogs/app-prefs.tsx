@@ -89,6 +89,11 @@ export const AppPrefsDialog: React.FC<
 					value={prefs.clickOffCardsToClose}
 				/>
 				<CheckboxButton
+					label={t('dialogs.appPrefs.deleteLinksOnClick')}
+					onChange={value => dispatch(setPref('deleteLinksOnClick', value))}
+					value={prefs.deleteLinksOnClick}
+				/>
+				<CheckboxButton
 					label={t('dialogs.appPrefs.passageRelativePosition')}
 					onChange={value =>
 						dispatch(setPref('passageRelativePosition', value))

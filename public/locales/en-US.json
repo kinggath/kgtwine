@@ -178,6 +178,7 @@
 		},
 		"appPrefs": {
 			"clickOffCardsToClose": "Click Off Cards to Close",
+			"deleteLinksOnClick": "Delete Passage Links by Clicking",
 			"codeEditorFont": "Code Editor Font",
 			"codeEditorFontScale": "Code Editor Font Size",
 			"dialogWidth": "Dialog Width",

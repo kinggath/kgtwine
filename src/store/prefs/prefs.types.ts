@@ -137,6 +137,10 @@ export interface PrefsState {
 	 */
 	newPassageInitialFocus: 'title' | 'content';
 	/**
+	 * Allow deleting passage links by clicking on them in the passage map.
+	 */
+	deleteLinksOnClick: boolean;
+	/**
 	 * Has the user been shown the welcome route?
 	 */
 	welcomeSeen: boolean;

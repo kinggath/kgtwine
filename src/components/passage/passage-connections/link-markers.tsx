@@ -20,6 +20,16 @@ export const LinkMarkers: React.FC = () => (
 			<path d="M 1,1 7,4 1,7 Z" />
 		</marker>
 		<marker
+			id="link-arrowhead-red"
+			refX="6"
+			refY="4"
+			markerWidth="8"
+			markerHeight="8"
+			orient="auto"
+		>
+			<path d="M 1,1 7,4 1,7 Z" />
+		</marker>
+		<marker
 			id="link-broken"
 			refX="7.5"
 			refY="7.5"

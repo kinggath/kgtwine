@@ -38,5 +38,6 @@ export const defaults = (): PrefsState => ({
 	inactivePassageOpacity: 0.85,
 	autoEditNewPassages: true,
 	newPassageInitialFocus: 'title',
+	deleteLinksOnClick: false,
 	welcomeSeen: false
 });
