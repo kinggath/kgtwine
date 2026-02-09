@@ -84,12 +84,18 @@ export function saveMiddleware(state: StoriesState, action: StoriesAction) {
 		case 'deletePassage': {
 			const story = storyWithId(state, action.storyId);
 
-			// We can't dig up the passage in question right now, because
-			// previousStories is only a shallow copy, and it's gone there at
-			// this point in time.
+			// When a passage is deleted, we also remove links to it from parent passages.
+			// We need to save the modified passages along with deleting the removed one.
 
 			doUpdateTransaction(transaction => {
 				saveStory(transaction, story);
+				
+				// Save all passages (some may have had links removed)
+				for (const passage of story.passages) {
+					savePassage(transaction, passage);
+				}
+				
+				// Delete the removed passage from storage
 				deletePassageById(transaction, action.passageId);
 			});
 			break;
@@ -98,11 +104,18 @@ export function saveMiddleware(state: StoriesState, action: StoriesAction) {
 		case 'deletePassages': {
 			const story = storyWithId(state, action.storyId);
 
-			// See above comment about passages.
+			// When passages are deleted, we also remove links to them from parent passages.
+			// We need to save the modified passages along with deleting the removed ones.
 
 			doUpdateTransaction(transaction => {
 				saveStory(transaction, story);
 
+				// Save all remaining passages (some may have had links removed)
+				for (const passage of story.passages) {
+					savePassage(transaction, passage);
+				}
+
+				// Delete the removed passages from storage
 				for (const passageId of action.passageIds) {
 					deletePassageById(transaction, passageId);
 				}
