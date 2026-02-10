@@ -310,26 +310,49 @@ export const PassageMap = React.forwardRef<
 		[handleMouseMove, linkDragState.sourcePassageId, visibleZoom]
 	);
 
-	const handleContainerMouseUp = React.useCallback(() => {
-		if (linkDragState.sourcePassageId && linkDragState.targetPassageId) {
-			const sourcePassage = passages.find(p => p.id === linkDragState.sourcePassageId);
-			const targetPassage = passages.find(p => p.id === linkDragState.targetPassageId);
+	const handleContainerMouseUp = React.useCallback(
+		(event: React.MouseEvent<HTMLDivElement>) => {
+			if (linkDragState.sourcePassageId && linkDragState.targetPassageId) {
+				const sourcePassage = passages.find(p => p.id === linkDragState.sourcePassageId);
+				const targetPassage = passages.find(p => p.id === linkDragState.targetPassageId);
 
-			if (sourcePassage && targetPassage && sourcePassage.id !== targetPassage.id) {
-				const updatedText = addLinkToPassage(sourcePassage.text, targetPassage.name);
+				if (sourcePassage && targetPassage && sourcePassage.id !== targetPassage.id) {
+					const updatedText = addLinkToPassage(sourcePassage.text, targetPassage.name);
 
-				if (updatedText !== sourcePassage.text) {
-					if (onUpdatePassage) {
-						onUpdatePassage(sourcePassage, {text: updatedText});
-					} else {
-						onEdit({...sourcePassage, text: updatedText});
+					if (updatedText !== sourcePassage.text) {
+						if (onUpdatePassage) {
+							onUpdatePassage(sourcePassage, {text: updatedText});
+						} else {
+							onEdit({...sourcePassage, text: updatedText});
+						}
 					}
 				}
+			} else if (linkDragState.sourcePassageId && !linkDragState.targetPassageId) {
+				// Released outside a card - show context menu to create new card
+				if (container.current) {
+					const rect = container.current.getBoundingClientRect();
+					const mapX = (event.clientX - rect.left) / visibleZoom;
+					const mapY = (event.clientY - rect.top) / visibleZoom;
+					contextMenuRef.current?.openForLinkDrop(
+						mapX,
+						mapY,
+						visibleZoom,
+						linkDragState.sourcePassageId
+					);
+				}
 			}
-		}
 
-		linkDragDispatch({type: 'stop'});
-	}, [linkDragState.sourcePassageId, linkDragState.targetPassageId, passages, onEdit, onUpdatePassage]);
+			linkDragDispatch({type: 'stop'});
+		},
+		[
+			linkDragState.sourcePassageId,
+			linkDragState.targetPassageId,
+			passages,
+			onEdit,
+			onUpdatePassage,
+			visibleZoom
+		]
+	);
 
 	const handleLinkHandleMouseOver = React.useCallback(
 		(passage: Passage) => {
