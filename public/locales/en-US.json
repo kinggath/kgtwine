@@ -107,6 +107,9 @@
 			"noResults": "No matches.",
 			"prompt": "Search by passage name or text"
 		},
+		"passageMap": {
+			"createCardHere": "Create Card Here"
+		},
 		"renamePassageButton": {
 			"emptyName": "Please enter a name.",
 			"nameAlreadyUsed": "Another passage in this story has this name."
@@ -178,6 +181,7 @@
 		},
 		"appPrefs": {
 			"clickOffCardsToClose": "Click Off Cards to Close",
+			"deleteLinksOnClick": "Delete Passage Links by Clicking",
 			"codeEditorFont": "Code Editor Font",
 			"codeEditorFontScale": "Code Editor Font Size",
 			"dialogWidth": "Dialog Width",

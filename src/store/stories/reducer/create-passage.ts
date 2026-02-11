@@ -1,6 +1,7 @@
 import {v4 as uuid} from '@lukeed/uuid';
 import {passageDefaults} from '../defaults';
 import {Passage, Story, StoriesState} from '../stories.types';
+import {buildBacklinkIndex} from '../../../util/backlinks';
 
 export function createPassage(
 	state: StoriesState,
@@ -49,6 +50,9 @@ export function createPassage(
 			newStory.startPassage = newPassage.id;
 		}
 
+		// Rebuild backlink index with the new passage
+		newStory.backlinkIndex = buildBacklinkIndex(newStory.passages);
+
 		created = true;
 		return newStory;
 	});
@@ -63,5 +67,4 @@ export function createPassage(
 		return state;
 	}
 
-	return newState;
-}
+	return newState;}

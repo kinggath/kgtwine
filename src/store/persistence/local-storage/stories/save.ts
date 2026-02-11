@@ -41,12 +41,13 @@ export function saveStory(transaction: StorageTransaction, story: Story) {
 
 	transaction.storyIds = addUnique(transaction.storyIds, story.id);
 
-	// We have to remove the passages property before serializing the story,
-	// as those are serialized under separate keys.
+	// We have to remove the passages and backlinkIndex properties before serializing the story.
+	// Passages are serialized under separate keys.
+	// backlinkIndex is a computed value that will be rebuilt on load.
 
 	window.localStorage.setItem(
 		`twine-stories-${story.id}`,
-		JSON.stringify({...story, passages: undefined})
+		JSON.stringify({...story, passages: undefined, backlinkIndex: undefined})
 	);
 }
 

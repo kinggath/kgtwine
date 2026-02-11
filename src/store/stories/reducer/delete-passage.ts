@@ -1,4 +1,9 @@
 import {StoriesState} from '../stories.types';
+import {
+	buildBacklinkIndex,
+	getBacklinks,
+	removeLinkFromText
+} from '../../../util/backlinks';
 
 export function deletePassage(
 	state: StoriesState,
@@ -29,6 +34,45 @@ export function deletePassage(
 
 		if (deleted) {
 			newStory.lastUpdate = new Date();
+
+			// Get all passages that link to the deleted passage
+			const oldStory = state.find(s => s.id === storyId);
+
+			if (oldStory) {
+				const deletedPassage = oldStory.passages.find(
+					p => p.id === passageId
+				);
+
+				if (deletedPassage) {
+					// Get backlinks from the old story's index
+					const oldBacklinkIndex =
+						story.backlinkIndex || buildBacklinkIndex(oldStory.passages);
+					const parentPassageIds = getBacklinks(
+						oldBacklinkIndex,
+						passageId
+					);
+
+					// Remove links to the deleted passage from all parent passages
+					newStory.passages = newStory.passages.map(passage => {
+						if (!parentPassageIds.includes(passage.id)) {
+							return passage;
+						}
+
+						const newText = removeLinkFromText(
+							passage.text,
+							deletedPassage.name
+						);
+
+						return {...passage, text: newText};
+					});
+
+					// Rebuild index after removing links
+					newStory.backlinkIndex = buildBacklinkIndex(
+						newStory.passages
+					);
+				}
+			}
+
 			return newStory;
 		}
 

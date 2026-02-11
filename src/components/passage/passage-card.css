@@ -94,3 +94,40 @@
 	border: 2px solid rgba(var(--highlight-color, 59 130 246), 0.5);
 	box-shadow: 0 0 12px rgba(var(--highlight-color, 59 130 246), 0.2);
 }
+.passage-card-link-handle {
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	position: absolute;
+	bottom: -9px;
+	left: 50%;
+	transform: translateX(-50%);
+	cursor: grab;
+	opacity: 0;
+	transition: opacity 0.2s ease, box-shadow 0.2s ease;
+	z-index: 5;
+	pointer-events: none;
+}
+
+.passage-card:hover .passage-card-link-handle {
+	opacity: 0.7;
+	pointer-events: auto;
+}
+
+.passage-map.link-dragging .passage-card-link-handle {
+	opacity: 0;
+	pointer-events: none;
+}
+
+.passage-card-link-handle:hover {
+	opacity: 1;
+	box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+}
+
+.passage-card-link-handle:active {
+	cursor: grabbing;
+}
+
+[data-app-theme='dark'] .passage-card-link-handle {
+	background-color: var(--gray);
+}

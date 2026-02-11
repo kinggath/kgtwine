@@ -5,8 +5,18 @@ path.passage-connection {
 	fill: none;
 	stroke: var(--gray);
 	stroke-width: 2px;
+	pointer-events: auto;
 }
 
 path.passage-connection.variant-reference {
 	stroke-dasharray: 4px;
+}
+path.passage-connection.hoverable {
+	cursor: pointer;
+	transition: stroke 0.2s ease;
+}
+
+path.passage-connection.hoverable-active {
+	stroke: #ef4444;
+	stroke-width: 3px;
 }

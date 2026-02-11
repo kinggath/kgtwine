@@ -1,6 +1,7 @@
 import {v4 as uuid} from '@lukeed/uuid';
 import {passageDefaults, storyDefaults} from '../defaults';
 import {Story, StoriesState} from '../stories.types';
+import {buildBacklinkIndex} from '../../../util/backlinks';
 
 export function createStory(state: StoriesState, storyProps: Partial<Story>) {
 	if ('id' in storyProps && state.some(story => story.id === storyProps.id)) {
@@ -39,6 +40,9 @@ export function createStory(state: StoriesState, storyProps: Partial<Story>) {
 		...passage,
 		story: story.id
 	}));
+
+	// Initialize backlink index for the new story
+	story.backlinkIndex = buildBacklinkIndex(story.passages);
 
 	return [...state, story];
 }

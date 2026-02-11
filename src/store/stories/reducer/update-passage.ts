@@ -1,5 +1,9 @@
 import {Passage, Story, StoriesState} from '../stories.types';
 import {isPersistablePassageChange} from '../../persistence/persistable-changes';
+import {
+	buildBacklinkIndex,
+	updateBacklinkIndex
+} from '../../../util/backlinks';
 
 export function updatePassage(
 	state: StoriesState,
@@ -46,6 +50,25 @@ export function updatePassage(
 				newStory.lastUpdate = new Date();
 			}
 
+			// Update backlink index if text or name changed
+			if ('text' in passageProps || 'name' in passageProps) {
+				const oldPassage = story.passages.find(p => p.id === passageId);
+
+				if (oldPassage) {
+					const oldBacklinkIndex =
+						story.backlinkIndex || buildBacklinkIndex(story.passages);
+					const newText = passageProps.text ?? oldPassage.text;
+
+					newStory.backlinkIndex = updateBacklinkIndex(
+						oldBacklinkIndex,
+						newStory.passages,
+						passageId,
+						oldPassage.text,
+						newText
+					);
+				}
+			}
+
 			return newStory;
 		}
 
@@ -65,5 +88,4 @@ export function updatePassage(
 		return state;
 	}
 
-	return newState;
-}
+	return newState;}

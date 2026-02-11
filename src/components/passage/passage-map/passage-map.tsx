@@ -4,12 +4,15 @@ import {Passage, Story} from '../../../store/stories';
 import {boundingRect, Point} from '../../../util/geometry';
 import {useCloseAllPassages} from '../../../routes/story-edit/use-close-all-passages';
 import {PassageConnections} from '../passage-connections';
+import {LinkDragArrow} from '../passage-connections/link-drag-arrow';
 import {PassageCardGroup} from '../passage-card-group';
 import {PassageMapContextMenu, PassageMapContextMenuHandle} from './passage-map-context-menu';
 import {PassageEditInline} from '../passage-edit-inline';
 import {useRelativePassageEditorsContext} from '../../../store/relative-passage-editors';
 import {usePassageCopyPasteShortcuts} from '../../../util/use-passage-copy-paste-shortcuts';
+import {addLinkToPassage} from '../../../util/add-link-to-passage';
 import './passage-map.css';
+import './passage-map-link-drag-overlay.css';
 import classnames from 'classnames';
 
 export interface PassageMapProps {
@@ -19,6 +22,7 @@ export interface PassageMapProps {
 	onDeselect: (passage: Passage) => void;
 	onDrag: (change: Point) => void;
 	onEdit: (passage: Passage) => void;
+	onUpdatePassage?: (passage: Passage, props: Partial<Passage>) => void;
 	onSelect: (passage: Passage, exclusive: boolean) => void;
 	passages: Passage[];
 	startPassageId: string;
@@ -38,10 +42,23 @@ interface DragState {
 	startY: number;
 }
 
+interface LinkDragState {
+	sourcePassageId: string | null;
+	mouseX: number;
+	mouseY: number;
+	targetPassageId: string | null;
+}
+
 type DragAction =
 	| {type: 'start'; x: number; y: number}
 	| {type: 'move'; x: number; y: number}
 	| {type: 'stop'; callback: (change: Point) => void};
+
+type LinkDragAction =
+	| {type: 'start'; sourcePassageId: string; x: number; y: number}
+	| {type: 'move'; x: number; y: number}
+	| {type: 'setTarget'; targetPassageId: string | null}
+	| {type: 'stop'};
 
 function dragReducer(state: DragState, action: DragAction) {
 	switch (action.type) {
@@ -76,6 +93,32 @@ function dragReducer(state: DragState, action: DragAction) {
 	}
 }
 
+function linkDragReducer(state: LinkDragState, action: LinkDragAction): LinkDragState {
+	switch (action.type) {
+		case 'start':
+			return {
+				sourcePassageId: action.sourcePassageId,
+				mouseX: action.x,
+				mouseY: action.y,
+				targetPassageId: null
+			};
+
+		case 'move':
+			return {...state, mouseX: action.x, mouseY: action.y};
+
+		case 'setTarget':
+			return {...state, targetPassageId: action.targetPassageId};
+
+		case 'stop':
+			return {
+				sourcePassageId: null,
+				mouseX: 0,
+				mouseY: 0,
+				targetPassageId: null
+			};
+	}
+}
+
 const compactCardZoom = 0.6;
 
 export const PassageMap = React.forwardRef<
@@ -89,6 +132,7 @@ export const PassageMap = React.forwardRef<
 		onDeselect,
 		onDrag,
 		onEdit,
+		onUpdatePassage,
 		onSelect,
 		passages,
 		startPassageId,
@@ -134,6 +178,13 @@ export const PassageMap = React.forwardRef<
 		dragY: 0,
 		startX: 0,
 		startY: 0
+	});
+
+	const [linkDragState, linkDragDispatch] = React.useReducer(linkDragReducer, {
+		sourcePassageId: null,
+		mouseX: 0,
+		mouseY: 0,
+		targetPassageId: null
 	});
 
 	// Separate from the state above, we need to track whether the user was
@@ -224,6 +275,98 @@ export const PassageMap = React.forwardRef<
 			recentlyDragging.current = false;
 		}, 0);
 	}, [onDrag]);
+
+	const handleLinkHandleMouseDown = React.useCallback(
+		(passage: Passage, event: React.MouseEvent<HTMLDivElement>) => {
+			if (container.current) {
+				const rect = container.current.getBoundingClientRect();
+				const mapX = (event.clientX - rect.left) / visibleZoom;
+				const mapY = (event.clientY - rect.top) / visibleZoom;
+				linkDragDispatch({
+					type: 'start',
+					sourcePassageId: passage.id,
+					x: mapX,
+					y: mapY
+				});
+			}
+		},
+		[visibleZoom]
+	);
+
+	const handleContainerMouseMove = React.useCallback(
+		(event: React.MouseEvent<HTMLDivElement>) => {
+			handleMouseMove(event);
+
+			// Only update link drag position if actively dragging a link
+			if (linkDragState.sourcePassageId) {
+				if (container.current) {
+					const rect = container.current.getBoundingClientRect();
+					const mapX = (event.clientX - rect.left) / visibleZoom;
+					const mapY = (event.clientY - rect.top) / visibleZoom;
+					linkDragDispatch({type: 'move', x: mapX, y: mapY});
+				}
+			}
+		},
+		[handleMouseMove, linkDragState.sourcePassageId, visibleZoom]
+	);
+
+	const handleContainerMouseUp = React.useCallback(
+		(event: React.MouseEvent<HTMLDivElement>) => {
+			if (linkDragState.sourcePassageId && linkDragState.targetPassageId) {
+				const sourcePassage = passages.find(p => p.id === linkDragState.sourcePassageId);
+				const targetPassage = passages.find(p => p.id === linkDragState.targetPassageId);
+
+				if (sourcePassage && targetPassage && sourcePassage.id !== targetPassage.id) {
+					const updatedText = addLinkToPassage(sourcePassage.text, targetPassage.name);
+
+					if (updatedText !== sourcePassage.text) {
+						if (onUpdatePassage) {
+							onUpdatePassage(sourcePassage, {text: updatedText});
+						} else {
+							onEdit({...sourcePassage, text: updatedText});
+						}
+					}
+				}
+			} else if (linkDragState.sourcePassageId && !linkDragState.targetPassageId) {
+				// Released outside a card - show context menu to create new card
+				if (container.current) {
+					const rect = container.current.getBoundingClientRect();
+					const mapX = (event.clientX - rect.left) / visibleZoom;
+					const mapY = (event.clientY - rect.top) / visibleZoom;
+					contextMenuRef.current?.openForLinkDrop(
+						mapX,
+						mapY,
+						visibleZoom,
+						linkDragState.sourcePassageId
+					);
+				}
+			}
+
+			linkDragDispatch({type: 'stop'});
+		},
+		[
+			linkDragState.sourcePassageId,
+			linkDragState.targetPassageId,
+			passages,
+			onEdit,
+			onUpdatePassage,
+			visibleZoom
+		]
+	);
+
+	const handleLinkHandleMouseOver = React.useCallback(
+		(passage: Passage) => {
+			if (linkDragState.sourcePassageId && linkDragState.sourcePassageId !== passage.id) {
+				linkDragDispatch({type: 'setTarget', targetPassageId: passage.id});
+			}
+		},
+		[linkDragState.sourcePassageId]
+	);
+
+	const handleLinkHandleMouseLeave = React.useCallback(() => {
+		linkDragDispatch({type: 'setTarget', targetPassageId: null});
+	}, []);
+
 	const handleSelect = React.useCallback(
 		(passage: Passage, exclusive: boolean) => {
 			// See comments above about recentlyDragging.
@@ -319,14 +462,16 @@ export const PassageMap = React.forwardRef<
 	return (
 		<div
 			className={classnames('passage-map', {
-				'compact-passage-cards': compactCards
+				'compact-passage-cards': compactCards,
+				'link-dragging': linkDragState.sourcePassageId !== null
 			})}
 			ref={container}
 			style={style}
 			onPointerUp={handleContainerContextMenu}
 			onPointerDown={handleContainerPointerDown}
 			onPointerMove={handleContainerPointerMove}
-			onMouseMove={handleMouseMove}
+			onMouseMove={handleContainerMouseMove}
+			onMouseUp={handleContainerMouseUp}
 		>
 			<PassageConnections
 				formatName={formatName}
@@ -337,6 +482,8 @@ export const PassageMap = React.forwardRef<
 				}}
 				passages={passages}
 				startPassageId={startPassageId}
+				onUpdatePassage={onUpdatePassage}
+				isDraggingLink={linkDragState.sourcePassageId !== null}
 			/>
 			<div onPointerDown={stopPropagation}>
 				<PassageCardGroup
@@ -347,6 +494,9 @@ export const PassageMap = React.forwardRef<
 					onEdit={onEdit}
 					onSelect={handleSelect}
 					onContextMenu={handlePassageCardContextMenu}
+					onLinkHandleMouseDown={handleLinkHandleMouseDown}
+					onLinkHandleMouseOver={handleLinkHandleMouseOver}
+					onLinkHandleMouseLeave={handleLinkHandleMouseLeave}
 					passages={passages}
 					tagColors={tagColors}
 					highlightedTagNames={props.highlightedTagNames}
@@ -362,6 +512,17 @@ export const PassageMap = React.forwardRef<
 					/>
 				))}
 			</div>
+			{linkDragState.sourcePassageId && (
+				<svg className="link-drag-overlay">
+					<LinkDragArrow
+						sourcePassage={passages.find(p => p.id === linkDragState.sourcePassageId)}
+						targetPassage={linkDragState.targetPassageId ? passages.find(p => p.id === linkDragState.targetPassageId) : undefined}
+						mouseX={linkDragState.mouseX}
+						mouseY={linkDragState.mouseY}
+						isActive={linkDragState.sourcePassageId !== null}
+					/>
+				</svg>
+			)}
 			<PassageMapContextMenu ref={contextMenuRef} story={story} passages={passages} />
 		</div>
 	);

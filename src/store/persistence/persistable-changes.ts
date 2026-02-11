@@ -2,7 +2,11 @@ import {Passage, Story} from '../stories';
 import {StoryFormat} from '../story-formats';
 
 const trivialPassageProps: (keyof Passage)[] = ['highlighted', 'selected'];
-const trivialStoryProps: (keyof Story)[] = ['lastUpdate', 'selected'];
+const trivialStoryProps: (keyof Story)[] = [
+	'backlinkIndex',
+	'lastUpdate',
+	'selected'
+];
 
 // Loosely typing this because of the different load states possible in the type.
 const trivialStoryFormatProps: string[] = [

@@ -8,6 +8,8 @@ import {
 	Point
 } from '../../../util/geometry';
 import {Passage} from '../../../store/stories';
+import {usePrefsContext} from '../../../store/prefs';
+import {removeLinkFromText} from '../../../util/backlinks';
 import './passage-connection.css';
 
 export interface PassageConnectionProps {
@@ -15,10 +17,14 @@ export interface PassageConnectionProps {
 	offset: Point;
 	start: Passage;
 	variant: 'link' | 'reference';
+	onUpdatePassage?: (passage: Passage, props: Partial<Passage>) => void;
+	isDraggingLink?: boolean;
 }
 
 export const PassageConnection: React.FC<PassageConnectionProps> = props => {
-	const {end, offset, start, variant} = props;
+	const {end, offset, start, variant, onUpdatePassage, isDraggingLink} = props;
+	const {prefs} = usePrefsContext();
+	const [isHovered, setIsHovered] = React.useState(false);
 	const path = React.useMemo(() => {
 		// If either passage is selected, offset it. We need to take care not to
 		// overwrite the passage information.
@@ -94,11 +100,37 @@ export const PassageConnection: React.FC<PassageConnectionProps> = props => {
 		});
 	}, [end, offset.left, offset.top, start]);
 
-	return (
+	const isInteractive =
+		prefs.deleteLinksOnClick && variant === 'link' && onUpdatePassage !== undefined && !isDraggingLink;
+
+
+			return (
 		<path
 			d={path}
-			className={`passage-connection variant-${variant}`}
-			style={{markerEnd: 'url(#link-arrowhead)'}}
+			className={`passage-connection variant-${variant} ${isInteractive && isHovered ? 'hoverable-active' : ''} ${isInteractive ? 'hoverable' : ''}`}
+			style={{
+				markerEnd: isInteractive && isHovered ? 'url(#link-arrowhead-red)' : 'url(#link-arrowhead)',
+				cursor: isInteractive ? 'not-allowed' : 'default'
+			}}
+			onMouseEnter={() => {
+				isInteractive && setIsHovered(true);
+			}}
+			onMouseLeave={() => {
+				setIsHovered(false);
+			}}
+			onPointerDown={(event) => {
+				if (
+					!prefs.deleteLinksOnClick ||
+					variant === 'reference' ||
+					!onUpdatePassage
+				) {
+					return;
+				}
+
+				event.stopPropagation();
+				const updatedText = removeLinkFromText(start.text, end.name);
+				onUpdatePassage(start, {text: updatedText});
+			}}
 		/>
 	);
 };

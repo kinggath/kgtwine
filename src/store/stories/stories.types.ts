@@ -1,6 +1,7 @@
 import {Thunk} from 'react-hook-thunk-reducer';
 import {Color} from '../../util/color';
 import {StoryFormat} from '../story-formats/story-formats.types';
+import {BacklinkIndex} from '../../util/backlinks';
 
 /**
  * A single passage in a story.
@@ -53,6 +54,11 @@ export interface Passage {
 }
 
 export interface Story {
+	/**
+	 * Backlink index mapping target passage IDs to the set of passage IDs linking to them.
+	 * Computed on-demand when needed and cached in the story state.
+	 */
+	backlinkIndex?: BacklinkIndex;
 	/**
 	 * IFID of the story. An IFID should stay stable when a story is imported or exported.
 	 */

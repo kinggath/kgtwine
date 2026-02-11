@@ -5,6 +5,11 @@
 	stroke: none;
 }
 
+#link-arrowhead-red path {
+	fill: #ef4444;
+	stroke: none;
+}
+
 #link-broken circle {
 	fill: var(--dark-red);
 }

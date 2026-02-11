@@ -6,7 +6,8 @@ import {
 	Passage,
 	selectPassage,
 	selectPassagesInRect,
-	Story
+	Story,
+	updatePassage
 } from '../../store/stories';
 import {useUndoableStoriesContext} from '../../store/undoable-stories';
 import {
@@ -78,6 +79,13 @@ export function usePassageChangeHandlers(story: Story) {
 		[dialogsDispatch, relativeEditorsDispatch, prefs.passageRelativePosition, story.id]
 	);
 
+	const handleUpdatePassage = React.useCallback(
+		(passage: Passage, props: Partial<Passage>) => {
+			undoableStoriesDispatch(updatePassage(story, passage, props));
+		},
+		[story, undoableStoriesDispatch]
+	);
+
 	const handleSelectPassage = React.useCallback(
 		(passage: Passage, exclusive: boolean) =>
 			undoableStoriesDispatch(selectPassage(story, passage, exclusive)),
@@ -111,6 +119,7 @@ export function usePassageChangeHandlers(story: Story) {
 		handleDeselectPassage,
 		handleDragPassages,
 		handleEditPassage,
+		handleUpdatePassage,
 		handleSelectPassage,
 		handleSelectRect
 	};
