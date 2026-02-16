@@ -1,6 +1,7 @@
 export * from './about-twine';
 export * from './app-donation';
 export * from './app-prefs';
+export * from './ascii-scrubber';
 export * from './context';
 export * from './context/dialogs';
 export * from './create-batch';

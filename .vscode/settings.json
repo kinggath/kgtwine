@@ -7,5 +7,9 @@
     },
     "chat.tools.terminal.autoApprove": {
         "npx tsc": true
+    },
+    "yaml.schemas": {
+        "file:///Users/martines/.vscode/extensions/atlassian.atlascode-4.0.11/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml",
+        "https://www.artillery.io/schema.json": []
     }
 }

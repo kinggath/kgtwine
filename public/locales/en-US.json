@@ -304,6 +304,37 @@
 			"title": "Story JavaScript",
 			"explanation": "JavaScript entered here will immediately run when your story is opened in a Web browser."
 		},
+		"asciiScrubber": {
+			"title": "ASCII Scrubber",
+			"mode": "Replacement Mode",
+			"transliterate": "Transliterate (convert to ASCII)",
+			"remove": "Remove non-ASCII characters",
+			"scan": "Scan",
+			"scanning": "Scanning...",
+			"noFindings": "No non-ASCII characters found.",
+			"summary": "Summary",
+			"totalFindings": "Found {{count}} non-ASCII character",
+			"totalFindings_plural": "Found {{count}} non-ASCII characters",
+			"affectedPassages": "Affected {{count}} passage",
+			"affectedPassages_plural": "Affected {{count}} passages",
+			"affectedFields": "Affected {{count}} field",
+			"affectedFields_plural": "Affected {{count}} fields",
+			"findings": "Findings",
+			"beforeAndAfter": "Preview (Before and After)",
+			"before": "Before",
+			"after": "After",
+			"andMore": "...and {{count}} more change",
+			"andMore_plural": "...and {{count}} more changes",
+			"apply": "Apply Changes",
+			"cancel": "Cancel",
+			"applied": "Changes have been applied.",
+			"undo": "Undo",
+			"rescan": "Rescan",
+			"dismiss": "Dismiss",
+			"confirmTitle": "Confirm Changes",
+			"confirmMessage": "Apply the changes shown in the preview? This action will modify the selected fields across all passages and story metadata.",
+			"confirm": "Apply"
+		},
 		"storySearch": {
 			"title": "Find and Replace",
 			"error": {
@@ -382,6 +413,7 @@
 	"routes": {
 		"storyEdit": {
 			"toolbar": {
+				"asciiScrubber": "ASCII Scrubber",
 				"findAndReplace": "Find and Replace",
 				"goTo": "Go To",
 				"javaScript": "JavaScript",
@@ -490,6 +522,7 @@
 	"undoChange": {
 		"addTag": "Add Tag",
 		"addTagsToPassages": "Add Tags to Passages",
+		"asciiScrubber": "Apply ASCII Scrubber",
 		"changeTagColor": "Change Tag Color",
 		"newPassage": "New Passage",
 		"deletePassage": "Delete Passage",

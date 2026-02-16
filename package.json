@@ -50,6 +50,7 @@
 		"scroll": "^3.0.1",
 		"segseg": "^1.0.0",
 		"semver": "^7.3.4",
+		"transliteration": "^2.6.1",
 		"ua-parser-js": "^0.7.33",
 		"use-error-boundary": "^2.0.6"
 	},
