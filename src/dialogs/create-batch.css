@@ -75,11 +75,9 @@
 
 .source-passage-hint {
 	padding: 0.5rem;
-	background-color: var(--info-bg-color, #e3f2fd);
-	border-left: 3px solid var(--info-color, #2196f3);
+	border-left: 3px solid var(--blue);
 	border-radius: 4px;
 	font-size: 0.85rem;
-	color: var(--text-secondary-color, #666);
 }
 
 .create-batch-buttons {
@@ -88,7 +86,7 @@
 	justify-content: flex-end;
 	margin-top: 1rem;
 	padding-top: 1rem;
-	border-top: 1px solid var(--border-color, #ddd);
+	border-top: 1px solid var(--light-gray);
 }
 
 .create-batch-buttons button {

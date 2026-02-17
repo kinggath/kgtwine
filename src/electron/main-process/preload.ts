@@ -14,6 +14,15 @@ contextBridge.exposeInMainWorld('twineElectron', {
 	deleteStory(story: Story) {
 		ipcRenderer.send('delete-story', story);
 	},
+	getAppPref(name: string) {
+		return ipcRenderer.invoke('get-app-pref', name);
+	},
+	listBackups() {
+		return ipcRenderer.invoke('list-backups');
+	},
+	loadBackupStories(backupPath: string) {
+		return ipcRenderer.invoke('load-backup-stories', backupPath);
+	},
 	loadPrefs() {
 		return ipcRenderer.invoke('load-prefs');
 	},
@@ -26,16 +35,34 @@ contextBridge.exposeInMainWorld('twineElectron', {
 	onceStoryRenamed(callback: () => void): void {
 		ipcRenderer.once('story-renamed', callback);
 	},
+	onceStoryRestored(callback: () => void): void {
+		ipcRenderer.once('story-restored', callback);
+	},
 	openWithScratchFile(data: string, filename: string) {
 		ipcRenderer.send('open-with-scratch-file', data, filename);
 	},
 	renameStory(oldStory: Story, newStory: Story) {
 		ipcRenderer.send('rename-story', oldStory, newStory);
 	},
+	restoreBackupStory(
+		backupPath: string,
+		backupFilePath: string,
+		originalStoryName: string
+	) {
+		return ipcRenderer.invoke(
+			'restore-backup-story',
+			backupPath,
+			backupFilePath,
+			originalStoryName
+		);
+	},
 	saveJson(filename: string, data: any) {
 		ipcRenderer.send('save-json', filename, data);
 	},
 	saveStoryHtml(story: Story, data: string) {
 		ipcRenderer.send('save-story-html', story, data);
+	},
+	setAppPref(name: string, value: unknown) {
+		return ipcRenderer.invoke('set-app-pref', name, value);
 	}
 });

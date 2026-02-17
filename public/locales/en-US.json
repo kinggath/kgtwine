@@ -180,10 +180,19 @@
 			"title": "Support Twine Development"
 		},
 		"appPrefs": {
+			"autoEditNewPassages": "Automatically Open New Passages for Editing",
+			"backupInterval": {
+				"label": "Automatic Backup Frequency",
+				"minutes": "{{count}} minutes",
+				"minutes_plural": "{{count}} minutes",
+				"minutesLabel": "minute",
+				"minutesLabel_plural": "minutes"
+			},
 			"clickOffCardsToClose": "Click Off Cards to Close",
-			"deleteLinksOnClick": "Delete Passage Links by Clicking",
 			"codeEditorFont": "Code Editor Font",
 			"codeEditorFontScale": "Code Editor Font Size",
+			"deleteLinksOnClick": "Delete Passage Links by Clicking",
+			"desktopSettings": "Desktop Settings",
 			"dialogWidth": "Dialog Width",
 			"dialogWidths": {
 				"default": "Default",
@@ -193,21 +202,20 @@
 			"disableRightClickPan": "Disable Right-Click Panning",
 			"editorCursorBlinks": "Blinking Cursor in Editors",
 			"fontExplanation": "Changing the font here only affects the Twine editor. It will not change the font a story uses when played.",
+			"inactivePassageOpacity": "Inactive Passage Visibility",
 			"language": "Language",
+			"newPassageInitialFocus": {
+				"content": "Content Editor",
+				"label": "Focus When Opening New Passages",
+				"title": "Title Bar"
+			},
 			"passageEditorFont": "Passage Editor Font",
 			"passageEditorFontScale": "Passage Editor Font Size",
 			"passageRelativePosition": "Passage Editor Relative Position",
-			"inactivePassageOpacity": "Inactive Passage Visibility",
-			"autoEditNewPassages": "Automatically Open New Passages for Editing",
-			"newPassageInitialFocus": {
-				"label": "Focus When Opening New Passages",
-				"title": "Title Bar",
-				"content": "Content Editor"
-			},
-			"themeLight": "Light",
-			"themeDark": "Dark",
-			"themeSystem": "System",
 			"theme": "Theme",
+			"themeDark": "Dark",
+			"themeLight": "Light",
+			"themeSystem": "System",
 			"title": "Preferences",
 			"useEnhancedEditors": "Use Enhanced Editors"
 		},
@@ -411,6 +419,18 @@
 		}
 	},
 	"routes": {
+		"backupBrowser": {
+			"backupCount": "{{count}} backup",
+			"backupCount_plural": "{{count}} backups",
+			"error": "Could not load backups.",
+			"noBackups": "No backups found.",
+			"noBackupsHelp": "Twine automatically creates backups every few minutes while you work. Your backups will appear here.",
+			"restore": "Restore This Backup",
+			"restoreError": "Failed to restore backup: {{error}}",
+			"restoreSuccess": "Successfully restored backup as \"{{name}}\".",
+			"restoring": "Restoring...",
+			"title": "Browse Backups"
+		},
 		"storyEdit": {
 			"toolbar": {
 				"asciiScrubber": "ASCII Scrubber",
@@ -451,6 +471,7 @@
 			"titleGeneric": "Stories",
 			"toolbar": {
 				"archive": "Archive",
+				"browseBackups": "Browse Backups",
 				"createStoryButton": {
 					"prompt": "What should your story be named? You can change this later.",
 					"emptyName": "Please enter a name.",

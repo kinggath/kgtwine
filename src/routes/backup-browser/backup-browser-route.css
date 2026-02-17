@@ -1,0 +1,23 @@
+.backup-browser-route {
+	height: 100%;
+}
+
+.backup-browser-error {
+	padding: 2rem;
+}
+
+.backup-browser-error .error-detail {
+	color: var(--color-error);
+	font-family: monospace;
+	margin-top: 1rem;
+}
+
+.no-backups {
+	padding: 2rem;
+	text-align: center;
+}
+
+.no-backups .help-text {
+	color: var(--color-text-secondary);
+	margin-top: 1rem;
+}
