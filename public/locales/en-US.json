@@ -457,6 +457,9 @@
 				"storyStructure": "Show Story Structure Only",
 				"passageNames": "Show Passage Names Only",
 				"passageNamesAndExcerpts": "Show Passage Names and Excerpts"
+			},
+			"fullViewButton": {
+				"label": "Full View Mode"
 			}
 		},
 		"storyList": {

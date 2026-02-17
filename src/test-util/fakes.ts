@@ -179,7 +179,8 @@ export function fakeStory(passageCount: number = 1): Story {
 			[tags[1]]: 'green',
 			[tags[2]]: 'blue'
 		},
-		zoom: Math.random()
+		zoom: Math.random(),
+		fullViewMode: false
 	};
 
 	for (let i = 0; i < passageCount; i++) {

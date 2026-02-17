@@ -1,0 +1,19 @@
+.relocating-passages-dialog {
+	pointer-events: none;
+}
+
+.relocating-passages-content {
+	display: flex;
+	align-items: center;
+	gap: var(--grid-size);
+	padding: var(--grid-size);
+}
+
+.relocating-passages-content .icon-image svg {
+	height: 24px;
+	width: 24px;
+}
+
+.relocating-passages-content span {
+	font-size: var(--font-size-base);
+}
