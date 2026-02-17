@@ -1,0 +1,83 @@
+.backup-story-groups {
+	padding: 1rem;
+}
+
+.backup-story-group {
+	margin-bottom: 2rem;
+	border: 1px solid var(--color-border);
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.backup-story-group-header {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 1rem;
+	background-color: var(--color-background-secondary);
+	cursor: pointer;
+	user-select: none;
+}
+
+.backup-story-group-header:hover {
+	background-color: var(--color-background-hover);
+}
+
+.backup-story-group-header .expand-icon {
+	font-size: 0.8rem;
+	width: 1rem;
+	display: inline-block;
+}
+
+.backup-story-group-header .story-name {
+	flex: 1;
+	margin: 0;
+	font-size: 1.2rem;
+}
+
+.backup-story-group-header .backup-count {
+	color: var(--color-text-secondary);
+	font-size: 0.9rem;
+}
+
+.backup-story-group-content {
+	padding: 1rem;
+	background-color: var(--color-background);
+}
+
+.backup-card-wrapper {
+	position: relative;
+	margin-bottom: 1rem;
+}
+
+.backup-timestamp {
+	font-size: 0.85rem;
+	color: var(--color-text-secondary);
+	margin-bottom: 0.5rem;
+	font-weight: 500;
+}
+
+.backup-actions {
+	margin-top: 0.5rem;
+	text-align: center;
+}
+
+.restore-button {
+	padding: 0.5rem 1.5rem;
+	background-color: var(--color-primary);
+	color: white;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 0.9rem;
+	transition: background-color 0.2s;
+}
+
+.restore-button:hover:not(:disabled) {
+	background-color: var(--color-primary-dark);
+}
+
+.restore-button:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}

@@ -7,6 +7,7 @@ import {loadJsonFileSync, saveJsonFile} from './json-file';
  */
 export type AppPrefName =
 	| 'backupFolderPath'
+	| 'backupIntervalMinutes'
 	| 'disableHardwareAcceleration'
 	| 'scratchFolderPath'
 	| 'scratchFileCleanupAge'
@@ -14,6 +15,7 @@ export type AppPrefName =
 
 const prefNames: AppPrefName[] = [
 	'backupFolderPath',
+	'backupIntervalMinutes',
 	'disableHardwareAcceleration',
 	'scratchFolderPath',
 	'scratchFileCleanupAge',

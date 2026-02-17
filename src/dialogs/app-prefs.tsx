@@ -7,6 +7,8 @@ import {FontSelect} from '../components/control/font-select';
 import {TextSelect} from '../components/control/text-select';
 import {setPref, usePrefsContext} from '../store/prefs';
 import {closestAppLocale, locales} from '../util/locales';
+import {isElectronRenderer} from '../util/is-electron';
+import type {TwineElectronWindow} from '../electron/shared/electron-shared.types';
 import './app-prefs.css';
 
 export const AppPrefsDialog: React.FC<
@@ -14,6 +16,35 @@ export const AppPrefsDialog: React.FC<
 > = props => {
 	const {dispatch, prefs} = usePrefsContext();
 	const {t} = useTranslation();
+	const [backupInterval, setBackupInterval] = React.useState<number>(20);
+
+	// Load backup interval from Electron app prefs
+	React.useEffect(() => {
+		if (isElectronRenderer()) {
+			const electron = (window as TwineElectronWindow).twineElectron;
+
+			if (electron) {
+				electron.getAppPref('backupIntervalMinutes').then(value => {
+					if (typeof value === 'number') {
+						setBackupInterval(value);
+					}
+				});
+			}
+		}
+	}, []);
+
+	function handleBackupIntervalChange(value: string) {
+		const interval = parseInt(value);
+		setBackupInterval(interval);
+
+		if (isElectronRenderer()) {
+			const electron = (window as TwineElectronWindow).twineElectron;
+
+			if (electron) {
+				electron.setAppPref('backupIntervalMinutes', interval);
+			}
+		}
+	}
 
 	function handleUseCodeMirrorChange(value: boolean) {
 		dispatch(setPref('useCodeMirror', value));
@@ -140,6 +171,28 @@ export const AppPrefsDialog: React.FC<
 							style={{width: '100%', marginTop: '8px'}}
 						/>
 					</div>
+				)}
+				{isElectronRenderer() && (
+					<>
+						<hr />
+						<h3>{t('dialogs.appPrefs.desktopSettings')}</h3>
+						<div>
+							<label htmlFor="backup-interval">
+								{t('dialogs.appPrefs.backupInterval.label')}:{' '}
+								{backupInterval} {t('dialogs.appPrefs.backupInterval.minutesLabel')}
+							</label>
+							<input
+								id="backup-interval"
+								type="range"
+								min="5"
+								max="30"
+								step="5"
+								value={backupInterval}
+								onChange={e => handleBackupIntervalChange(e.target.value)}
+								style={{width: '100%', marginTop: '8px'}}
+							/>
+						</div>
+					</>
 				)}
 				<p className="font-explanation">
 					{t('dialogs.appPrefs.fontExplanation')}

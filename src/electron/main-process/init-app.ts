@@ -10,6 +10,7 @@ import {
 	initStoryDirectory
 } from './story-directory';
 import {getUserCss} from './user-css';
+import {getAppPref} from './app-prefs';
 
 let mainWindow: BrowserWindow | null;
 
@@ -66,7 +67,9 @@ export async function initApp() {
 		await initStoryDirectory();
 		await createStoryDirectory();
 		await backupStoryDirectory();
-		setInterval(backupStoryDirectory, 1000 * 60 * 20);
+		const backupIntervalMinutes =
+			(getAppPref('backupIntervalMinutes') as number) || 20;
+		setInterval(backupStoryDirectory, backupIntervalMinutes * 60 * 1000);
 		initIpc();
 		initMenuBar();
 		app.on('will-quit', async () => {
