@@ -50,6 +50,7 @@ function createStory(overrides: Partial<Story> = {}): Story {
 		snapToGrid: false,
 		tagColors: {},
 		zoom: 1,
+		fullViewMode: false,
 		lastUpdate: new Date(),
 		script: '',
 		stylesheet: '',

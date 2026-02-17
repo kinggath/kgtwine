@@ -131,3 +131,7 @@
 [data-app-theme='dark'] .passage-card-link-handle {
 	background-color: var(--gray);
 }
+
+.passage-card.full-view .card-content {
+	overflow: auto;
+}

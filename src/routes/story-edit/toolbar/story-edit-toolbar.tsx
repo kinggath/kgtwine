@@ -8,6 +8,7 @@ import {PassageActions} from './passage/passage-actions';
 import {StoryActions} from './story/story-actions';
 import {UndoRedoButtons} from './undo-redo-buttons';
 import {ZoomButtons} from './zoom-buttons';
+import {FullViewButton} from './full-view-button';
 
 export interface StoryEditToolbarProps {
 	getCenter: () => Point;
@@ -36,6 +37,7 @@ export const StoryEditToolbar: React.FC<StoryEditToolbarProps> = props => {
 			pinnedControls={
 				<>
 					<ZoomButtons story={story} />
+					<FullViewButton story={story} />
 					<UndoRedoButtons />
 				</>
 			}

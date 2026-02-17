@@ -500,6 +500,8 @@ export const PassageMap = React.forwardRef<
 					passages={passages}
 					tagColors={tagColors}
 					highlightedTagNames={props.highlightedTagNames}
+					fullViewMode={story?.fullViewMode}
+					story={story}
 				/>
 				{relativeEditorsState.editors.map(editor => (
 					<PassageEditInline

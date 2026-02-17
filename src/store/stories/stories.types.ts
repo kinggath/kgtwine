@@ -51,6 +51,27 @@ export interface Passage {
 	 * Width of the passage in pixels.
 	 */
 	width: number;
+	/**
+	 * Width of the passage before Full View expansion (used to restore original size).
+	 */
+	fullViewOriginalWidth?: number;
+	/**
+	 * Height of the passage before Full View expansion (used to restore original size).
+	 */
+	fullViewOriginalHeight?: number;
+	/**
+	 * Left position of the passage before Full View repositioning (used to restore original position).
+	 */
+	fullViewOriginalLeft?: number;
+	/**
+	 * Top position of the passage before Full View repositioning (used to restore original position).
+	 */
+	fullViewOriginalTop?: number;
+	/**
+	 * Temporary flag: content is showing overflow indicators but card size hasn't expanded yet.
+	 * Used in two-phase expansion to first detect actual overflow, then expand if needed.
+	 */
+	checkingForOverflow?: boolean;
 }
 
 export interface Story {
@@ -119,6 +140,10 @@ export interface Story {
 	 * Zoom level the story is displayed at.
 	 */
 	zoom: number;
+	/**
+	 * Is Full View mode enabled for this story (expands all passages to show full text)?
+	 */
+	fullViewMode: boolean;
 }
 
 export type StoriesState = Story[];

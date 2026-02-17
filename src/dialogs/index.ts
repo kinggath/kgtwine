@@ -8,6 +8,7 @@ export * from './create-batch';
 export * from './dialogs.types';
 export * from './passage-edit';
 export * from './passage-tags';
+export * from './relocating-passages';
 export * from './story-import';
 export * from './story-javascript';
 export * from './story-details';

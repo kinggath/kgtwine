@@ -10,7 +10,12 @@ export const passageDefaults = (): Omit<Passage, 'id' | 'story'> => ({
 	tags: [],
 	text: '',
 	top: 0,
-	width: 100
+	width: 100,
+	fullViewOriginalWidth: undefined,
+	fullViewOriginalHeight: undefined,
+	fullViewOriginalLeft: undefined,
+	fullViewOriginalTop: undefined,
+	checkingForOverflow: undefined
 });
 
 export const storyDefaults = (): Omit<Story, 'id'> => ({
@@ -27,5 +32,6 @@ export const storyDefaults = (): Omit<Story, 'id'> => ({
 	stylesheet: '',
 	tags: [],
 	tagColors: {},
-	zoom: 1
+	zoom: 1,
+	fullViewMode: false
 });

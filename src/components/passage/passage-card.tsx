@@ -5,10 +5,12 @@ import {DraggableCore, DraggableCoreProps} from 'react-draggable';
 import {useTranslation} from 'react-i18next';
 import {CardContent} from '../container/card';
 import {SelectableCard} from '../container/card/selectable-card';
-import {Passage, TagColors} from '../../store/stories';
+import {Passage, Story, TagColors} from '../../store/stories';
 import {TagStripe} from '../tag/tag-stripe';
 import {passageIsEmpty} from '../../util/passage-is-empty';
 import {isValidHexColor} from '../../util/color';
+import {useUndoableStoriesContext} from '../../store/undoable-stories';
+import {expandPassageWithOverflow} from '../../store/stories/action-creators';
 import './passage-card.css';
 
 export interface PassageCardProps {
@@ -25,6 +27,8 @@ export interface PassageCardProps {
 	passage: Passage;
 	tagColors: TagColors;
 	highlightedTagNames?: string[];
+	fullViewMode?: boolean;
+	story?: Story;
 }
 
 // Needs to fill a large-sized passage card.
@@ -44,9 +48,12 @@ export const PassageCard: React.FC<PassageCardProps> = React.memo(props => {
 		onLinkHandleMouseLeave,
 		passage,
 		tagColors,
-		highlightedTagNames
+		highlightedTagNames,
+		fullViewMode,
+		story
 	} = props;
 	const {t} = useTranslation();
+	const {dispatch} = useUndoableStoriesContext();
 
 	// Check if any of this passage's tags match the highlighted tags
 	const isHighlighted = React.useMemo(() => {
@@ -65,6 +72,29 @@ export const PassageCard: React.FC<PassageCardProps> = React.memo(props => {
 		return matchingTag ? tagColors[matchingTag] : undefined;
 	}, [isHighlighted, highlightedTagNames, passage.tags, tagColors]);
 
+	const container = React.useRef<HTMLDivElement>(null);
+	const cardContent = React.useRef<HTMLDivElement>(null);
+	const {stories: contextStories} = useUndoableStoriesContext();
+
+	// When checking for overflow, detect if content is actually overflowing
+	React.useEffect(() => {
+		if (passage.checkingForOverflow && cardContent.current && story) {
+			const element = cardContent.current;
+			const hasOverflow = element.scrollHeight > element.clientHeight || 
+			                   element.scrollWidth > element.clientWidth;
+			
+			if (hasOverflow) {
+				// Content overflows, trigger expansion
+				const storiesToUse = contextStories;
+				dispatch(expandPassageWithOverflow(storiesToUse, story, passage));
+			}
+		}
+	}, [passage.checkingForOverflow, passage, story, contextStories, dispatch]);
+
+	// Determine if content has overflow based on text length
+	// Content overflows if text is longer than the excerpt length
+	const contentHasOverflow = passage.text.length > excerptLength;
+
 	function hexToRgb(hex: string): string {
 		const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
 		if (!result) {
@@ -81,11 +111,12 @@ export const PassageCard: React.FC<PassageCardProps> = React.memo(props => {
 			classNames('passage-card', {
 				empty: passageIsEmpty(passage),
 				selected: passage.selected,
-				'tag-search-highlighted': isHighlighted
+				'tag-search-highlighted': isHighlighted,
+				'full-view': fullViewMode,
+				'has-overflow': contentHasOverflow
 			}),
-		[passage, isHighlighted]
+		[passage, isHighlighted, fullViewMode, contentHasOverflow]
 	);
-	const container = React.useRef<HTMLDivElement>(null);
 	const excerpt = React.useMemo(() => {
 		if (passage.text.length > 0) {
 			return passage.text.substring(0, excerptLength);
@@ -131,6 +162,7 @@ export const PassageCard: React.FC<PassageCardProps> = React.memo(props => {
 		},
 		[passage.height, passage.left, passage.top, passage.width, highlightColor, isHighlighted]
 	);
+
 	const handleMouseDown = React.useCallback(
 		(event: MouseEvent) => {
 			// Shift- or control-clicking toggles our selected status, but doesn't
@@ -220,7 +252,12 @@ export const PassageCard: React.FC<PassageCardProps> = React.memo(props => {
 					>
 						<TagStripe tagColors={tagColors} tags={passage.tags} />
 						<h2>{passage.name}</h2>
-						<CardContent>{excerpt}</CardContent>
+						<div 
+							ref={cardContent}
+							style={passage.checkingForOverflow ? {overflow: 'auto', maxHeight: '100%'} : {}}
+						>
+							<CardContent>{excerpt}</CardContent>
+						</div>
 					</SelectableCard>
 					<div
 						className="passage-card-link-handle"
