@@ -10,7 +10,7 @@
 	},
 	"common": {
 		"add": "Ajouter",
-		"appName": "Twine",
+		"appName": "String",
 		"cancel": "Annuler",
 		"delete": "Supprimer",
 		"deselectAll": "Désélectionner tout",
@@ -47,7 +47,7 @@
 		"renamePrompt": "Comment souhaitez-vous renommer “{{name}}” ?",
 		"selectAll": "Choisir Tout",
 		"story": "Histoire",
-		"twine": "Twine",
+		"twine": "String",
 		"undoChange": "Annuler {{change}}",
 		"view": "Affichage"
 	},

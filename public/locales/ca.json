@@ -10,7 +10,7 @@
 	},
 	"common": {
 		"add": "Afegeix",
-		"appName": "Twine",
+		"appName": "String",
 		"back": "Enrere",
 		"build": "Construeix",
 		"cancel": "Cancel·la",
@@ -46,7 +46,7 @@
 		"storyFormat": "Format d'història",
 		"tag": "Etiqueta",
 		"test": "Prova",
-		"twine": "Twine",
+		"twine": "String",
 		"undo": "Desfés",
 		"undoChange": "Desfés {{change}}",
 		"unmaximize": "Restaura la mida",

@@ -10,7 +10,7 @@
 	},
 	"common": {
 		"add": "추가",
-		"appName": "Twine",
+		"appName": "String",
 		"back": "뒤로",
 		"build": "빌드",
 		"cancel": "취소",
@@ -47,7 +47,7 @@
 		"storyFormat": "스토리 형식",
 		"tag": "태그",
 		"test": "테스트",
-		"twine": "Twine",
+		"twine": "String",
 		"undo": "실행 취소",
 		"undoChange": "실행 취소 {{change}}",
 		"unmaximize": "크기 복원",

@@ -10,7 +10,7 @@
 	},
 	"common": {
 		"add": "Dodaj",
-		"appName": "Twine",
+		"appName": "String",
 		"back": "Wstecz",
 		"build": "Kompiluj",
 		"cancel": "Anuluj",
@@ -50,7 +50,7 @@
 		"tag": "Tag",
 		"tags": "Tagi",
 		"test": "Testuj",
-		"twine": "Twine",
+		"twine": "String",
 		"undo": "Cofnij",
 		"undoChange": "Cofnij {{change}}",
 		"unmaximize": "Przywróć rozmiar",

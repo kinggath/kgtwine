@@ -10,7 +10,7 @@
 	},
 	"common": {
 		"add": "Aggiungi",
-		"appName": "Twine",
+		"appName": "String",
 		"back": "Indietro",
 		"build": "Costruisci",
 		"cancel": "Annulla",
@@ -47,7 +47,7 @@
 		"storyFormat": "Formato della storia",
 		"tag": "Tag",
 		"test": "Test",
-		"twine": "Twine",
+		"twine": "String",
 		"undo": "Annulla",
 		"undoChange": "Annulla {{change}}",
 		"unmaximize": "Ripristina dimensione",

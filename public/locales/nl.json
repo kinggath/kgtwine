@@ -10,7 +10,7 @@
 	},
 	"common": {
 		"add": "Toevoegen",
-		"appName": "Twine",
+		"appName": "String",
 		"back": "Terug",
 		"build": "Bouwen",
 		"cancel": "Annuleren",
@@ -47,7 +47,7 @@
 		"storyFormat": "Verhaal formaat",
 		"tag": "Label",
 		"test": "Test",
-		"twine": "Twine",
+		"twine": "String",
 		"undo": "Ongedaan maken",
 		"undoChange": "Maak {{change}} ongedaan",
 		"unmaximize": "Herstel grote",

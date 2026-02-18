@@ -10,7 +10,7 @@
 	},
 	"common": {
 		"add": "Додати",
-		"appName": "Twine",
+		"appName": "String",
 		"back": "Назад",
 		"build": "Запуск",
 		"cancel": "Скасувати",
@@ -47,7 +47,7 @@
 		"storyFormat": "Формат оповідання",
 		"tag": "Мітка",
 		"test": "Тест",
-		"twine": "Twine",
+		"twine": "String",
 		"undo": "Скасувати",
 		"undoChange": "Скасувати {{change}}",
 		"unmaximize": "Відновити розмір",

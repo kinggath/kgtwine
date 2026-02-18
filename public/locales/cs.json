@@ -10,7 +10,7 @@
 	},
 	"common": {
 		"add": "Přidat",
-		"appName": "Twine",
+		"appName": "String",
 		"back": "Zpět",
 		"build": "Nástroje",
 		"cancel": "Storno",
@@ -47,7 +47,7 @@
 		"storyFormat": "Formát příběhu",
 		"tag": "Značka",
 		"test": "Otestovat",
-		"twine": "Twine",
+		"twine": "String",
 		"undo": "Zpět",
 		"undoChange": "Vrátit {{change}}",
 		"unmaximize": "Zmenšit",
