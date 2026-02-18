@@ -32,7 +32,8 @@
 	margin-bottom: 0;
 }
 
-.welcome-card .welcome-card-image svg {
+.welcome-card .welcome-card-image svg,
+.welcome-card .welcome-card-image img {
 	height: auto;
 	width: 200px;
 }

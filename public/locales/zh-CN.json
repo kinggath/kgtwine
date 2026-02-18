@@ -10,7 +10,7 @@
 	},
 	"common": {
 		"add": "添加",
-		"appName": "Twine",
+		"appName": "String",
 		"back": "返回",
 		"build": "构建",
 		"cancel": "取消",
@@ -47,7 +47,7 @@
 		"storyFormat": "故事格式",
 		"tag": "标签",
 		"test": "测试",
-		"twine": "Twine",
+		"twine": "String",
 		"undo": "撤销",
 		"undoChange": "撤销 {{change}}",
 		"unmaximize": "还原大小",

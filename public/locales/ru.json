@@ -10,7 +10,7 @@
 	},
 	"common": {
 		"add": "Добавить",
-		"appName": "Twine",
+		"appName": "String",
 		"back": "Назад",
 		"build": "Сборка",
 		"cancel": "Отмена",
@@ -46,7 +46,7 @@
 		"storyFormat": "Формат истории",
 		"tag": "Тег",
 		"test": "Тест",
-		"twine": "Twine",
+		"twine": "String",
 		"undo": "Отменить",
 		"undoChange": "Отменить {{change}}",
 		"unmaximize": "Восстановить размер",

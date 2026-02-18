@@ -10,7 +10,7 @@
 	},
 	"common": {
 		"add": "Acrescentar",
-		"appName": "Twine",
+		"appName": "String",
 		"back": "Voltar",
 		"build": "Criar",
 		"cancel": "Cancelar",
@@ -47,7 +47,7 @@
 		"storyFormat": "Formato de História",
 		"tag": "Etiqueta",
 		"test": "Testar",
-		"twine": "Twine",
+		"twine": "String",
 		"undo": "Anular",
 		"undoChange": "Anular {{change}}",
 		"unmaximize": "Restaurar Tamanho",

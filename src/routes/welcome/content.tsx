@@ -1,12 +1,12 @@
 import * as React from 'react';
 import {IconDeviceFloppy, IconHelp, IconMoodSmile} from '@tabler/icons';
-import {IconTwine} from '../../components/image/icon';
+import {IconFavicon} from '../../components/image/icon';
 import {isElectronRenderer} from '../../util/is-electron';
 
 export const content = () => [
 	{
 		html: 'routes.welcome.greeting',
-		image: <IconTwine />,
+		image: <IconFavicon />,
 		nextLabel: 'routes.welcome.tellMeMore',
 		title: 'routes.welcome.greetingTitle'
 	},

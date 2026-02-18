@@ -10,7 +10,7 @@
 	},
 	"common": {
 		"add": "Add",
-		"appName": "Twine",
+		"appName": "String",
 		"apply": "Apply",
 		"back": "Back",
 		"build": "Build",
@@ -58,7 +58,7 @@
 		"tag": "Tag",
 		"tags": "Tags",
 		"test": "Test",
-		"twine": "Twine",
+		"twine": "String",
 		"undo": "Undo",
 		"undoChange": "Undo {{change}}",
 		"unmaximize": "Restore Size",
@@ -164,20 +164,20 @@
 	},
 	"dialogs": {
 		"aboutTwine": {
-			"donateToTwine": "Help Twine Grow With A Donation",
+			"donateToTwine": "Help String Grow With A Donation",
 			"codeHeader": "Code",
 			"codeRepo": "Visit Source Code Repository",
 			"license": "This application is released under the <a href=\"https://www.gnu.org/licenses/gpl-3.0.html\">GPL v3 license</a>, but any work created with it may be released under any terms, including commercial ones.",
 			"localizationHeader": "Localizations",
-			"title": "About Twine {{version}}",
-			"twineDescription": "Twine is an open-source application for telling interactive, nonlinear stories."
+			"title": "About String {{version}}",
+			"twineDescription": "String is an open-source application for telling interactive, nonlinear stories."
 		},
 		"appDonation": {
-			"donate": "Donate To Twine Development",
-			"onlyOnce": "(This message will only be shown to you once. If you'd like to donate to Twine development in the future, there's a link to do so in the About Twine dialog.)",
-			"supportMessage": "If you love Twine, please consider helping it grow with a donation. Twine is an open source project that will always be free to use—and with your help, Twine will continue to thrive.",
+			"donate": "Donate To String Development",
+			"onlyOnce": "(This message will only be shown to you once. If you'd like to donate to String development in the future, there's a link to do so in the About String dialog.)",
+			"supportMessage": "If you love String, please consider helping it grow with a donation. String is an open source project that will always be free to use—and with your help, String will continue to thrive.",
 			"noThanks": "No Thanks",
-			"title": "Support Twine Development"
+			"title": "Support String Development"
 		},
 		"appPrefs": {
 			"autoEditNewPassages": "Automatically Open New Passages for Editing",
@@ -201,7 +201,7 @@
 			},
 			"disableRightClickPan": "Disable Right-Click Panning",
 			"editorCursorBlinks": "Blinking Cursor in Editors",
-			"fontExplanation": "Changing the font here only affects the Twine editor. It will not change the font a story uses when played.",
+			"fontExplanation": "Changing the font here only affects the String editor. It will not change the font a story uses when played.",
 			"inactivePassageOpacity": "Inactive Passage Visibility",
 			"language": "Language",
 			"newPassageInitialFocus": {
@@ -283,11 +283,11 @@
 		},
 		"storyImport": {
 			"deselectAll": "Deselect All",
-			"filePrompt": "To import stories into Twine, upload an archive, published story, or Twee source file below.",
+			"filePrompt": "To import stories into String, upload an archive, published story, or Twee source file below.",
 			"importDifferentFile": "Import a Different File",
 			"importSelected": "Import Selected Files",
 			"importThisStory": "Import This Story",
-			"noStoriesInFile": "There don't appear to be any Twine stories in the file you uploaded. Please choose another file.",
+			"noStoriesInFile": "There don't appear to be any String stories in the file you uploaded. Please choose another file.",
 			"storiesPrompt": "Choose which stories to import:",
 			"title": "Import Stories",
 			"willReplaceExisting": "A story with the same name in your library will be replaced."
@@ -375,13 +375,13 @@
 		"errors": {
 			"jsonSave": "Something went wrong while saving a settings file.",
 			"storyFileChangedExternally": {
-				"message": "The file “{{fileName}}” in your story library was changed outside of Twine.",
-				"detail": "Saving changes will overwrite this file. If you'd like to use this file instead of the version in Twine, Twine will relaunch and your work will be replaced with the file.",
+				"message": "The file \"{{fileName}}\" in your story library was changed outside of String.",
+				"detail": "Saving changes will overwrite this file. If you'd like to use this file instead of the version in String, String will relaunch and your work will be replaced with the file.",
 				"overwriteChoice": "Save Changes in Twine",
 				"relaunchChoice": "Use File and Relaunch"
 			},
 			"storyLibraryFolderAppPref": {
-				"detail": "Twine tried to open {{path}}.",
+				"detail": "String tried to open {{path}}.",
 				"message": "The story library folder you've set couldn't be opened.",
 				"useDefault": "Use Default Folder",
 				"quit": "Quit"
@@ -399,20 +399,20 @@
 			"showStoryLibrary": "Show Story Library",
 			"speech": "Speech",
 			"troubleshooting": "Troubleshooting",
-			"twineHelp": "Twine Help",
+			"twineHelp": "String Help",
 			"view": "View"
 		},
 		"relaunchDialog": {
-			"defaultPrompt": "This change will take effect the next time Twine is launched.",
+			"defaultPrompt": "This change will take effect the next time String is launched.",
 			"relaunchNow": "Relaunch Now"
 		},
 		"scratchDirectoryName": "Scratch",
 		"storiesDirectoryName": "Stories",
 		"updateCheck": {
 			"download": "Download",
-			"error": "Something went wrong while checking for an updated version of Twine.",
-			"updateAvailable": "A newer version of Twine is available.",
-			"upToDate": "This is the newest version of Twine available."
+			"error": "Something went wrong while checking for an updated version of String.",
+			"updateAvailable": "A newer version of String is available.",
+			"upToDate": "This is the newest version of String available."
 		},
 		"userCss": {
 			"filename": "user.css"
@@ -424,7 +424,7 @@
 			"backupCount_plural": "{{count}} backups",
 			"error": "Could not load backups.",
 			"noBackups": "No backups found.",
-			"noBackupsHelp": "Twine automatically creates backups every few minutes while you work. Your backups will appear here.",
+			"noBackupsHelp": "String automatically creates backups every few minutes while you work. Your backups will appear here.",
 			"restore": "Restore This Backup",
 			"restoreError": "Failed to restore backup: {{error}}",
 			"restoreSuccess": "Successfully restored backup as \"{{name}}\".",
@@ -464,7 +464,7 @@
 		},
 		"storyList": {
 			"library": "Library",
-			"noStories": "There are no stories saved in Twine right now. To get started, you can either create a new story or import an existing one from a file.",
+			"noStories": "There are no stories saved in String right now. To get started, you can either create a new story or import an existing one from a file.",
 			"taggedTitleCount": "1 Tagged Story",
 			"taggedTitleCount_0": "No Tagged Stories",
 			"taggedTitleCount_plural": "{{count}} Tagged Stories",
@@ -495,23 +495,23 @@
 			}
 		},
 		"welcome": {
-			"autosave": "<p>There's now a folder named Twine in your Documents folder. Inside that is a Stories folder, where all your work will be saved. Twine saves as you work, so you don't have to worry about remembering to save it yourself. You can always open the folder your stories are saved to by using the <strong>Show Library</strong> item in the <strong>Twine</strong> menu.</p><p>Because Twine is always saving your work, the files in your story library will be locked from editing while Twine is open.</p><p>If you'd like to open a Twine story file you received from someone else, you can import it into your library using the <strong>Import From File</strong> link in the story list.</p>",
+			"autosave": "<p>There's now a folder named String in your Documents folder. Inside that is a Stories folder, where all your work will be saved. String saves as you work, so you don't have to worry about remembering to save it yourself. You can always open the folder your stories are saved to by using the <strong>Show Library</strong> item in the <strong>String</strong> menu.</p><p>Because String is always saving your work, the files in your story library will be locked from editing while String is open.</p><p>If you'd like to open a String story file you received from someone else, you can import it into your library using the <strong>Import From File</strong> link in the story list.</p>",
 			"autosaveTitle": "Your work is automatically saved.",
-			"browserStorage": "<p>That means you don't need to create an account to use Twine 2, and everything you create isn't stored on a server somewhere else&mdash;it stays right in your browser.</p><p>Two <strong>very important</strong> things to remember, though. Since your work is saved only in your browser, if you clear its saved data, then you'll lose your work! Not good. Remember to use that <strong>Archive</strong> button often. You can also publish individual stories to files using the menu on each story in the story list. Both archive and story files can always be re-imported into Twine.</p><p>Secondly, <strong>anyone who can use this browser can see and make changes to your work.</strong> So if you've got a nosy kid brother, look into setting up a separate profile for yourself.</p>",
+			"browserStorage": "<p>That means you don't need to create an account to use String, and everything you create isn't stored on a server somewhere else&mdash;it stays right in your browser.</p><p>Two <strong>very important</strong> things to remember, though. Since your work is saved only in your browser, if you clear its saved data, then you'll lose your work! Not good. Remember to use that <strong>Archive</strong> button often. You can also publish individual stories to files using the menu on each story in the story list. Both archive and story files can always be re-imported into String.</p><p>Secondly, <strong>anyone who can use this browser can see and make changes to your work.</strong> So if you've got a nosy kid brother, look into setting up a separate profile for yourself.</p>",
 			"browserStorageTitle": "Your work is only saved in your browser",
 			"done": "<p>Thanks for reading, and have fun with Twine.</p>",
 			"doneTitle": "That's it!",
 			"gotoStoryList": "Go to the Story List",
-			"greeting": "<p>Twine is an open-source tool for telling interactive, nonlinear stories. There are a few things you should know before you get started.</p>",
+			"greeting": "<p>String is an open-source tool for telling interactive, nonlinear stories. There are a few things you should know before you get started.</p>",
 			"greetingTitle": "Hi!",
 			"tellMeMore": "Tell Me More",
-			"help": "<p><strong>If you've never used Twine before, then welcome!</strong> The <a href=\"https://twinery.org/cookbook\">Twine Cookbook</a> is a great resource for learning how to use it. If you haven't used Twine before, it's a great place to start.</p>",
+			"help": "<p><strong>If you've never used String before, then welcome!</strong> The <a href=\"https://twinery.org/cookbook\">String Cookbook</a> is a great resource for learning how to use it. If you haven't used String before, it's a great place to start.</p>",
 			"helpTitle": "New here?"
 		}
 	},
 	"routeActions": {
 		"app": {
-			"aboutApp": "About Twine",
+			"aboutApp": "About String",
 			"preferences": "Preferences",
 			"reportBug": "Report a Bug",
 			"storyFormats": "Story Formats"
@@ -525,7 +525,7 @@
 		}
 	},
 	"store": {
-		"archiveFilename": "{{timestamp}} Twine Archive.html",
+		"archiveFilename": "{{timestamp}} String Archive.html",
 		"errors": {
 			"cantPersistPrefs": "Something went wrong while saving your preferences ({{error}}).",
 			"cantPersistStories": "Something went wrong while saving your stories ({{error}}).",

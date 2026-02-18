@@ -10,7 +10,7 @@
 	},
 	"common": {
 		"add": "Ekle",
-		"appName": "Twine",
+		"appName": "String",
 		"back": "Geri",
 		"build": "İnşa Et",
 		"cancel": "İptal",
@@ -47,7 +47,7 @@
 		"storyFormat": "Öykü Biçimi",
 		"tag": "Etiket",
 		"test": "Dene",
-		"twine": "Twine",
+		"twine": "String",
 		"undo": "Geri Al",
 		"undoChange": "Geri Al ({{change}})",
 		"unmaximize": "Önceki Boyut",
