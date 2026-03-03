@@ -62,7 +62,7 @@ module.exports = {
 	// 		);
 	// 	}
 	// },
-	appId: 'org.twinery.twine',
+	appId: 'org.stringery.string',
 	directories: {
 		output: 'dist/electron'
 	},
@@ -84,7 +84,7 @@ module.exports = {
 		allowToChangeInstallationDirectory: true
 	},
 	win: {
-		artifactName: `Twine-${pkg.version}-Windows.exe`,
+		artifactName: `String-${pkg.version}-Windows.exe`,
 		icon: `icons/app-${isPreview ? 'preview' : 'release'}-no-padding.ico`,
 		target: {arch: ['x64'], target: 'nsis'}
 	}

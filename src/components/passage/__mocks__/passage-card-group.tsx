@@ -4,6 +4,7 @@ import {PassageCardGroupProps} from '../passage-card-group';
 export const PassageCardGroup: React.FC<PassageCardGroupProps> = ({
 	onDragStart,
 	onDrag,
+	onContextMenu,
 	passages
 }) => {
 	function simulateDrag() {
@@ -36,6 +37,14 @@ export const PassageCardGroup: React.FC<PassageCardGroupProps> = ({
 				.join('-')}`}
 		>
 			<button onClick={simulateDrag}>simulate drag</button>
+			<button
+				onContextMenu={event => {
+					event.preventDefault();
+					onContextMenu?.(passages[0], event as unknown as React.MouseEvent<HTMLDivElement>);
+				}}
+			>
+				simulate context menu
+			</button>
 		</div>
 	);
 };

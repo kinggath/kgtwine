@@ -3,6 +3,7 @@ import {axe} from 'jest-axe';
 import * as React from 'react';
 import {fakePassage} from '../../../../test-util';
 import {PassageMap, PassageMapProps} from '../passage-map';
+import * as passageClipboard from '../../../../util/passage-clipboard';
 
 jest.mock('../../../../store/use-format-reference-parser');
 jest.mock('../../passage-connections/passage-connections');
@@ -120,6 +121,27 @@ describe('<PassageMap>', () => {
 			).getByText('simulate drag')
 		);
 		expect(onSelect).not.toBeCalled();
+	});
+
+	it('enables copy when right-clicking on a card that is not already selected', () => {
+		const passages = [fakePassage({selected: false}), fakePassage({selected: false})];
+
+		renderComponent({passages, startPassageId: passages[0].id});
+		fireEvent.contextMenu(screen.getByText('simulate context menu'));
+
+		expect(screen.getByRole('button', {name: 'common.copy'})).not.toBeDisabled();
+	});
+
+	it('enables paste when right-clicking on a card and clipboard has passages', () => {
+		const hasClipboardSpy = jest
+			.spyOn(passageClipboard, 'hasClipboardPassages')
+			.mockReturnValue(true);
+
+		renderComponent();
+		fireEvent.contextMenu(screen.getByText('simulate context menu'));
+
+		expect(screen.getByRole('button', {name: 'common.paste'})).not.toBeDisabled();
+		hasClipboardSpy.mockRestore();
 	});
 
 	it('is accessible', async () => {

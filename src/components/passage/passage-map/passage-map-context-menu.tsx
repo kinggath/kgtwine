@@ -51,16 +51,27 @@ const PassageMapContextMenuContent = React.forwardRef<
 		const {dispatch: dialogDispatch} = useDialogsContext();
 		const {t} = useTranslation();
 		const [menuEl, setMenuEl] = React.useState<HTMLDivElement | null>(null);
-		const selectedPassagesRef = React.useRef<Passage[]>([]);
 	const linkDropSourcePassageRef = React.useRef<string | null>(null);
 	const passagesBeforeLinkDropRef = React.useRef<Set<string>>(new Set());
-
-	// Capture selected passages when menu opens
-	React.useEffect(() => {
-		if (isOpen) {
-			selectedPassagesRef.current = passages.filter(p => p.selected);
+	const selectedPassages = React.useMemo(
+		() => passages.filter(p => p.selected),
+		[passages]
+	);
+	const copyPassagesFromContext = React.useMemo(() => {
+		if (selectedPassages.length > 0) {
+			return selectedPassages;
 		}
-	}, [isOpen, passages]);
+
+		if (passageId) {
+			const clickedPassage = passages.find(p => p.id === passageId);
+			if (clickedPassage) {
+				return [clickedPassage];
+			}
+		}
+
+		return [];
+	}, [selectedPassages, passageId, passages]);
+	const canPaste = hasClipboard || hasClipboardPassages();
 
 	// Watch for new passages created from link drop and add the link
 	React.useEffect(() => {
@@ -143,15 +154,13 @@ const PassageMapContextMenuContent = React.forwardRef<
 	}, [story, mapX, mapY, passageId, dialogDispatch, undoableDispatch, onClose]);
 
 	const handleCopyPassages = React.useCallback(() => {
-		// Use captured passages instead of filtered current passages
-		// because parent deselects on click event
-		const toCopy = selectedPassagesRef.current;
+		const toCopy = copyPassagesFromContext;
 		if (toCopy.length > 0) {
 			undoableDispatch(copyPassages(toCopy.map(p => p.id)));
 			setHasClipboard(true);
 			onClose();
 		}
-	}, [undoableDispatch, onClose, setHasClipboard]);
+	}, [copyPassagesFromContext, undoableDispatch, onClose, setHasClipboard]);
 
 	const handlePasteWithMode = React.useCallback((mode: PasteMode) => {
 		if (!story) return;
@@ -306,7 +315,7 @@ const PassageMapContextMenuContent = React.forwardRef<
 							<IconButton
 								icon={<IconCopy />}
 								label={t('common.copy')}
-								disabled={selectedPassagesRef.current.length === 0}
+								disabled={copyPassagesFromContext.length === 0}
 							/>
 						</div>
 						<div
@@ -319,10 +328,10 @@ const PassageMapContextMenuContent = React.forwardRef<
 								<IconButton
 									icon={<IconClipboard />}
 									label={t('common.paste')}
-									disabled={!hasClipboard}
+									disabled={!canPaste}
 								/>
 							</div>
-							{hasClipboard && (
+							{canPaste && (
 								<div className="paste-submenu">
 									{(['withoutLinks', 'withLinks', 'withInternalLinks'] as PasteMode[]).map((mode) => {
 										const isAvailable = availablePasteModes.includes(mode);
@@ -387,7 +396,6 @@ export const PassageMapContextMenu = React.forwardRef<
 	const menuRef = React.useRef<HTMLDivElement>(null);
 
 	const handleOpen = React.useCallback((mapX: number, mapY: number, zoom: number, clickedPassageId?: string) => {
-		console.log('handleOpen called with clickedPassageId:', clickedPassageId);
 		const hasClip = hasClipboardPassages();
 		setMapPosition({x: mapX, y: mapY});
 		setZoom(zoom);
