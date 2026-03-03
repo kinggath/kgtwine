@@ -174,8 +174,6 @@ export const AppPrefsDialog: React.FC<
 				)}
 				{isElectronRenderer() && (
 					<>
-						<hr />
-						<h3>{t('dialogs.appPrefs.desktopSettings')}</h3>
 						<div>
 							<label htmlFor="backup-interval">
 								{t('dialogs.appPrefs.backupInterval.label')}:{' '}
